@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/01 05:17:24 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/07/18 11:47:07 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void Request::getInfo(int connection)
     char **req;
     char **req2;
     char buff[10000];
-    auto bytesRead = read(connection, buff, 100);
+    ssize_t bytesRead = read(connection, buff, 100);
     
     req = ft_split(buff, '\n');
     req2 = ft_split(req[0], ' ');

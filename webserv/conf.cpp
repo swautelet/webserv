@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conf.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/12 07:26:20 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/07/18 14:14:47 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,8 +131,16 @@ Conf::Conf(const Conf & other)
 void Conf::parsing(char *path)
 {
     
-    confList = new std::vector<confData>(4);
-    (*confList)[0].parsing(path);
+    confList = new std::vector<confData>(2);
+    int nbr_serv = (*confList)[0].parsing(path);
+    delete confList;
+    confList = new std::vector<confData>(nbr_serv);
+    for (int i = 0; i < nbr_serv; i++)
+    {
+        (*confList)[i].scrapData();
+        std::cout << (*confList)[i].getAdress() << std::endl;
+        std::cout << (*confList)[i].getServName() << std::endl;
+    }
     // buff << fd.rdbuf();
     // setAddress(tmp[1]);
     // setPath(tmp[2]);

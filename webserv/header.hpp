@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/12 08:35:46 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/07/18 13:55:09 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ std::string itoa(int a);
 std::string readHTML(const char *file);
 int check_quote(std::string str);
 int check_server_nbr(std::string str);
+int	test(std::string str, std::string c);
+char	*test1(std::string str , std::string c);
+char	**server_split(std::string str, std::string strset);
+void print_tab(char **tab);
 
 
 #endif

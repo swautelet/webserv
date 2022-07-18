@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/06/30 00:49:28 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/07/18 11:46:53 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Socket::Socket(std::string ip, std::string port)
 Socket::Socket(const Socket & other)
 {
     this->serv_address = other.serv_address;
-    this->fd = fd;
+    this->fd = other.fd;
     this->ip = other.ip;
     this->port = other.port;
 }
@@ -54,7 +54,7 @@ int Socket::create_socket()
     serv_address.sin_port = htons(9999);
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
         return printerr("Error with socket creation ...");
-    return 0;
+    return 1;
 }
 
 int Socket::create_bind()
@@ -64,12 +64,14 @@ int Socket::create_bind()
         return printerr("Error with socket protection ...");
     if ((bind(fd,(struct sockaddr*)&serv_address, sizeof(serv_address))) < 0)
         return printerr("Error with socket binding ...");
+    return 1;
 }
 
 int Socket::listen_socket(int max_queue)
 {
     if (listen(fd, max_queue) < 0)
         return printerr("Error with socket listening");
+    return 1;
 }
 
 sockaddr_in Socket::getServ_address()

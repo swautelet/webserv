@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/12 08:51:48 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/07/18 13:57:18 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,11 +150,103 @@ int check_server_nbr(std::string str)
 	while(69)
 	{
 		count = str.find("server ", count);
-		std::cout << count << std::endl;
 		if (count >= strlen(str.c_str()) - 1 || count == -1)
 			break;
 		count += 6;
 		find += 1;
 	}
 	return find;
+}
+
+int	words(std::string c, std::string str)
+{
+	int	i = 0, j = 0, nb = 0;
+	
+	while (str[i])
+	{
+		if(str[i] && str[i] == c[j])
+		{
+			while(str[i] && str[i] == c[j])
+			{
+				i++;
+				j++;
+			}
+			if (c[j] == '\0')
+				nb++;
+			j = 0;
+		}
+		i++;
+	}
+	return (nb);
+}
+
+char	*next_string(std::string str , std::string c)
+{
+	char	*word;
+	int		i;
+	int	j = 0;
+	int stock = 0;
+
+	i = -1;
+	while(str[++i])
+	{
+		if(str[i] && str[i] == c[j] && i > 0)
+		{
+			while(str[i] && str[i] == c[j])
+			{
+				i++;
+				j++;
+			}
+			if (c[j] == '\0')
+			{
+				stock = i - strlen(c.c_str());
+				i -= j;
+				break;
+			}
+			j = 0;
+		}
+		stock = i + 1;
+	}
+	word = (char*)malloc(sizeof(char) * (i + 1));
+	if (!word)
+		return (NULL);
+	i = -1;
+	while (str[++i] && i < stock)
+		word[i] = str[i];
+	word[i] = '\0';
+	return (word);
+}
+
+char	**server_split(std::string str, std::string strset)
+{
+	int		i;
+	int j  = 0;
+	char	**tab;
+
+	i = 0;
+	int nbword = words(strset, str);
+	tab = (char**)malloc(sizeof(char *) * nbword);
+	if (!tab)
+		return (NULL);
+	while (i < nbword)
+	{
+		if (i > 0)	
+			str = str.substr(strlen(tab[i - 1]));
+		tab[i] = next_string(str, strset);
+		if (!tab)
+			return (malloc_free(tab));
+		i++;
+	}
+	tab[i] = NULL;
+	return (tab);
+}
+
+void print_tab(char **tab)
+{
+    int i = 0;
+    while(tab[i])
+    {
+        std::cout << tab[i] << std::endl;
+        i++;
+    }
 }
