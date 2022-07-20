@@ -6,11 +6,11 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/18 13:57:18 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/20 15:45:12 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.hpp"
+#include "../include/header.hpp"
 
 std::string readHTML(const char *file)
 {
@@ -143,13 +143,13 @@ int check_quote(std::string str)
 	return 1;
 }
 
-int check_server_nbr(std::string str)
+int check_server_nbr(std::string str, std::string to_find)
 {
 	int count = 0;
 	int find = 0;
 	while(69)
 	{
-		count = str.find("server ", count);
+		count = str.find(to_find, count);
 		if (count >= strlen(str.c_str()) - 1 || count == -1)
 			break;
 		count += 6;
@@ -246,7 +246,7 @@ void print_tab(char **tab)
     int i = 0;
     while(tab[i])
     {
-        std::cout << tab[i] << std::endl;
+        std::cout << "[i]-> " << i <<  tab[i] << std::endl;
         i++;
     }
 }

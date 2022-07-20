@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/18 13:55:09 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/20 15:44:40 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 #include "request.hpp"
 #include "conf.hpp"
 #include "confData.hpp"
+#include "location.hpp"
 #include <vector>
 
 int printerr(const char *str);
@@ -38,7 +39,7 @@ char **ft_split(char *str, char charset);
 std::string itoa(int a);
 std::string readHTML(const char *file);
 int check_quote(std::string str);
-int check_server_nbr(std::string str);
+int check_server_nbr(std::string str, std::string to_find);
 int	test(std::string str, std::string c);
 char	*test1(std::string str , std::string c);
 char	**server_split(std::string str, std::string strset);

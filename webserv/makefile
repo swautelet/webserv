@@ -1,9 +1,9 @@
 NAME		= Webserv
-SRC			= main.cpp utils.cpp socket.cpp response.cpp request.cpp conf.cpp confData.cpp
-OBJS		= $(SRC:.cpp=.o)
+SRC			= main.cpp srcs/utils.cpp srcs/socket.cpp srcs/response.cpp srcs/request.cpp srcs/conf.cpp srcs/confData.cpp srcs/location.cpp
+OBJS	= $(SRC:.cpp=.o)
 CC			= c++
 RM			= rm -f
-FLAGS		=  -std=c++98 -I .
+FLAGS		= -g3 -std=c++98 -I   .
 
 all:		$(NAME)
 

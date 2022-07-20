@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conf.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:12 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/12 07:48:07 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/07/20 15:16:08 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,10 @@ class Conf
         void setMethod(char *str);
         void setIndex(char *str); 
         void parsing(char *path);
+        void print_info();
     private:
         std::vector<confData> *confList;
-        int autoindex;
+        int nbr_serv;
 };
 
 

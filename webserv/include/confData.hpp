@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:45:59 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/18 14:02:57 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/20 15:18:04 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define CONFDATA_HPP
 
 #include "header.hpp"
+
+class location;
 
 class confData
 {
@@ -28,6 +30,7 @@ class confData
         std::string getServName();
         std::string getMethod();
         std::string getIndex();
+        void print_info();
         void scrapData();
         void setAddress(std::string str);
         void setPath(std::string str);
@@ -42,6 +45,7 @@ class confData
         std::string method;
         std::string index;
         int autoindex;
+        location *loc;
 };
 
 
