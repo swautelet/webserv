@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/20 14:28:52 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/20 17:05:03 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int Socket::create_bind()
 int Socket::listen_socket(int max_queue)
 {
     if (listen(fd, max_queue) < 0)
-        return printerr("Error with socket listening");
+        return printerr("Error with socket listening ...");
     return 1;
 }
 

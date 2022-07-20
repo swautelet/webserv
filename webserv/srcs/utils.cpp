@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/20 15:45:12 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/20 15:49:11 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,7 @@ std::string itoa(int a)
 int printerr(const char *str)
 {
     std::cerr << str << std::endl;
-	std::cerr << "errno == " << errno << std::endl;
-    return 1;
+    exit(1);
 }
 
 static char	**malloc_free(char **str)

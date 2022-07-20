@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/20 15:46:02 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/20 15:49:46 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,7 @@ int confData::parsing(char *path)
     std::string data;
     fd.open(path, std::ifstream::in);
     if (!fd)
-    {
         printerr("Error with file opening ...");
-        return -1;
-    }
     buff << fd.rdbuf();
     data = buff.str();
     check_quote(data);
