@@ -6,11 +6,12 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/20 17:05:03 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/23 21:10:33 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/header.hpp"
+
 
 Socket::Socket()
 {
@@ -24,9 +25,8 @@ Socket::~Socket()
 
 Socket::Socket(std::string ip, std::string port)
 {
-    //this->ip = ip;
+    this->ip = ip;
     this->port = port;
-    (void)ip;
 }
 
 Socket::Socket(const Socket & other)
@@ -37,21 +37,32 @@ Socket::Socket(const Socket & other)
     this->port = other.port;
 }
 
+void Socket::setup(int backlog, confData & conf)
+{
+    
+    create_socket(conf);
+    create_bind();
+    listen_socket(backlog);
+    set_ip(conf.getAdress());
+    set_port(conf.getPort());
+}
+
 void Socket::set_ip(std::string ip)
 {
     this->ip = ip;
 }
+
 
 void Socket::set_port(std::string port)
 {
     this->port = port;
 }
 
-int Socket::create_socket()
+int Socket::create_socket(confData & conf)
 {
     serv_address.sin_family = AF_INET;
     serv_address.sin_addr.s_addr = INADDR_ANY;
-    serv_address.sin_port = htons(9999);
+    serv_address.sin_port = htons(atoi(conf.getPort().c_str()));
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
         return printerr("Error with socket creation ...");
     return 1;
