@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/26 16:15:49 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/26 19:06:20 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,24 @@ void Response::find_method(Request & req, confData & conf)
         postMethod();
 }
 
+int how_many(std::string str)
+{
+    int count = 0;
+    int i = -1;
+    while(str[++i])
+        if(isspace(str[i]))
+            count++;
+    std::cout << count << std::endl;
+    return count;
+}
+ 
 void Response::getMethod(Request & req, confData & conf)
 {
     version = req.getVersion();
     status = 200;
     stat_msg = "OK";
     body = readHTML(conf, req.getUrl(), goodIndex(conf, req.getUrl()));
-    content_lenght = itoa(strlen(body.c_str()));
+    content_lenght = itoa(body.size() + how_many(body));
     content_type = "text/html";
 }
 
@@ -65,6 +76,7 @@ void Response::postMethod()
 
 void Response::concat_response()
 {
+    std::cout << content_lenght << std::endl;
     full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
 }
 

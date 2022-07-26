@@ -1,5 +1,5 @@
 NAME		= Webserv
-SRC			= main.cpp srcs/utils.cpp srcs/socket.cpp srcs/response.cpp srcs/request.cpp srcs/conf.cpp srcs/confData.cpp srcs/location.cpp
+SRC			= main.cpp srcs/utils.cpp srcs/socket.cpp srcs/response.cpp srcs/request.cpp srcs/conf.cpp srcs/confData.cpp srcs/location.cpp srcs/autoindex.cpp
 OBJS	= $(SRC:.cpp=.o)
 CC			= c++
 RM			= rm -f

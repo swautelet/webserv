@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/24 19:29:22 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/26 19:09:48 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,13 @@ int main(int argc, char **argv)
     std::vector<Socket> *sock;
     struct sockaddr client_address;
     struct timeval tv;
-
-    
     i = -1;
     tv.tv_sec = 60;
     tv.tv_usec = 0;
     if (argc != 2)
         printerr("Usage : ./Webserv [conf file]");
     conf.parsing(argv[1]);
+    //Autodex index("www/page/index.html", conf.getConflist(0));
     sock = new std::vector<Socket>(conf.getNbrServer());
     FD_ZERO(&fdset);
     while (++i < conf.getNbrServer())
@@ -89,7 +88,7 @@ int main(int argc, char **argv)
                     req.getInfo(connection);
                     res.find_method(req, conf.getConflist(i));
                     res.concat_response();      
-                    write(connection, res.getResponse().c_str(), atoi(res.getContentLenght().c_str()));
+                    write(connection, res.getResponse().c_str(), res.getResponse().size());
                     close(connection);
                     return 1;
                 }

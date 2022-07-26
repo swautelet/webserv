@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/25 18:21:51 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/26 17:51:59 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 #include "conf.hpp"
 #include "confData.hpp"
 #include "location.hpp"
+#include "autoindex.hpp"
 #include <sys/ioctl.h>
 #include <utility>
 
