@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/20 15:49:46 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/24 18:48:32 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,16 @@ std::string confData::getIndex()
     return index;
 }
 
+int confData::getLocationNbr()
+{
+    return nbr_loc;
+}
+
+location & confData::getLocation(int index)
+{
+    return (*loc)[index];
+}
+
 void confData::setAddress(std::string str)
 {
     char **tmp;
@@ -105,15 +115,23 @@ int confData::parsing(char *path)
 void confData::print_info()
 {
     int x = -1;
-    int j = -1;
+    int j = 0;
     std::cout << "[Default]" << std::endl;
-    std::cout << "Address->         " << "[" << address << "]" << std::endl;
-    std::cout << "Port->            " << "[" << port << "]" << std::endl;
-    std::cout << "Path->            " << "[" << path << "]" << std::endl;
-    std::cout << "Serv_name->       " << "[" << serv_name << "]" << std::endl;
-    std::cout << "Method->          " << "[" << method << "]" << std::endl << std::endl;
-    while(++x < check_server_nbr(data_split[++j], "location "))
-        loc[x].print_info();
+    if (!address.empty())
+        std::cout << "Address->         " << "[" << address << "]" << std::endl;
+    if (!port.empty())
+        std::cout << "Port->            " << "[" << port << "]" << std::endl;
+    if (!path.empty())
+        std::cout << "Path->            " << "[" << path << "]" << std::endl;
+    if (!serv_name.empty())
+        std::cout << "Serv_name->       " << "[" << serv_name << "]" << std::endl;
+    if (!method.empty())
+        std::cout << "Method->          " << "[" << method << "]" << std::endl << std::endl;
+    while(data_split[j] && ++x < check_server_nbr(data_split[j], "location "))
+    {
+        (*loc)[x].print_info();
+        j++;
+    }
     std::cout << "--------------------------------------" << std::endl;
 }
 
@@ -121,7 +139,6 @@ void confData::scrapData()
 {
     static int i = 0;
     int index = -1;
-    int nbr_loc = 0;
     int j = 0;
     char **tmp;
     if(data_split[i])
@@ -142,9 +159,9 @@ void confData::scrapData()
         }
         j = 0;
         nbr_loc = check_server_nbr(data_split[i], "location ");
-        this->loc = new location[nbr_loc];
+        loc = new std::vector<location>(nbr_loc);
         for (int x = 0; x < nbr_loc; x++)
-            index = loc[x].scrapData(data_split[i], index);
+            index = (*loc)[x].scrapData(data_split[i], index);
     }
     i++;
 }

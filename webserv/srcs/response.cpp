@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/20 17:05:54 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/26 16:15:49 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,25 @@ Response &Response::operator=(Response const & other)
 	return (*this);
 }
 
-void Response::find_method(Request & req)
+void Response::find_method(Request & req, confData & conf)
 {
     std::cout << req.getMethod() << std::endl;
     if (req.getMethod() == "GET")
-        getMethod(req);
+        getMethod(req, conf);
     if (req.getMethod() == "DELETE")
         delMethod();
     if (req.getMethod() == "POST")
         postMethod();
 }
 
-void Response::getMethod(Request & req)
+void Response::getMethod(Request & req, confData & conf)
 {
     version = req.getVersion();
     status = 200;
     stat_msg = "OK";
-    body = readHTML(req.getUrl().c_str());
+    body = readHTML(conf, req.getUrl(), goodIndex(conf, req.getUrl()));
     content_lenght = itoa(strlen(body.c_str()));
     content_type = "text/html";
-    
 }
 
 void Response::delMethod()
@@ -61,7 +60,7 @@ void Response::delMethod()
 
 void Response::postMethod()
 {
-
+    
 }
 
 void Response::concat_response()

@@ -17,6 +17,7 @@
 #include "header.hpp"
 
 class Request;
+class confData;
 
 class Response
 {
@@ -24,8 +25,8 @@ class Response
         Response();
         Response(const Response & other);
         Response &operator=(const Response & other);
-        void find_method(Request & req);
-        void getMethod(Request & req);
+        void find_method(Request & req, confData & conf);
+        void getMethod(Request & req, confData & conf);
         void delMethod();
         void postMethod();
         void init();

@@ -6,27 +6,69 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/20 15:49:11 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/25 18:29:16 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/header.hpp"
 
-std::string readHTML(const char *file)
+std::pair<std::string, std::string> find_base_location(confData & conf, std::string url)
 {
-    std::ofstream fd;
-    std::stringstream buff;
-    const char *www = "www/page";
-    std::string path (www);
-    std::string files (file);
-    path = path + file;
-    std::cout << path << std::endl;
-    fd.open(path.c_str(), std::ifstream::in);
-    if (!fd)
-    {
+	for(int x = 0; x < conf.getLocationNbr(); x++)
+		if (!conf.getLocation(x).getLocation_name().compare("/"))
+			return std::make_pair(url.substr(1, url.size()), conf.getLocation(x).getPath());	
+	return std::make_pair(url.substr(1, url.size()), conf.getPath());
+}
+
+std::pair<std::string, std::string> goodIndex(confData & conf, std::string url)
+{
+	int i = -1;
+	int index = 0;
+	if (!url.compare("/"))
+		return std::make_pair(url, conf.getPath());		
+	else
+	{	
+		std::string urlz = url;
+		if ((index = urlz.rfind('/')) == 0)
+			return find_base_location(conf, urlz);
+		urlz = urlz.substr(0, index);
+		
+		while(++i < conf.getLocationNbr())
+		{
+			if (!urlz.compare(conf.getLocation(i).getLocation_name()))
+			{
+				if(!conf.getPath().empty())
+					return std::make_pair(urlz,conf.getLocation(i).getPath());
+				else
+					return std::make_pair(urlz, conf.getPath());
+			}
+		}
+	}
+	return std::make_pair("", "");
+}
+
+std::string readHTML(confData & conf, std::string file, std::pair<std::string, std::string> index)
+{
+	int j;
+	std::stringstream buff;
+	std::string tmp(file);
+    if (index.first.empty())
+		printerr("Error with index in the conf file ... ");
+	j = tmp.rfind('/');
+	tmp = file.substr(j + 1, tmp.size());
+	std::cout << index.second << std::endl;
+	j = -1;
+	std::cout << tmp << std::endl;
+	while(tmp.empty() && ++j < conf.getLocationNbr())
+		if (conf.getLocation(j).getPath() == index.second)
+			tmp = index.second.substr(2, index.second.size()) + "/" + conf.getLocation(j).getIndex();
+	if(!index.second.empty())
+		tmp = index.second.substr(2, index.second.size()) + "/" + tmp;
+	std::ifstream fd (tmp);
+    if (!fd.is_open())
         printerr("Error with file opening ...");
-        return NULL;
-    }
+	if (!fd.good())
+		printerr("File not found ... ");
     buff << fd.rdbuf();
     std::cout << buff.str() << std::endl;
     return buff.str();
@@ -146,6 +188,8 @@ int check_server_nbr(std::string str, std::string to_find)
 {
 	int count = 0;
 	int find = 0;
+	if (str.empty() || to_find.empty())
+		return 0;
 	while(69)
 	{
 		count = str.find(to_find, count);
@@ -224,7 +268,7 @@ char	**server_split(std::string str, std::string strset)
 
 	i = 0;
 	int nbword = words(strset, str);
-	tab = (char**)malloc(sizeof(char *) * nbword);
+	tab = (char**)malloc(sizeof(char *) * nbword + 1);
 	if (!tab)
 		return (NULL);
 	while (i < nbword)

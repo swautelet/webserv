@@ -3,7 +3,7 @@ SRC			= main.cpp srcs/utils.cpp srcs/socket.cpp srcs/response.cpp srcs/request.c
 OBJS	= $(SRC:.cpp=.o)
 CC			= c++
 RM			= rm -f
-FLAGS		= -g3 -std=c++98 -I   .
+FLAGS		= -g3 -fsanitize=address -std=c++98 -I   .
 
 all:		$(NAME)
 

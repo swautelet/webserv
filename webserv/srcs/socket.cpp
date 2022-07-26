@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/23 21:10:33 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/24 17:26:31 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ Socket::Socket()
 
 Socket::~Socket()
 {
-
+    std::cout << "Destructor socket called" << std::endl;
+    close(fd);
 }
 
 Socket::Socket(std::string ip, std::string port)

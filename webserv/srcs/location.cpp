@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/07/20 15:40:25 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/24 16:02:17 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,15 @@ void location::setIndex(std::string str)
 
 void location::print_info()
 {
-    std::cout << "[location " << location_name << "]" << std::endl;
-    std::cout << "Path->            " << "[" << path << "]" << std::endl;
-    std::cout << "Method->          " << "[" << method << "]" << std::endl;
-    std::cout << "Index->           " << "[" << index << "]" << std::endl;
-    std::cout << "AutoIndex->       " << "[" << autoindex << "]" << std::endl << std::endl;
+    // if (!location_name.empty())
+    //     std::cout << "[location " << location_name << "]" << std::endl;
+    // if (!path.empty())
+    //     std::cout << "Path->            " << "[" << path << "]" << std::endl;
+    // if (!method.empty())
+    //     std::cout << "Method->          " << "[" << method << "]" << std::endl;
+    // if (!index.empty())
+    //     std::cout << "Index->           " << "[" << index << "]" << std::endl;
+    // std::cout << "AutoIndex->       " << "[" << autoindex << "]" << std::endl << std::endl;
 }
 int location::scrapData(char *str, int i)
 {

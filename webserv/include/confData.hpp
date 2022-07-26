@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:45:59 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/20 15:18:04 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/24 18:48:58 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,14 @@ class confData
         ~confData();
         confData(const confData & other);
         int parsing(char *path);
+        int getLocationNbr();
         std::string getAdress();
         std::string getPort();
         std::string getPath();
         std::string getServName();
         std::string getMethod();
         std::string getIndex();
+        location & getLocation(int index);
         void print_info();
         void scrapData();
         void setAddress(std::string str);
@@ -45,7 +47,8 @@ class confData
         std::string method;
         std::string index;
         int autoindex;
-        location *loc;
+        int nbr_loc;
+        std::vector<location> *loc;
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/20 15:44:40 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/25 18:21:51 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,22 @@
 #include "conf.hpp"
 #include "confData.hpp"
 #include "location.hpp"
+#include <sys/ioctl.h>
+#include <utility>
+
 #include <vector>
 
 int printerr(const char *str);
 char **ft_split(char *str, char charset);
 std::string itoa(int a);
-std::string readHTML(const char *file);
+std::string readHTML(confData & conf, std::string file, std::pair<std::string, std::string>);
 int check_quote(std::string str);
 int check_server_nbr(std::string str, std::string to_find);
 int	test(std::string str, std::string c);
 char	*test1(std::string str , std::string c);
 char	**server_split(std::string str, std::string strset);
 void print_tab(char **tab);
-
+std::pair<std::string, std::string> goodIndex(confData & conf, std::string);
+std::pair<std::string, std::string> find_base_location(confData & conf, std::string url);
 
 #endif
