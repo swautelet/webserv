@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/07/24 16:02:17 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/29 18:17:42 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,11 @@ std::string location::getMethod()
 std::string location::getLocation_name()
 {
     return location_name;   
+}
+
+int location::getAutoIndex()
+{
+    return autoindex;
 }
 
 
@@ -95,6 +100,7 @@ int location::scrapData(char *str, int i)
     {   
         if (strnstr(tmp[i], "location ", strlen(tmp[i])))
         {
+            autoindex = 0;
             setLocation_name(tmp[i]);
             if (tmp[++i])
             {

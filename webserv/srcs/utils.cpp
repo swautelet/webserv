@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/25 18:29:16 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/29 18:51:15 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,27 +50,50 @@ std::pair<std::string, std::string> goodIndex(confData & conf, std::string url)
 std::string readHTML(confData & conf, std::string file, std::pair<std::string, std::string> index)
 {
 	int j;
+    int autodex = 0;
+    struct stat info;
 	std::stringstream buff;
 	std::string tmp(file);
     if (index.first.empty())
 		printerr("Error with index in the conf file ... ");
-	j = tmp.rfind('/');
-	tmp = file.substr(j + 1, tmp.size());
-	std::cout << index.second << std::endl;
-	j = -1;
-	std::cout << tmp << std::endl;
-	while(tmp.empty() && ++j < conf.getLocationNbr())
-		if (conf.getLocation(j).getPath() == index.second)
-			tmp = index.second.substr(2, index.second.size()) + "/" + conf.getLocation(j).getIndex();
-	if(!index.second.empty())
-		tmp = index.second.substr(2, index.second.size()) + "/" + tmp;
+    j = -1;
+    //std::cout << "FILE : " << file << std::endl;
+    while(++j < conf.getLocationNbr())
+    {
+		if (!conf.getLocation(j).getLocation_name().compare(tmp) && conf.getLocation(j).getAutoIndex())
+        {
+            tmp = conf.getLocation(j).getPath() + "/" + conf.getLocation(j).getIndex();
+            //std::cout << "TMP == " << tmp << std::endl;
+            tmp = tmp.substr(2, tmp.size());
+            autodex = 1;
+        }
+    }
+    if (!autodex)   
+    {   
+        std::cout << "!!!" << std::endl;
+        j = tmp.rfind('/');
+        tmp = file.substr(j + 1, tmp.size());
+        //std::cout << "index.second == "<< index.second << std::endl;
+        j = -1;
+        while(tmp.empty() && ++j < conf.getLocationNbr())
+            if (conf.getLocation(j).getPath() == index.second)
+                tmp = index.second.substr(2, index.second.size()) + "/" + conf.getLocation(j).getIndex();
+        if(!index.second.empty())
+            tmp = index.second.substr(2, index.second.size()) + "/" + tmp;
+    }
+    std::cout << "TMP == " << tmp << std::endl;
+
+    if (stat(tmp.c_str(), &info) != 0)
+        std::cout << "AH\n";
+    if (info.st_mode & S_IFDIR)
+        tmp = "www/error/403.html";
 	std::ifstream fd (tmp);
     if (!fd.is_open())
-        printerr("Error with file opening ...");
+        printerr("Error with file opening ... (ReadHTML)");
 	if (!fd.good())
 		printerr("File not found ... ");
     buff << fd.rdbuf();
-    std::cout << buff.str() << std::endl;
+    //std::cout << buff.str() << std::endl;
     return buff.str();
 }
 
@@ -292,4 +315,9 @@ void print_tab(char **tab)
         std::cout << "[i]-> " << i <<  tab[i] << std::endl;
         i++;
     }
+}
+
+void print(std::string str)
+{
+    std::cout << str <<std::endl;
 }

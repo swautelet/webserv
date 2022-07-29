@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/26 17:51:59 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/29 17:24:24 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include "errno.h"
@@ -34,6 +35,7 @@
 #include "location.hpp"
 #include "autoindex.hpp"
 #include <sys/ioctl.h>
+#include <dirent.h>
 #include <utility>
 
 #include <vector>
@@ -50,5 +52,6 @@ char	**server_split(std::string str, std::string strset);
 void print_tab(char **tab);
 std::pair<std::string, std::string> goodIndex(confData & conf, std::string);
 std::pair<std::string, std::string> find_base_location(confData & conf, std::string url);
+void print(std::string str);
 
 #endif

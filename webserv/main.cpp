@@ -6,39 +6,11 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/26 19:09:48 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/29 19:19:40 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/header.hpp"
-
-// int main(void)
-// {
-//     fd_set rfds;
-//     struct timeval tv;
-//     int retval;
-
-//     /* Surveiller stdin (fd 0) en attente d'entrées */
-//     //FD_ZERO(&rfds);
-//     FD_SET(0, &rfds);
-
-//     /* Pendant 5 secondes maxi */
-//     tv.tv_sec = 5;
-//     tv.tv_usec = 0;
-
-//     retval = select(FD_SETSIZE, &rfds, NULL, NULL, &tv);
-//     /* Considérer tv comme indéfini maintenant ! */
-
-//     if (retval == -1)
-//         perror("select()");
-//     else if (retval)
-//         printf("Des données sont disponibles maintenant\n");
-//         /* FD_ISSET(0, &rfds) est vrai */
-//     else
-//         printf("Aucune données durant les 5 secondes\n");
-
-//     exit(EXIT_SUCCESS);
-// }
 
 int main(int argc, char **argv)
 {
@@ -46,20 +18,18 @@ int main(int argc, char **argv)
     Conf conf;
     Request req;
     Response res;
+    fd_set fdset, copyset;
+    std::vector<Socket> *sock;
+    struct timeval tv;
     int connection;
     int addrlen;
     int backlog = 10;
-    fd_set fdset, copyset;
-    std::vector<Socket> *sock;
-    struct sockaddr client_address;
-    struct timeval tv;
     i = -1;
     tv.tv_sec = 60;
     tv.tv_usec = 0;
     if (argc != 2)
         printerr("Usage : ./Webserv [conf file]");
     conf.parsing(argv[1]);
-    //Autodex index("www/page/index.html", conf.getConflist(0));
     sock = new std::vector<Socket>(conf.getNbrServer());
     FD_ZERO(&fdset);
     while (++i < conf.getNbrServer())
@@ -70,10 +40,12 @@ int main(int argc, char **argv)
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
 
     i = -1;
-    addrlen = sizeof((socklen_t *)&client_address);
     memcpy(&copyset, &fdset, sizeof(fdset));
     while(1)
     {
+        // FD_ZERO(&fdset);
+        // for(int z = 0; z < conf.getNbrServer(); z++)
+        //     FD_SET((*sock)[z].getFd(), &fdset);
         int retval = select(FD_SETSIZE, &copyset, NULL, NULL, &tv);
         if (retval == -1)
             printerr("Error with select ...");
@@ -83,17 +55,21 @@ int main(int argc, char **argv)
             {
                 if (FD_ISSET((*sock)[i].getFd(), &fdset))
                 {
+                    struct sockaddr client_address;
+                    addrlen = sizeof((socklen_t *)&client_address);
+                    std::cout << "Accept ... " << std::endl; 
                     if ((connection = accept((*sock)[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
-                      return printerr("cannot connect ...");
+                        return printerr("cannot connect ...");
+                    std::cout << "Accept done ..." << std::endl;
+                    Autodex index("www/page", conf.getConflist(0));
                     req.getInfo(connection);
                     res.find_method(req, conf.getConflist(i));
                     res.concat_response();      
                     write(connection, res.getResponse().c_str(), res.getResponse().size());
                     close(connection);
-                    return 1;
+                    break;
                 }
             }
-            
         }
     }
 }

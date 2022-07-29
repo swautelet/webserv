@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:39 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/07/20 14:20:35 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/29 17:09:38 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class location
         void setMethod(std::string str);
         void setIndex(std::string str);
         int scrapData(char *str, int i);
+        int getAutoIndex();
         void print_info();
     private:
         std::string location_name;
