@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/29 17:09:05 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/31 15:52:46 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void confData::setAddress(std::string str)
 
 void confData::setPath(std::string str)
 {
-    path = str.substr(strlen(" root "), str.size());
+    path = str.substr(strlen(" root ") + 2, str.size());
     path.resize(path.size() - 1);
 }
 

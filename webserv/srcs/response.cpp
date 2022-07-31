@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/26 19:06:20 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/31 16:09:58 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,14 @@ void Response::getMethod(Request & req, confData & conf)
     content_type = "text/html";
 }
 
-void Response::delMethod()
-{
-
-}
-
 void Response::postMethod()
 {
     
+}
+
+void Response::delMethod()
+{
+
 }
 
 void Response::concat_response()

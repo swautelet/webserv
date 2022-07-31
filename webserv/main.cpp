@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/29 19:19:40 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/07/31 16:03:17 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ int main(int argc, char **argv)
                     if ((connection = accept((*sock)[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
                         return printerr("cannot connect ...");
                     std::cout << "Accept done ..." << std::endl;
-                    Autodex index("www/page", conf.getConflist(0));
                     req.getInfo(connection);
+                    //Autodex index(req.getUrl(), conf.getConflist(0));
                     res.find_method(req, conf.getConflist(i));
                     res.concat_response();      
                     write(connection, res.getResponse().c_str(), res.getResponse().size());
@@ -73,3 +73,5 @@ int main(int argc, char **argv)
         }
     }
 }
+
+
