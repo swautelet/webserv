@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/23 20:57:11 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/06 19:21:14 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ void Conf::parsing(char *path)
     confList = new std::vector<confData>(1);
     if (!(nbr_serv = (*confList)[0].parsing(path)))
         printerr("Error with parsing, 0 server found ...");
-    std::cout << "sheeeeesh" << std::endl;
     confList = new std::vector<confData>(nbr_serv);
     for (int i = 0; i < nbr_serv; i++)
         (*confList)[i].scrapData();

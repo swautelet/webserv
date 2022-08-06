@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/24 17:26:31 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/06 20:17:09 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,6 @@ void Socket::setup(int backlog, confData & conf)
     set_port(conf.getPort());
 }
 
-void Socket::set_ip(std::string ip)
-{
-    this->ip = ip;
-}
-
-
-void Socket::set_port(std::string port)
-{
-    this->port = port;
-}
-
 int Socket::create_socket(confData & conf)
 {
     serv_address.sin_family = AF_INET;
@@ -84,6 +73,16 @@ int Socket::listen_socket(int max_queue)
     if (listen(fd, max_queue) < 0)
         return printerr("Error with socket listening ...");
     return 1;
+}
+
+void Socket::set_ip(std::string ip)
+{
+    this->ip = ip;
+}
+
+void Socket::set_port(std::string port)
+{
+    this->port = port;
 }
 
 sockaddr_in Socket::getServ_address()

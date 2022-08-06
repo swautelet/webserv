@@ -23,6 +23,7 @@ class Response
 {
     public:
         Response();
+        ~Response();
         Response(const Response & other);
         Response &operator=(const Response & other);
         void find_method(Request & req, confData & conf);
@@ -31,12 +32,14 @@ class Response
         void postMethod();
         void init();
         void concat_response();
+        int setStatus();
+        std::string setStatMsg();
+        std::string setContentType();
         std::string getResponse();
         std::string getContentLenght();
         std::string getContentType();
         std::string getBody();
         std::string getFullResponse();
-        ~Response();
     private:
         std::string version;
         int status;

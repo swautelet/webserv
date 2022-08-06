@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/31 16:09:58 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/06 20:27:58 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,24 @@ void Response::find_method(Request & req, confData & conf)
         postMethod();
 }
 
+int Response::setStatus() // Todo : make the status code work
+{
+    if (true)
+        return 200;
+}
+
+std::string Response::setStatMsg()
+{
+    if (true)
+        return "OK";
+}
+
+std::string Response::setContentType()
+{
+    if (true)
+        return "text/html";
+}
+
 int how_many(std::string str)
 {
     int count = 0;
@@ -57,11 +75,11 @@ int how_many(std::string str)
 void Response::getMethod(Request & req, confData & conf)
 {
     version = req.getVersion();
-    status = 200;
-    stat_msg = "OK";
+    status = setStatus();
+    stat_msg = setStatMsg();
     body = readHTML(conf, req.getUrl(), goodIndex(conf, req.getUrl()));
     content_lenght = itoa(body.size() + how_many(body));
-    content_type = "text/html";
+    content_type = setContentType();
 }
 
 void Response::postMethod()

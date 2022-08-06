@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/29 18:51:15 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/06 20:23:24 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ std::pair<std::string, std::string> goodIndex(confData & conf, std::string url)
 	return std::make_pair("", "");
 }
 
-std::string readHTML(confData & conf, std::string file, std::pair<std::string, std::string> index)
+std::string readHTML(confData & conf, std::string file, std::pair<std::string, std::string> index) // Need to be change, actually disgusting
 {
 	int j;
     int autodex = 0;
@@ -203,7 +203,7 @@ int check_quote(std::string str)
 			close++;
 	}
 	if (close != open)
-		return printerr ("Error with configuration file");
+		return printerr ("Error with configuration file  ...");
 	return 1;
 }
 
@@ -213,7 +213,7 @@ int check_server_nbr(std::string str, std::string to_find)
 	int find = 0;
 	if (str.empty() || to_find.empty())
 		return 0;
-	while(69)
+	while(1)
 	{
 		count = str.find(to_find, count);
 		if (count >= strlen(str.c_str()) - 1 || count == -1)

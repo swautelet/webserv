@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/31 15:52:46 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/06 20:15:43 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ int confData::parsing(char *path)
 {
     std::ifstream fd;
     std::stringstream buff;
-    const char *www = "conf";
     std::string data;
     fd.open(path, std::ifstream::in);
     if (!fd)
@@ -137,14 +136,14 @@ void confData::print_info()
 
 void confData::scrapData()
 {
+    int j;
     static int i = 0;
     int index = -1;
-    int j = 0;
     char **tmp;
-    if(data_split[i])
+    if (data_split[i])
     {
+        j = 0;
         tmp = ft_split(data_split[i], '\n');
-        
         while (tmp[j] && !strnstr(tmp[j], "location ", strlen(tmp[j])))
         {
             if (strnstr(tmp[j], "listen ", strlen(tmp[j])))
@@ -157,7 +156,6 @@ void confData::scrapData()
                 setMethod(tmp[j]);
             j++;
         }
-        j = 0;
         nbr_loc = check_server_nbr(data_split[i], "location ");
         loc = new std::vector<location>(nbr_loc);
         for (int x = 0; x < nbr_loc; x++)
