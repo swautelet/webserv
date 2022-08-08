@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conf.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/06 19:21:14 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/08 02:30:57 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,11 @@ void Conf::print_info()
 std::string Conf::getAddress(int index)
 {
     return (*confList)[index].getAdress();
+}
+
+std::string Conf::getPort(int index)
+{
+    return (*confList)[index].getPort();
 }
 
 std::string Conf::getPath(int index)

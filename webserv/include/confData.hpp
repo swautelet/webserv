@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:45:59 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/05 17:04:29 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/08 01:48:05 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class confData
         std::string getServName();
         std::string getMethod();
         std::string getIndex();
+        std::string getErrorPage();
         location & getLocation(int index);
         void print_info();
         void scrapData();
@@ -39,6 +40,7 @@ class confData
         void setServName(std::string str);
         void setMethod(std::string str);
         void setIndex(std::string str);
+        void setErrorPage(std::string str);
     private:
         std::string address;
         std::string port;
@@ -46,6 +48,7 @@ class confData
         std::string serv_name;
         std::string method;
         std::string index;
+        std::string error_page;
         int autoindex;
         int nbr_loc;
         std::vector<location> *loc;

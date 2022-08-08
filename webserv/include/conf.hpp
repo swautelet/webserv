@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conf.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:12 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/05 17:04:39 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/08 02:30:41 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class Conf
         ~Conf();
         Conf(const Conf & other);
         std::string getAddress(int index);
+        std::string getPort(int index);
         std::string getPath(int index);
         std::string getServName(int index);
         std::string getMethod(int index);

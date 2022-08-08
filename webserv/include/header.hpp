@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/05 17:53:35 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/08 00:48:18 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,6 @@ void print_tab(char **tab);
 std::pair<std::string, std::string> goodIndex(confData & conf, std::string);
 std::pair<std::string, std::string> find_base_location(confData & conf, std::string url);
 void print(std::string str);
+char *strnstr(const char *s, const char *find, size_t slen);
 
 #endif

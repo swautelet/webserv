@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/06 20:15:43 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/08 02:07:24 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,11 @@ std::string confData::getIndex()
     return index;
 }
 
+std::string confData::getErrorPage()
+{
+    return error_page;
+}
+
 int confData::getLocationNbr()
 {
     return nbr_loc;
@@ -96,6 +101,12 @@ void confData::setMethod(std::string str)
     method.resize(method.size() - 1);
 }
 
+void confData::setErrorPage(std::string str)
+{
+    error_page = str.substr(strlen(" error_page "), str.size());
+    error_page.resize(error_page.size() - 1);
+}
+
 int confData::parsing(char *path)
 {
     std::ifstream fd;
@@ -126,6 +137,8 @@ void confData::print_info()
         std::cout << "Serv_name->       " << "[" << serv_name << "]" << std::endl;
     if (!method.empty())
         std::cout << "Method->          " << "[" << method << "]" << std::endl << std::endl;
+    if (!error_page.empty())
+        std::cout << "Error_page->      " << "[" << error_page << "]" << std::endl << std::endl;
     while(data_split[j] && ++x < check_server_nbr(data_split[j], "location "))
     {
         (*loc)[x].print_info();
@@ -150,6 +163,8 @@ void confData::scrapData()
                 setAddress(tmp[j]);
             else if (strnstr(tmp[j], "root ", strlen(tmp[j])))
                 setPath(tmp[j]);
+            else if (strnstr(tmp[j], "error_page ", strlen(tmp[j])))
+                setErrorPage(tmp[j]);
             else if (strnstr(tmp[j], "server_name ", strlen(tmp[j])))
                 setServName(tmp[j]);
             else if (strnstr(tmp[j], "methods ", strlen(tmp[j])))

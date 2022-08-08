@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/06 20:50:31 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/08 02:45:25 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,32 @@ void engine(int connection, int addrlen)
     }
 }
 
+void error_handling()
+{
+    int i = -1;
+    int j;
+    if (!conf.getNbrServer())
+        printerr("Error : No server configured ...");
+    while(++i < conf.getNbrServer())
+    {
+        j = -1;
+        if (conf.getAddress(i).empty() || conf.getPort(i).empty())
+            printerr("Error : No address or port configured ...");
+        else
+        {
+            std::string check_address = conf.getAddress(i);
+            std::string check_port = conf.getPort(i);
+            while (check_address[++j])
+                if (!isdigit(check_address[j]) && check_address[j] != '.')
+                    printerr("Error : Address must be numeric ...");
+            j = -1;
+            while(check_port[++j])
+                if (!isdigit(check_port[j]))
+                    printerr("Error : Port must be numeric ...");
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     struct timeval tv;
@@ -68,6 +94,7 @@ int main(int argc, char **argv)
     if (argc != 2)
         printerr("Usage : ./Webserv [conf file]");
     setup(argv, backlog);
+    error_handling();
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
     memcpy(&copyset, &fdset, sizeof(fdset));
     while(1)
