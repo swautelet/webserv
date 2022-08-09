@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/06 20:27:58 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/09 18:33:32 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void Response::getMethod(Request & req, confData & conf)
     status = setStatus();
     stat_msg = setStatMsg();
     body = readHTML(conf, req.getUrl(), goodIndex(conf, req.getUrl()));
+    //exit(0);
     content_lenght = itoa(body.size() + how_many(body));
     content_type = setContentType();
 }

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/09 17:42:51 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/09 18:34:42 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void engine(int connection, int addrlen)
             res.concat_response();      
             write(connection, res.getResponse().c_str(), res.getResponse().size());
             close(connection);
-            break;
+            exit(0);
         }
     }
 }
