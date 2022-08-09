@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/08 00:54:12 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/09 17:50:00 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ std::string readHTML(confData & conf, std::string file, std::pair<std::string, s
         {
             tmp = conf.getLocation(j).getPath() + "/" + conf.getLocation(j).getIndex();
             //std::cout << "TMP == " << tmp << std::endl;
-            tmp = tmp.substr(2, tmp.size());
+            tmp = tmp.substr(0, tmp.size());
             autodex = 1;
         }
     }
@@ -77,9 +77,9 @@ std::string readHTML(confData & conf, std::string file, std::pair<std::string, s
         j = -1;
         while(tmp.empty() && ++j < conf.getLocationNbr())
             if (conf.getLocation(j).getPath() == index.second)
-                tmp = index.second.substr(2, index.second.size()) + "/" + conf.getLocation(j).getIndex();
+                tmp = index.second.substr(0, index.second.size()) + "/" + conf.getLocation(j).getIndex();
         if(!index.second.empty())
-            tmp = index.second.substr(2, index.second.size()) + "/" + tmp;
+            tmp = index.second.substr(0, index.second.size()) + "/" + tmp;
     }
     std::cout << "TMP == " << tmp << std::endl;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/08 02:07:24 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/09 17:06:32 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,11 @@ std::string confData::getErrorPage()
     return error_page;
 }
 
+std::string confData::getBodySize()
+{
+    return body_size;
+}
+
 int confData::getLocationNbr()
 {
     return nbr_loc;
@@ -107,6 +112,19 @@ void confData::setErrorPage(std::string str)
     error_page.resize(error_page.size() - 1);
 }
 
+void confData::setIndex(std::string str)
+{
+    index = str.substr(strlen("  index "), str.size());
+    index.resize(index.size() - 1);
+}
+
+void confData::setBodySize(std::string str)
+{
+    body_size = str.substr(strlen("  client_max_body_size "), str.size());
+    body_size.resize(body_size.size() - 1);
+}
+
+
 int confData::parsing(char *path)
 {
     std::ifstream fd;
@@ -135,10 +153,14 @@ void confData::print_info()
         std::cout << "Path->            " << "[" << path << "]" << std::endl;
     if (!serv_name.empty())
         std::cout << "Serv_name->       " << "[" << serv_name << "]" << std::endl;
+    else
+        std::cout << "Serv_name->       " << "[..........]" << std::endl;
     if (!method.empty())
         std::cout << "Method->          " << "[" << method << "]" << std::endl << std::endl;
     if (!error_page.empty())
         std::cout << "Error_page->      " << "[" << error_page << "]" << std::endl << std::endl;
+    if (!body_size.empty())
+        std::cout << "Body->      " << "[" << body_size << "]" << std::endl << std::endl;
     while(data_split[j] && ++x < check_server_nbr(data_split[j], "location "))
     {
         (*loc)[x].print_info();
@@ -155,21 +177,30 @@ void confData::scrapData()
     char **tmp;
     if (data_split[i])
     {
-        j = 0;
+        j = -1;
         tmp = ft_split(data_split[i], '\n');
-        while (tmp[j] && !strnstr(tmp[j], "location ", strlen(tmp[j])))
+        while (tmp[++j] && !strnstr(tmp[j], "location ", strlen(tmp[j])))
         {
             if (strnstr(tmp[j], "listen ", strlen(tmp[j])))
                 setAddress(tmp[j]);
-            else if (strnstr(tmp[j], "root ", strlen(tmp[j])))
-                setPath(tmp[j]);
-            else if (strnstr(tmp[j], "error_page ", strlen(tmp[j])))
-                setErrorPage(tmp[j]);
             else if (strnstr(tmp[j], "server_name ", strlen(tmp[j])))
                 setServName(tmp[j]);
+            else if (strnstr(tmp[j], "root ", strlen(tmp[j])))
+                setPath(tmp[j]);
             else if (strnstr(tmp[j], "methods ", strlen(tmp[j])))
                 setMethod(tmp[j]);
-            j++;
+            else if (strnstr(tmp[j], "error_page ", strlen(tmp[j])))
+                setErrorPage(tmp[j]);
+            else if (strnstr(tmp[j], "index ", strlen(tmp[j])))
+                setIndex(tmp[j]);
+            else if (strnstr(tmp[j], "autoindex ", strlen(tmp[j])))
+                setIndex(tmp[j]);
+            else if (strnstr(tmp[j], "client_max_body_size ", strlen(tmp[j])))
+                setBodySize(tmp[j]);
+            else if (strnstr(tmp[j], "server ", strlen(tmp[j])))
+                continue;
+            else
+                printerr("Something is wrong with your config file ...");
         }
         nbr_loc = check_server_nbr(data_split[i], "location ");
         loc = new std::vector<location>(nbr_loc);

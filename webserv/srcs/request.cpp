@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/06 20:18:52 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/09 17:48:26 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void Request::getInfo(int connection)
         printerr("Error with recv ...");
     if (ret == 0)
         printerr("Error with recv : Connection close ...");
+    std::cout << "---------------------------\n" << buff << "\n-------------------------\n"; 
     req = ft_split(buff, '\n');
     req2 = ft_split(req[0], ' ');
     if (!strcmp(req2[0],"GET") || !strcmp(req2[0],"POST") || !strcmp(req2[0],"DELETE"))

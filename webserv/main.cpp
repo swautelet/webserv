@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/08 02:45:25 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/09 17:42:51 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,29 +32,6 @@ void setup(char **argv, int backlog)
     }
 }
 
-void engine(int connection, int addrlen)
-{
-    for(int i = 0; i <= conf.getNbrServer(); i++)
-    {
-        if (FD_ISSET((*sock)[i].getFd(), &fdset))
-        {
-            struct sockaddr client_address;
-            addrlen = sizeof((socklen_t *)&client_address);
-            std::cout << "Accept ... " << std::endl; 
-            if ((connection = accept((*sock)[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
-                printerr("cannot connect ...");
-            std::cout << "Accept done ..." << std::endl;
-            req.getInfo(connection);
-            //Autodex index(req.getUrl(), conf.getConflist(0));
-            res.find_method(req, conf.getConflist(i));
-            res.concat_response();      
-            write(connection, res.getResponse().c_str(), res.getResponse().size());
-            close(connection);
-            break;
-        }
-    }
-}
-
 void error_handling()
 {
     int i = -1;
@@ -77,6 +54,31 @@ void error_handling()
             while(check_port[++j])
                 if (!isdigit(check_port[j]))
                     printerr("Error : Port must be numeric ...");
+        }
+        if (conf.getServName(i).empty())
+            conf.getConflist(i).setServName("My Default Server");
+    }
+}
+
+void engine(int connection, int addrlen)
+{
+    for(int i = 0; i <= conf.getNbrServer(); i++)
+    {
+        if (FD_ISSET((*sock)[i].getFd(), &fdset))
+        {
+            struct sockaddr client_address;
+            addrlen = sizeof((socklen_t *)&client_address);
+            std::cout << "Accept ... " << std::endl; 
+            if ((connection = accept((*sock)[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
+                printerr("cannot connect ...");
+            std::cout << "Accept done ..." << std::endl;
+            req.getInfo(connection);
+            //Autodex index(req.getUrl(), conf.getConflist(0));
+            res.find_method(req, conf.getConflist(i));
+            res.concat_response();      
+            write(connection, res.getResponse().c_str(), res.getResponse().size());
+            close(connection);
+            break;
         }
     }
 }
@@ -105,5 +107,3 @@ int main(int argc, char **argv)
             engine(connection, addrlen);
     }
 }
-
-
