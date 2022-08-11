@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/11 16:16:49 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/11 16:55:38 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
 	std::stringstream buff;
     std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
     std::cout << conf.getPath() + "/" + req_file << std::endl;
+    exit(0);
 	//std::string tmp(file);
     // if (index.first.empty())
 	// 	printerr("Error with index in the conf file ... ");
@@ -97,7 +98,6 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
     // buff << fd.rdbuf();
     // //std::cout << buff.str() << std::endl;
     // return buff.str();
-    exit(0);
 }
 
 std::string itoa(int a)
