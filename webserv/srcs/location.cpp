@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/09 17:33:06 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/11 16:52:34 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,36 +69,61 @@ int location::getAutoIndex()
 
 void location::setLocation_name(std::string str)
 {
-    location_name = str.substr(strlen(" location "), str.size());
+    remove_spaces(str);
+    location_name = str.substr(strlen("location "), str.size());
 }
 
 void location::setPath(std::string str)
 {
-    path = str.substr(strlen("  root ") + 2, str.size());
+    remove_spaces(str);
+    path = str.substr(strlen("root "), str.size());
+    if (path.empty())
+        return;
     path.resize(path.size() - 1);
 }
 void location::setMethod(std::string str)
 {
-    method = str.substr(strlen("  methods "), str.size());
+    remove_spaces(str);
+    method = str.substr(strlen("methods "), str.size());
+    if (method.empty())
+        return;
     method.resize(method.size() - 1);
 }
 
 void location::setIndex(std::string str)
 {
-    index = str.substr(strlen("  index "), str.size());
+    remove_spaces(str);
+    index = str.substr(strlen("index "), str.size());
+    if (index.empty())
+        return;
     index.resize(index.size() - 1);
 }
 
 void location::setErrorPage(std::string str)
 {
-    error_page = str.substr(strlen("  error_page ") + 2, str.size());
+    remove_spaces(str);
+    error_page = str.substr(strlen("error_page "), str.size());
+    if (error_page.empty())
+        return;
     error_page.resize(error_page.size() - 1);
 }
 
 void location::setBodySize(std::string str)
 {
-    body_size = str.substr(str.rfind("client_max_body_size") + strlen("client_max_body_size "), str.size());
+    remove_spaces(str);
+    body_size = str.substr(strlen("client_max_body_size "), str.size());
+    if (body_size.empty())
+        return;
     body_size.resize(body_size.size() - 1);
+}
+
+void location::setAutoIndex(std::string str)
+{
+    remove_spaces(str);
+    if (!str.compare("autoindex on"))
+        autoindex = 1;
+    else if (!str.compare("autoindex off"))
+        autoindex = 0;
 }
 
 void location::print_info()
@@ -132,17 +157,17 @@ int location::scrapData(char *str, int i)
             i++;
             while (tmp[i] && !strnstr(tmp[i], "}", strlen(tmp[i])))
             {
-                if (strnstr(tmp[i], "root ", strlen(tmp[i])))
+                if (strnstr(tmp[i], "root", strlen(tmp[i])))
                     setPath(tmp[i]);
-                else if (strnstr(tmp[i], "methods ", strlen(tmp[i])))
+                else if (strnstr(tmp[i], "methods", strlen(tmp[i])))
                     setMethod(tmp[i]);
-                else if (strnstr(tmp[i], "error_page ", strlen(tmp[i])))
+                else if (strnstr(tmp[i], "error_page", strlen(tmp[i])))
                     setErrorPage(tmp[i]);
-                else if (strnstr(tmp[i], "autoindex on", strlen(tmp[i])))
-                    autoindex = 1;
-                else if (strnstr(tmp[i], "index ", strlen(tmp[i])))
+                else if (strnstr(tmp[i], "autoindex", strlen(tmp[i])))
+                    setAutoIndex(tmp[i]);
+                else if (strnstr(tmp[i], "index", strlen(tmp[i])))
                     setIndex(tmp[i]);
-                else if (strnstr(tmp[i], "client_max_body_size ", strlen(tmp[i])))
+                else if (strnstr(tmp[i], "client_max_body_size", strlen(tmp[i])))
                     setBodySize(tmp[i]);
                 else if (strnstr(tmp[i], "{", strlen(tmp[i])))
                     (void)NULL;

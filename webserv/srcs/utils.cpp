@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/09 18:34:33 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/11 16:16:49 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,54 +47,57 @@ std::pair<std::string, std::string> goodIndex(confData & conf, std::string url)
 	return std::make_pair("", "");
 }
 
-std::string readHTML(confData & conf, std::string file, std::pair<std::string, std::string> index) // Need to be change, actually disgusting
+std::string readHTML(confData & conf, std::string req_file, std::pair<std::string, std::string> index) // Need to be change, actually disgusting
 {
 	int j;
     int autodex = 0;
     struct stat info;
 	std::stringstream buff;
-	std::string tmp(file);
-    if (index.first.empty())
-		printerr("Error with index in the conf file ... ");
-    j = -1;
-    //std::cout << "FILE : " << file << std::endl;
-    while(++j < conf.getLocationNbr())
-    {
-		if (!conf.getLocation(j).getLocation_name().compare(tmp) && conf.getLocation(j).getAutoIndex())
-        {
-            tmp = conf.getLocation(j).getPath() + "/" + conf.getLocation(j).getIndex();
-            //std::cout << "TMP == " << tmp << std::endl;
-            tmp = tmp.substr(0, tmp.size());
-            autodex = 1;
-        }
-    }
-    if (!autodex)   
-    {   
-        std::cout << "!!!" << std::endl;
-        j = tmp.rfind('/');
-        tmp = file.substr(j + 1, tmp.size());
-        //std::cout << "index.second == "<< index.second << std::endl;
-        j = -1;
-        while(tmp.empty() && ++j < conf.getLocationNbr())
-            if (conf.getLocation(j).getPath() == index.second)
-                tmp = index.second.substr(0, index.second.size()) + "/" + conf.getLocation(j).getIndex();
-        if(!index.second.empty())
-            tmp = index.second.substr(0, index.second.size()) + "/" + tmp;
-    }
-    std::cout << "TMP == " << tmp << std::endl;
+    std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
+    std::cout << conf.getPath() + "/" + req_file << std::endl;
+	//std::string tmp(file);
+    // if (index.first.empty())
+	// 	printerr("Error with index in the conf file ... ");
+    // j = -1;
+    // //std::cout << "FILE : " << file << std::endl;
+    // while(++j < conf.getLocationNbr())
+    // {
+	// 	if (!conf.getLocation(j).getLocation_name().compare(tmp) && conf.getLocation(j).getAutoIndex())
+    //     {
+    //         tmp = conf.getLocation(j).getPath() + "/" + conf.getLocation(j).getIndex();
+    //         //std::cout << "TMP == " << tmp << std::endl;
+    //         tmp = tmp.substr(0, tmp.size());
+    //         autodex = 1;
+    //     }
+    // }
+    // if (!autodex)   
+    // {   
+    //     std::cout << "!!!" << std::endl;
+    //     j = tmp.rfind('/');
+    //     tmp = file.substr(j + 1, tmp.size());
+    //     //std::cout << "index.second == "<< index.second << std::endl;
+    //     j = -1;
+    //     while(tmp.empty() && ++j < conf.getLocationNbr())
+    //         if (conf.getLocation(j).getPath() == index.second)
+    //             tmp = index.second.substr(0, index.second.size()) + "/" + conf.getLocation(j).getIndex();
+    //     if(!index.second.empty())
+    //         tmp = index.second.substr(0, index.second.size()) + "/" + tmp;
+    // }
+    // std::cout << "TMP == " << tmp << std::endl;
 
-    if (stat(tmp.c_str(), &info) != 0)
-        std::cout << "AH\n";
-    if (info.st_mode & S_IFDIR)
-        tmp = "www/error/403.html";
-	std::ifstream fd (tmp);
-    if (!fd.is_open())
-        printerr("Error with file opening ... (ReadHTML)");
-	if (!fd.good())
-		printerr("File not found ... ");
-    buff << fd.rdbuf();
-    //std::cout << buff.str() << std::endl;
-    return buff.str();
+    // if (stat(tmp.c_str(), &info) != 0)
+    //     std::cout << "AH\n";
+    // if (info.st_mode & S_IFDIR)
+    //     tmp = "www/error/403.html";
+	// std::ifstream fd (tmp);
+    // if (!fd.is_open())
+    //     printerr("Error with file opening ... (ReadHTML)");
+	// if (!fd.good())
+	// 	printerr("File not found ... ");
+    // buff << fd.rdbuf();
+    // //std::cout << buff.str() << std::endl;
+    // return buff.str();
+    exit(0);
 }
 
 std::string itoa(int a)
@@ -341,4 +344,19 @@ char *strnstr(const char *s, const char *find, size_t slen)
 		s--;
 	}
 	return ((char *)s);
+}
+
+void remove_spaces(std::string &str)
+{
+    int i = 0;
+    int j = str.size() - 1;
+    while (str[i])
+    {
+        while(isspace(str[i]))
+            i++;
+        while(isspace(str[j]))
+            j--;
+        str = str.substr(i, j);
+        break;
+    }
 }

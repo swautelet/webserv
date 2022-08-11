@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/09 17:06:32 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/11 16:40:53 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,12 @@ location & confData::getLocation(int index)
 void confData::setAddress(std::string str)
 {
     char **tmp;
-    address = str.substr(strlen(" listen "), str.size());
+    remove_spaces(str);
+    address = str.substr(strlen("listen "), str.size());
+    if (address.empty() || address.find(":") == std::string::npos)
+        return;
     address.resize(address.size() - 1);
-    tmp = ft_split((char*)address.c_str(), ':');
+    tmp = ft_split((char*)address.c_str(), ':');    
     address = tmp[0];
     port = tmp[1];
     free(tmp);
@@ -91,36 +94,54 @@ void confData::setAddress(std::string str)
 
 void confData::setPath(std::string str)
 {
-    path = str.substr(strlen(" root ") + 2, str.size());
+    remove_spaces(str);
+    path = str.substr(strlen("root "), str.size());
+    if (path.empty())
+        return;
     path.resize(path.size() - 1);
 }
 
 void confData::setServName(std::string str)
 {
-    serv_name = str.substr(strlen(" server_name "), str.size());
+    remove_spaces(str);
+    serv_name = str.substr(strlen("server_name "), str.size());
+    if (serv_name.empty())
+        return;
     serv_name.resize(serv_name.size() - 1);
 }
 void confData::setMethod(std::string str)
 {
-    method = str.substr(strlen(" methods "), str.size());
+    remove_spaces(str);
+    method = str.substr(strlen("methods "), str.size());
+    if (method.empty())
+        return;
     method.resize(method.size() - 1);
 }
 
 void confData::setErrorPage(std::string str)
 {
-    error_page = str.substr(strlen(" error_page "), str.size());
+    remove_spaces(str);
+    error_page = str.substr(strlen("error_page "), str.size());
+    if (error_page.empty())
+        return;
     error_page.resize(error_page.size() - 1);
 }
 
 void confData::setIndex(std::string str)
 {
-    index = str.substr(strlen("  index "), str.size());
+    remove_spaces(str);
+    index = str.substr(strlen("index "), str.size());
+    if (index.empty())
+        return;
     index.resize(index.size() - 1);
 }
 
 void confData::setBodySize(std::string str)
 {
-    body_size = str.substr(strlen("  client_max_body_size "), str.size());
+    remove_spaces(str);
+    body_size = str.substr(strlen("client_max_body_size "), str.size());
+    if (body_size.empty())
+        return;
     body_size.resize(body_size.size() - 1);
 }
 
@@ -156,11 +177,11 @@ void confData::print_info()
     else
         std::cout << "Serv_name->       " << "[..........]" << std::endl;
     if (!method.empty())
-        std::cout << "Method->          " << "[" << method << "]" << std::endl << std::endl;
+        std::cout << "Method->          " << "[" << method << "]" << std::endl;
     if (!error_page.empty())
-        std::cout << "Error_page->      " << "[" << error_page << "]" << std::endl << std::endl;
+        std::cout << "Error_page->      " << "[" << error_page << "]" << std::endl;
     if (!body_size.empty())
-        std::cout << "Body->      " << "[" << body_size << "]" << std::endl << std::endl;
+        std::cout << "Body->            " << "[" << body_size << "]" << std::endl;
     while(data_split[j] && ++x < check_server_nbr(data_split[j], "location "))
     {
         (*loc)[x].print_info();
@@ -181,23 +202,23 @@ void confData::scrapData()
         tmp = ft_split(data_split[i], '\n');
         while (tmp[++j] && !strnstr(tmp[j], "location ", strlen(tmp[j])))
         {
-            if (strnstr(tmp[j], "listen ", strlen(tmp[j])))
+            if (strnstr(tmp[j], "listen", strlen(tmp[j])))
                 setAddress(tmp[j]);
-            else if (strnstr(tmp[j], "server_name ", strlen(tmp[j])))
+            else if (strnstr(tmp[j], "server_name", strlen(tmp[j])))
                 setServName(tmp[j]);
-            else if (strnstr(tmp[j], "root ", strlen(tmp[j])))
+            else if (strnstr(tmp[j], "root", strlen(tmp[j])))
                 setPath(tmp[j]);
-            else if (strnstr(tmp[j], "methods ", strlen(tmp[j])))
+            else if (strnstr(tmp[j], "methods", strlen(tmp[j])))
                 setMethod(tmp[j]);
-            else if (strnstr(tmp[j], "error_page ", strlen(tmp[j])))
+            else if (strnstr(tmp[j], "error_page", strlen(tmp[j])))
                 setErrorPage(tmp[j]);
-            else if (strnstr(tmp[j], "index ", strlen(tmp[j])))
+            else if (strnstr(tmp[j], "index", strlen(tmp[j])))
                 setIndex(tmp[j]);
-            else if (strnstr(tmp[j], "autoindex ", strlen(tmp[j])))
+            else if (strnstr(tmp[j], "autoindex", strlen(tmp[j])))
                 setIndex(tmp[j]);
-            else if (strnstr(tmp[j], "client_max_body_size ", strlen(tmp[j])))
+            else if (strnstr(tmp[j], "client_max_body_size", strlen(tmp[j])))
                 setBodySize(tmp[j]);
-            else if (strnstr(tmp[j], "server ", strlen(tmp[j])))
+            else if (strnstr(tmp[j], "server", strlen(tmp[j])))
                 continue;
             else
                 printerr("Something is wrong with your config file ...");
