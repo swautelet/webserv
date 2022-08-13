@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/13 18:35:03 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 19:02:29 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 
 #include <vector>
 
-#define PATH_ERROR "www/error/404.html"
+#define PATH_ERROR "www/error/403.html"
 
 int printerr(const char *str);
 char **ft_split(char *str, char charset);
