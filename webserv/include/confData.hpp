@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:45:59 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/09 16:29:15 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 21:25:50 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ class confData
         confData(const confData & other);
         int parsing(char *path);
         int getLocationNbr();
+        int getAutoIndex();
+        int LocationFinder(std::string str);
         std::string getAdress();
         std::string getPort();
         std::string getPath();
@@ -34,6 +36,7 @@ class confData
         std::string getErrorPage();
         std::string getBodySize();
         location & getLocation(int index);
+        location & getGoodLocation(std::string str);
         void print_info();
         void scrapData();
         void setAddress(std::string str);
@@ -43,6 +46,7 @@ class confData
         void setIndex(std::string str);
         void setErrorPage(std::string str);
         void setBodySize(std::string str);
+        void setAutoIndex(std::string str);
     private:
         std::string address;
         std::string port;

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/13 18:58:13 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 21:53:41 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,9 +123,9 @@ void location::setBodySize(std::string str)
 void location::setAutoIndex(std::string str)
 {
     remove_spaces(str);
-    if (!str.compare("autoindex on"))
+    if (!str.compare("autoindex on;"))
         autoindex = 1;
-    else if (!str.compare("autoindex off"))
+    else if (!str.compare("autoindex off;"))
         autoindex = 0;
 }
 

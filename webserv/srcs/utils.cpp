@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/13 19:11:02 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 22:03:55 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,49 +58,94 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
     std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
     std::cout << conf.getPath() + "/" + req_file << std::endl;
     
-    if (!req_file.compare("/"))
-        printerr("NO URL SEARCHED...");
-    if (!req_file.empty() && req_file[0] == '/')
-        req_file = req_file.substr(1, req_file.size());
-    if (!index.first.empty() && index.first[0] == '/')
-        index.first = index.first.substr(1, index.first.size());
-    std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
-    if (BaseLocationExist(conf).empty())
+    if (!req_file.compare("/") || req_file.rfind("/") == req_file.size() - 1)
     {
-        fullpath = conf.getPath() + "/" + req_file;
-    }
-    else
-    {
-        for (int i = 0; i < conf.getLocationNbr(); i++)
+        std::cout << "This is directory listing ... " << std::endl;
+        std::cout << "req_file = " << req_file << std::endl;
+        if (!req_file.compare("/"))
         {
-            if (!conf.getLocation(i).getLocation_name().compare("/"))
+            if (conf.LocationFinder("/"))
             {
-                error_path = conf.getLocation(i).getErrorPage();
-                if (!conf.getLocation(i).getPath().compare("./"))
-                    fullpath = req_file;
-                else
-                    fullpath = conf.getLocation(i).getPath() + "/" +req_file;
-                break;
+                if (conf.getGoodLocation("/").getIndex().empty() && !conf.getGoodLocation("/").getAutoIndex())
+                    fullpath = PATH_ERROR;    
+                fullpath = conf.getGoodLocation("/").getIndex();
+            }
+            else
+                if (conf.getIndex().empty() && !conf.getAutoIndex())
+                    fullpath = PATH_ERROR;
+        }
+        else
+        {
+            if (stat(req_file.c_str(), &info) != -1)
+            if (info.st_mode & S_IFDIR)
+            {
+                std::cout << "CECI EST UN FICHIER\n";
             }
         }
     }
-    std::cout << "full_path = "  << fullpath << std::endl;
-
-    if (stat(fullpath.c_str(), &info) != 0)
-        std::cout << "AH\n";
+    else
+    { 
+        if (!req_file.empty() && req_file[0] == '/')
+            req_file = req_file.substr(1, req_file.size());
+        if (!index.first.empty() && index.first[0] == '/')
+            index.first = index.first.substr(1, index.first.size());
+        std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
+        if (BaseLocationExist(conf).empty())
+        {
+            fullpath = conf.getPath() + "/" + req_file;
+        }
+        else
+        {
+            for (int i = 0; i < conf.getLocationNbr(); i++)
+            {
+                if (!conf.getLocation(i).getLocation_name().compare("/"))
+                {
+                    error_path = conf.getLocation(i).getErrorPage();
+                    if (!conf.getLocation(i).getPath().compare("./"))
+                        fullpath = req_file;
+                    else
+                        fullpath = conf.getLocation(i).getPath() + "/" +req_file;
+                    break;
+                }
+            }
+        }
+    }
+    if (fullpath.empty())
+        fullpath = req_file;
+    if (stat(fullpath.c_str(), &info) == -1)
+    {
+        if (errno == ENOENT)
+            fullpath = PATH_ERROR;
+        else
+            printerr("Error: Stat failed");
+    }
     if (info.st_mode & S_IFDIR)
     {
+        if (conf.LocationFinder(index.first))
+        {
+            std::cout << "YES" << std::endl;
+            if (conf.getGoodLocation(index.first).getIndex().empty())
+            {
+                if (conf.getGoodLocation(index.first).getAutoIndex())
+                    printerr("No index BUT autoindex is on, SO AUTOINDEX ON LOCATION");
+                else
+                    printerr("No index AND autoindex is off");
+            }      
+        }
+        else
+            printerr("AUTOINDEX ON DEFAULT");
         if (error_path.empty())
-            fullpath = error_path;
+            fullpath = PATH_ERROR;
     }
-    else
-        fullpath = PATH_ERROR;
-    std::cout << "full_path = "  << fullpath << std::endl;
-	std::ifstream fd (fullpath);
+    std::ifstream fd (fullpath);
     if (!fd.is_open())
+    {
+        if (!fd.good())
+            printerr("File not found ... ");
         printerr("Error with file opening ... (ReadHTML)");
-	if (!fd.good())
-		printerr("File not found ... ");
+    }
+    if (!fd.good())
+            printerr("File not found ... ");
     buff << fd.rdbuf();
     return buff.str();
 }

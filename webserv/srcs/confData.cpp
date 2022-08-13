@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/13 19:11:20 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 21:29:41 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ char **data_split;
 
 confData::confData()
 {
-    
+    autoindex = 0;
+    nbr_loc = 0;
 }
 
 confData::~confData()
@@ -73,9 +74,30 @@ int confData::getLocationNbr()
     return nbr_loc;
 }
 
+int confData::getAutoIndex()
+{
+    return autoindex;
+}
+
 location & confData::getLocation(int index)
 {
     return (*loc)[index];
+}
+
+location & confData::getGoodLocation(std::string str)
+{
+    for (int i = 0; i < nbr_loc; i++)
+        if (!(*loc)[i].getLocation_name().compare(str))
+            return (*loc)[i];
+    return (*loc)[0];
+}
+
+int confData::LocationFinder(std::string str)
+{
+    for (int i = 0; i < nbr_loc; i++)
+        if (!(*loc)[i].getLocation_name().compare(str))
+            return 1;
+    return 0;
 }
 
 void confData::setAddress(std::string str)
@@ -139,6 +161,15 @@ void confData::setIndex(std::string str)
     index.resize(index.size() - 1);
 }
 
+void confData::setAutoIndex(std::string str)
+{
+    remove_spaces(str);
+    if (!str.compare("autoindex on"))
+        autoindex = 1;
+    else if (!str.compare("autoindex off"))
+        autoindex = 0;
+}
+
 void confData::setBodySize(std::string str)
 {
     remove_spaces(str);
@@ -185,6 +216,7 @@ void confData::print_info()
         std::cout << "Error_page->      " << "[" << error_page << "]" << std::endl;
     if (!body_size.empty())
         std::cout << "Body->            " << "[" << body_size << "]" << std::endl;
+    std::cout << "Autoindex->       " << "[" << autoindex << "]" << std::endl;
     while(data_split[j] && ++x < check_server_nbr(data_split[j], "location "))
     {
         (*loc)[x].print_info();
@@ -218,7 +250,7 @@ void confData::scrapData()
             else if (strnstr(tmp[j], "index", strlen(tmp[j])))
                 setIndex(tmp[j]);
             else if (strnstr(tmp[j], "autoindex", strlen(tmp[j])))
-                setIndex(tmp[j]);
+                setAutoIndex(tmp[j]);
             else if (strnstr(tmp[j], "client_max_body_size", strlen(tmp[j])))
                 setBodySize(tmp[j]);
             else if (strnstr(tmp[j], "server", strlen(tmp[j])))
@@ -226,6 +258,8 @@ void confData::scrapData()
             else
                 printerr("Something is wrong with your config file ...");
         }
+        if (path.empty())
+            path = "./";
         nbr_loc = check_server_nbr(data_split[i], "location ");
         loc = new std::vector<location>(nbr_loc);
         for (int x = 0; x < nbr_loc; x++)
