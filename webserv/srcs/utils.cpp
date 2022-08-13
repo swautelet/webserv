@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/13 22:03:55 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 23:16:54 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
 	std::stringstream buff;
     std::string error_path;
     std::string fullpath;
+    std::ifstream fd;
+    std::string tmp;
     std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
     std::cout << conf.getPath() + "/" + req_file << std::endl;
     
@@ -73,14 +75,6 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
             else
                 if (conf.getIndex().empty() && !conf.getAutoIndex())
                     fullpath = PATH_ERROR;
-        }
-        else
-        {
-            if (stat(req_file.c_str(), &info) != -1)
-            if (info.st_mode & S_IFDIR)
-            {
-                std::cout << "CECI EST UN FICHIER\n";
-            }
         }
     }
     else
@@ -110,42 +104,25 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
             }
         }
     }
-    if (fullpath.empty())
-        fullpath = req_file;
-    if (stat(fullpath.c_str(), &info) == -1)
+    std::cout << "req_file = " << req_file << " & " << "fullpath = " << fullpath << std::endl;
+    if (req_file.rfind("/") != std::string::npos)
     {
-        if (errno == ENOENT)
-            fullpath = PATH_ERROR;
-        else
-            printerr("Error: Stat failed");
+        std::cout << "index or autoindex needed" << std::endl;
     }
-    if (info.st_mode & S_IFDIR)
+    if (conf.LocationFinder(req_file))
     {
-        if (conf.LocationFinder(index.first))
-        {
-            std::cout << "YES" << std::endl;
-            if (conf.getGoodLocation(index.first).getIndex().empty())
-            {
-                if (conf.getGoodLocation(index.first).getAutoIndex())
-                    printerr("No index BUT autoindex is on, SO AUTOINDEX ON LOCATION");
-                else
-                    printerr("No index AND autoindex is off");
-            }      
-        }
-        else
-            printerr("AUTOINDEX ON DEFAULT");
-        if (error_path.empty())
-            fullpath = PATH_ERROR;
+        std::cout << "Location found compared to req_file" << std::endl;
+        
     }
-    std::ifstream fd (fullpath);
+    fd.open(fullpath);
     if (!fd.is_open())
     {
         if (!fd.good())
-            printerr("File not found ... ");
+            printerr("File not found 2... ");
         printerr("Error with file opening ... (ReadHTML)");
     }
     if (!fd.good())
-            printerr("File not found ... ");
+            printerr("File not found 3... ");
     buff << fd.rdbuf();
     return buff.str();
 }
