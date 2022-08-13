@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/13 19:01:55 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 19:11:02 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,23 +53,29 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
     int autodex = 0;
     struct stat info;
 	std::stringstream buff;
+    std::string error_path;
     std::string fullpath;
     std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
     std::cout << conf.getPath() + "/" + req_file << std::endl;
     
+    if (!req_file.compare("/"))
+        printerr("NO URL SEARCHED...");
     if (!req_file.empty() && req_file[0] == '/')
         req_file = req_file.substr(1, req_file.size());
     if (!index.first.empty() && index.first[0] == '/')
         index.first = index.first.substr(1, index.first.size());
     std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
     if (BaseLocationExist(conf).empty())
+    {
         fullpath = conf.getPath() + "/" + req_file;
+    }
     else
     {
         for (int i = 0; i < conf.getLocationNbr(); i++)
         {
             if (!conf.getLocation(i).getLocation_name().compare("/"))
             {
+                error_path = conf.getLocation(i).getErrorPage();
                 if (!conf.getLocation(i).getPath().compare("./"))
                     fullpath = req_file;
                 else
@@ -83,6 +89,11 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
     if (stat(fullpath.c_str(), &info) != 0)
         std::cout << "AH\n";
     if (info.st_mode & S_IFDIR)
+    {
+        if (error_path.empty())
+            fullpath = error_path;
+    }
+    else
         fullpath = PATH_ERROR;
     std::cout << "full_path = "  << fullpath << std::endl;
 	std::ifstream fd (fullpath);
