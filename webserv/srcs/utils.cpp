@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/11 16:55:38 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 18:59:05 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,32 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
     int autodex = 0;
     struct stat info;
 	std::stringstream buff;
+    std::string fullpath;
     std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
     std::cout << conf.getPath() + "/" + req_file << std::endl;
-    exit(0);
+    
+    if (!req_file.empty() && req_file[0] == '/')
+        req_file = req_file.substr(1, req_file.size());
+    if (!index.first.empty() && index.first[0] == '/')
+        index.first = index.first.substr(1, index.first.size());
+    std::cout << req_file << " & " << index.first << " & " << index.second << std::endl;
+    if (BaseLocationExist(conf).empty())
+        fullpath = conf.getPath() + "/" + req_file;
+    else
+    {
+        for (int i = 0; i < conf.getLocationNbr(); i++)
+        {
+            if (!conf.getLocation(i).getLocation_name().compare("/"))
+            {
+                if (!conf.getLocation(i).getPath().compare("./"))
+                    fullpath = req_file;
+                else
+                    fullpath = conf.getLocation(i).getPath() + "/" +req_file;
+                break;
+            }
+        }
+    }
+    std::cout << "full_path = "  << fullpath << std::endl;
 	//std::string tmp(file);
     // if (index.first.empty())
 	// 	printerr("Error with index in the conf file ... ");
@@ -90,14 +113,13 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
     //     std::cout << "AH\n";
     // if (info.st_mode & S_IFDIR)
     //     tmp = "www/error/403.html";
-	// std::ifstream fd (tmp);
-    // if (!fd.is_open())
-    //     printerr("Error with file opening ... (ReadHTML)");
-	// if (!fd.good())
-	// 	printerr("File not found ... ");
-    // buff << fd.rdbuf();
-    // //std::cout << buff.str() << std::endl;
-    // return buff.str();
+	std::ifstream fd (fullpath);
+    if (!fd.is_open())
+        printerr("Error with file opening ... (ReadHTML)");
+	if (!fd.good())
+		printerr("File not found ... ");
+    buff << fd.rdbuf();
+    return buff.str();
 }
 
 std::string itoa(int a)
@@ -359,4 +381,16 @@ void remove_spaces(std::string &str)
         str = str.substr(i, j);
         break;
     }
+}
+
+std::string BaseLocationExist(confData conf)
+{
+    int i = 0;
+    while (i < conf.getLocationNbr())
+    {
+        if (!conf.getLocation(i).getLocation_name().compare("/"))
+            return conf.getLocation(i).getPath();
+        i++;
+    }
+    return "";
 }

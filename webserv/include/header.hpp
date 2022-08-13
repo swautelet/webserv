@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/11 16:14:47 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 18:35:03 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,6 @@ std::pair<std::string, std::string> find_base_location(confData & conf, std::str
 void print(std::string str);
 char *strnstr(const char *s, const char *find, size_t slen);
 void remove_spaces(std::string &str);
+std::string BaseLocationExist(confData conf);
 
 #endif

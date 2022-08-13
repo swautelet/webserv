@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/11 16:52:34 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 18:58:13 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,10 @@ void location::setPath(std::string str)
     remove_spaces(str);
     path = str.substr(strlen("root "), str.size());
     if (path.empty())
+    {
+        path = "./";
         return;
+    }
     path.resize(path.size() - 1);
 }
 void location::setMethod(std::string str)
@@ -105,7 +108,7 @@ void location::setErrorPage(std::string str)
     error_page = str.substr(strlen("error_page "), str.size());
     if (error_page.empty())
         return;
-    error_page.resize(error_page.size() - 1);
+    error_page.resize(error_page.size() - 1); 
 }
 
 void location::setBodySize(std::string str)
@@ -177,6 +180,8 @@ int location::scrapData(char *str, int i)
             }
             return i;
         }
+        if (path.empty())
+            path = "./";
     }
     return i;
 }

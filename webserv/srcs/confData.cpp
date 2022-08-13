@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/11 17:07:10 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/13 18:57:55 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,11 +97,16 @@ void confData::setPath(std::string str)
     remove_spaces(str);
     path = str.substr(strlen("root "), str.size());
     if (path.empty())
+    {
+        path = "./";
         return;
-    path.resize(path.size() - 1);
-    int x = path.find("./", 0);
-    if (strnstr(path.c_str(), "./", path.size()))
-        path = path.substr(2, path.size());    
+    }
+    //path.resize(path.size() - 1);
+    if (path.empty())
+    {
+        path = "./";
+        return;
+    }
 }
 
 void confData::setServName(std::string str)
@@ -128,9 +133,6 @@ void confData::setErrorPage(std::string str)
     if (error_page.empty())
         return;
     error_page.resize(error_page.size() - 1);
-    int x = error_page.find("./", 0);
-    if (strnstr(error_page.c_str(), "./", error_page.size()))
-        error_page = error_page.substr(2, error_page.size());
 }
 
 void confData::setIndex(std::string str)
