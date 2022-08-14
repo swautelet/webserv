@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/13 21:29:41 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/14 20:11:39 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,9 +164,9 @@ void confData::setIndex(std::string str)
 void confData::setAutoIndex(std::string str)
 {
     remove_spaces(str);
-    if (!str.compare("autoindex on"))
+    if (!str.compare("autoindex on;"))
         autoindex = 1;
-    else if (!str.compare("autoindex off"))
+    else if (!str.compare("autoindex off;"))
         autoindex = 0;
 }
 
@@ -210,6 +210,8 @@ void confData::print_info()
         std::cout << "Serv_name->       " << "[" << serv_name << "]" << std::endl;
     else
         std::cout << "Serv_name->       " << "[..........]" << std::endl;
+    if (!index.empty())
+        std::cout << "Index->       " << "[" << index << "]" << std::endl;
     if (!method.empty())
         std::cout << "Method->          " << "[" << method << "]" << std::endl;
     if (!error_page.empty())
@@ -247,10 +249,10 @@ void confData::scrapData()
                 setMethod(tmp[j]);
             else if (strnstr(tmp[j], "error_page", strlen(tmp[j])))
                 setErrorPage(tmp[j]);
-            else if (strnstr(tmp[j], "index", strlen(tmp[j])))
-                setIndex(tmp[j]);
             else if (strnstr(tmp[j], "autoindex", strlen(tmp[j])))
                 setAutoIndex(tmp[j]);
+            else if (strnstr(tmp[j], "index", strlen(tmp[j])))
+                setIndex(tmp[j]);
             else if (strnstr(tmp[j], "client_max_body_size", strlen(tmp[j])))
                 setBodySize(tmp[j]);
             else if (strnstr(tmp[j], "server", strlen(tmp[j])))
