@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/14 21:21:14 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/17 04:38:49 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,25 @@ std::pair<std::string, std::string> goodIndex(confData & conf, std::string url)
 	return std::make_pair("", "");
 }
 
+std::string location_exe(confData & conf, std::string req_file)
+{
+	if (req_file.back() == '/')
+		req_file.pop_back();
+	while (!req_file.empty())
+	{
+		std::cout << "Actual req_file : " << req_file << std::endl;
+		if (conf.LocationFinder(req_file))
+			return conf.getGoodLocation(req_file).getLocation_name();
+		req_file = req_file.substr(0, req_file.rfind('/'));
+		if (!req_file.rfind('/') && conf.LocationFinder("/"))
+			return "/";
+		else
+			break;
+	}
+	return "";
+}
+
+
 std::string readHTML(confData & conf, std::string req_file, std::pair<std::string, std::string> index) // Need to be change, actually disgusting
 {
 	int j;
@@ -59,43 +78,26 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
     DIR *dir;
     struct dirent *ent;
     std::string fullpath;
+	std::string url;
     std::string tmp_path;
     std::string loc;
     
     
+
+	//Find if the url is in the location list
+	loc = location_exe(conf, req_file);
+	if (!loc.empty())
+		std::cout << "Final location is " << loc <<std::endl;
+	else
+		std::cout << "No similar location found : base location will be used" <<std::endl;
+	if (!conf.getGoodLocation(loc).getPath().compare("./"))
+		url = "." + req_file;
+	else
+		url = conf.getGoodLocation(loc).getPath() + req_file;
     std::cout << "req_file = " << req_file << std::endl;
     std::cout << "fullpath = " << fullpath << std::endl;
-
-    loc = req_file;
-    if (loc.size() > 1)
-    {
-        if (loc.back() == '/')
-            loc.pop_back(); 
-        if (isalpha(loc.back()))
-            loc = loc.substr(0, loc.rfind('/'));
-    }
-    std::cout << "loc = " << loc << std::endl;
-    if (conf.LocationFinder(loc))
-        loc = conf.getGoodLocation(req_file).getLocation_name();
-    else
-        loc = "/";
-    std::cout << "loc = " <<loc << std::endl;
-    if (req_file.compare("/"))
-    {
-        if (req_file.rfind("/"))
-            req_file.erase(req_file.rfind("/"));
-    }
-    if (conf.LocationFinder(loc))
-    {
-        std::cout << "!" << std::endl;
-        tmp = conf.getGoodLocation(loc).getPath();
-        tmp_path = tmp + req_file;
-    }
-    else
-    {
-        std::cout << "!" << std::endl;
-        tmp_path = conf.getPath() + req_file;
-    }
+	std::cout << "url = " << url << std::endl;
+	// url = url.substr(2, url.size());
     if ((dir = opendir(tmp_path.c_str())) != NULL)
     {
         std::cout << "-------------------------- "<< std::endl;
@@ -134,6 +136,7 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
         else
             fullpath = conf.getGoodLocation(loc).getPath();
     }
+	exit(0);
     std::cout << "tmp path = " << tmp_path << std::endl;
         std::cout << "req_file = " << req_file << std::endl;
         std::cout << "fullpath = " << fullpath << std::endl;
