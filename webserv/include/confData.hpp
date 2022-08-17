@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:45:59 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/13 21:25:50 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/17 15:33:47 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class confData
         std::string getPath();
         std::string getServName();
         std::string getMethod();
-        std::string getIndex();
+        std::vector<std::string> getIndex();
         std::string getErrorPage();
         std::string getBodySize();
         location & getLocation(int index);
@@ -53,7 +53,7 @@ class confData
         std::string path;
         std::string serv_name;
         std::string method;
-        std::string index;
+        std::vector<std::string> index;
         std::string error_page;
         std::string body_size;
         int autoindex;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:39 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/13 20:45:29 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/17 15:53:51 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class location
         ~location();
         std::string getLocation_name();
         std::string getMethod();
-        std::string getIndex();
+        std::vector<std::string> getIndex();
         std::string getPath();
         std::string getErrorPage();
         std::string getBodySize();
@@ -39,7 +39,7 @@ class location
         std::string path;
         std::string method;
         std::string error_page;
-        std::string index;
+        std::vector<std::string> index;
         std::string location_name;
         std::string body_size;
         int autoindex;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   autoindex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/07/31 16:02:34 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/17 17:05:48 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ Autodex::Autodex(std::string path, confData & conf)
             std::cout << "---- " << conf.getLocation(i).getLocation_name() << std::endl;
             std::cout << "---- " << conf.getLocation(i).getAutoIndex() << std::endl;
             autodex = conf.getLocation(i).getAutoIndex();
-            full_path = path + "/" + conf.getLocation(i).getIndex();
+            full_path = path + "/" + conf.getLocation(i).getIndex()[0];
             if (!conf.getPath().compare("./www/index"))
                 path = conf.getPath();
             else
@@ -82,11 +82,13 @@ Autodex::Autodex(std::string path, confData & conf)
         }
         tmp += "</ul>";
     }
-    out << tmp;
-    exit(0);
+    index_str = tmp;
 }
 
-
+std::string Autodex::getIndex()
+{
+    return index_str;
+}
 
 /*
 <p>You can reach Michael at:</p>

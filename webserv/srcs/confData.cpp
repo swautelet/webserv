@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/14 20:11:39 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/17 16:16:11 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ std::string confData::getMethod()
     return method;
 }
 
-std::string confData::getIndex()
+std::vector<std::string> confData::getIndex()
 {
     return index;
 }
@@ -154,9 +154,19 @@ void confData::setErrorPage(std::string str)
 
 void confData::setIndex(std::string str)
 {
+    std::string tmp;
     remove_spaces(str);
-    index = str.substr(strlen("index "), str.size());
-    if (index.empty())
+    str = str.substr(str.find(" "), str.size());
+    while(str.find(" ") != std::string::npos)
+    {
+        tmp = str.substr(0, str.find(" "));
+        index.push_back(tmp);
+        if (str.empty())
+            return;
+        str = str.substr(str.find(" ") + 1, str.size());
+    }
+    index.push_back(str);
+    if (index.back().empty())
         return;
     index.resize(index.size() - 1);
 }
@@ -189,6 +199,7 @@ int confData::parsing(char *path)
     if (!fd)
         printerr("Error with file opening ...");
     buff << fd.rdbuf();
+    
     data = buff.str();
     check_quote(data);
     data_split = server_split(data, "server ");
@@ -198,6 +209,7 @@ int confData::parsing(char *path)
 void confData::print_info()
 {
     int x = -1;
+    int i = -1;
     int j = 0;
     std::cout << "[Default]" << std::endl;
     if (!address.empty())
@@ -211,7 +223,12 @@ void confData::print_info()
     else
         std::cout << "Serv_name->       " << "[..........]" << std::endl;
     if (!index.empty())
-        std::cout << "Index->       " << "[" << index << "]" << std::endl;
+    {
+        std::cout << "Index->           ";
+        while (++i < index.size())
+            std::cout << "[" << index[i] << "]";
+        std::cout << std::endl;
+    }
     if (!method.empty())
         std::cout << "Method->          " << "[" << method << "]" << std::endl;
     if (!error_page.empty())
@@ -239,7 +256,13 @@ void confData::scrapData()
         tmp = ft_split(data_split[i], '\n');
         while (tmp[++j] && !strnstr(tmp[j], "location ", strlen(tmp[j])))
         {
-            if (strnstr(tmp[j], "listen", strlen(tmp[j])))
+            
+            std::string semicolon(tmp[j]);
+            if (strnstr(tmp[j], "server", strlen(tmp[j])))
+                continue;
+            else if (semicolon.back() != ';')
+                printerr("Error with conf file syntax ...");
+            else if (strnstr(tmp[j], "listen", strlen(tmp[j])))
                 setAddress(tmp[j]);
             else if (strnstr(tmp[j], "server_name", strlen(tmp[j])))
                 setServName(tmp[j]);
@@ -255,8 +278,6 @@ void confData::scrapData()
                 setIndex(tmp[j]);
             else if (strnstr(tmp[j], "client_max_body_size", strlen(tmp[j])))
                 setBodySize(tmp[j]);
-            else if (strnstr(tmp[j], "server", strlen(tmp[j])))
-                continue;
             else
                 printerr("Something is wrong with your config file ...");
         }

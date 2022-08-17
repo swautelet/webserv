@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/17 05:13:10 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/17 17:06:17 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,41 @@ std::string location_exe(confData & conf, std::string req_file)
 	return "";
 }
 
+std::string index_exe(confData & conf, std::string url, std::string loc)
+{
+	std::string index = "";
+	struct stat info;
+	if (!loc.empty())
+	{
+		for (int i = 0; i < conf.getGoodLocation(loc).getIndex().size(); i++)
+		{
+			index = conf.getGoodLocation(loc).getPath() + "/" + conf.getGoodLocation(loc).getIndex()[i];
+			std::cout << "Index location == " << index << std::endl;
+			if (stat(index.c_str(), &info) < 0)
+			{
+				std::cout << errno << std::endl;
+				if (errno == ENOENT)
+					return "";
+			}
+			else
+				return index;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < conf.getIndex().size(); i++)
+		{
+			index = conf.getPath() + "/" + conf.getIndex()[i];
+			std::cout << "Index == " << index << std::endl;
+			if (stat(index.c_str(), &info) < 0)
+				if (errno == ENOENT)
+					return "";
+			else
+				return index;
+		}
+	}
+	return "";
+}
 
 std::string readHTML(confData & conf, std::string req_file, std::pair<std::string, std::string> index) // Need to be change, actually disgusting
 {
@@ -83,12 +118,12 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
 	std::string url;
     std::string tmp_path;
     std::string loc;
+	std::string index_path;
     
     
-
 	//Find if the url is in the location list
 	loc = location_exe(conf, req_file);
-	if (!loc.empty())
+	if (!loc.empty() && conf.LocationFinder(loc))
 	{
 		std::cout << "Final location is " << loc <<std::endl;
 		if (!conf.getPath().compare("./"))
@@ -104,9 +139,13 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
 		else
 			url = conf.getGoodLocation(loc).getPath() + req_file;
 	}
+	index_path = index_exe(conf, url, loc);
+	if (index_path.empty())
+		std::cout << "No index found" << std::endl;
     std::cout << "req_file = " << req_file << std::endl;
     std::cout << "fullpath = " << fullpath << std::endl;
 	std::cout << "url = " << url << std::endl;
+	std::cout << "index_path = " << index_path << std::endl;
 	if (stat(url.c_str(), &info) < 0)
     {
         if (errno == ENOENT)
@@ -126,7 +165,7 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
             if (conf.getGoodLocation(loc).getAutoIndex())
                 printerr("AutoIndex is on, but not implemented yet");
             if (!conf.getGoodLocation(loc).getIndex().empty())
-                printerr("Index is on, but not implemented yet"); 
+                fullpath = index_path;
             
         }
         else
@@ -139,7 +178,7 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
                 else if (conf.getAutoIndex())
                     printerr("AutoIndex is on, but not implemented yet");
                 else if (!conf.getIndex().empty())
-                    printerr("Index is on, but not implemented yet");
+                    fullpath = index_path;
             }
         }
     }

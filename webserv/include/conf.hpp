@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:12 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/08 02:30:41 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/17 15:48:30 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class Conf
         std::string getPath(int index);
         std::string getServName(int index);
         std::string getMethod(int index);
-        std::string getIndex(int index);
+        std::vector<std::string> getIndex(int index);
         confData & getConflist(int index);
         int getNbrServer();
         void parsing(char *path);

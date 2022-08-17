@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conf.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/13 21:17:44 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/17 15:48:42 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ std::string Conf::getMethod(int index)
 {
     return (*confList)[index].getMethod();     
 }
-std::string Conf::getIndex(int index)
+std::vector<std::string> Conf::getIndex(int index)
 {
     return (*confList)[index].getIndex();
 }
