@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/17 16:16:11 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/18 18:51:49 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void confData::setBodySize(std::string str)
 }
 
 
-int confData::parsing(char *path)
+int confData::parsing(std::string path)
 {
     std::ifstream fd;
     std::stringstream buff;

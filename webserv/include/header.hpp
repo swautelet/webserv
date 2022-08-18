@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/13 19:02:29 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/18 20:04:18 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 #include "confData.hpp"
 #include "location.hpp"
 #include "autoindex.hpp"
+#include "webServ.hpp"
 #include <sys/ioctl.h>
 #include <dirent.h>
 #include <utility>
@@ -45,14 +46,13 @@
 int printerr(const char *str);
 char **ft_split(char *str, char charset);
 std::string itoa(int a);
-std::string readHTML(confData & conf, std::string file, std::pair<std::string, std::string>);
+std::string readHTML(webServ & web, confData & conf, std::string file);
 int check_quote(std::string str);
 int check_server_nbr(std::string str, std::string to_find);
 int	test(std::string str, std::string c);
 char	*test1(std::string str , std::string c);
 char	**server_split(std::string str, std::string strset);
 void print_tab(char **tab);
-std::pair<std::string, std::string> goodIndex(confData & conf, std::string);
 std::pair<std::string, std::string> find_base_location(confData & conf, std::string url);
 void print(std::string str);
 char *strnstr(const char *s, const char *find, size_t slen);

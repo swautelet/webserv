@@ -3,50 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/17 17:08:53 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/18 20:07:01 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/header.hpp"
 
-Conf conf;
-Request req;
-Response res;
 fd_set fdset, copyset;
-std::vector<Socket> *sock;
 
-void setup(char **argv, int backlog)
+void setup(webServ & web, char **argv, int backlog)
 {
     int i = -1;
 
-    conf.parsing(argv[1]);
-    sock = new std::vector<Socket>(conf.getNbrServer());
     FD_ZERO(&fdset);
-    while (++i < conf.getNbrServer())
+    
+    while (++i < web.getConf().getNbrServer())
     {
-        (*sock)[i].setup(backlog, conf.getConflist(i));
-        FD_SET((*sock)[i].getFd(), &fdset);
+        web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
+        FD_SET(web.getSock()[i].getFd(), &fdset);
     }
 }
 
-void error_handling()
+void error_handling(webServ & web)
 {
     int i = -1;
     int j;
-    if (!conf.getNbrServer())
+    if (!web.getConf().getNbrServer())
         printerr("Error : No server configured ...");
-    while(++i < conf.getNbrServer())
+    while(++i < web.getConf().getNbrServer())
     {
         j = -1;
-        if (conf.getAddress(i).empty() || conf.getPort(i).empty())
+        if (web.getConf().getAddress(i).empty() || web.getConf().getPort(i).empty())
             printerr("Error : No address or port configured ...");
         else
         {
-            std::string check_address = conf.getAddress(i);
-            std::string check_port = conf.getPort(i);
+            std::string check_address = web.getConf().getAddress(i);
+            std::string check_port = web.getConf().getPort(i);
             while (check_address[++j])
                 if (!isdigit(check_address[j]) && check_address[j] != '.')
                     printerr("Error : Address must be numeric ...");
@@ -55,29 +50,29 @@ void error_handling()
                 if (!isdigit(check_port[j]))
                     printerr("Error : Port must be numeric ...");
         }
-        if (conf.getServName(i).empty())
-            conf.getConflist(i).setServName("My Default Server");
+        if (web.getConf().getServName(i).empty())
+            web.getConf().getConflist(i).setServName("My Default Server");
     }
     j = -1;
 }
 
-void engine(int connection, int addrlen)
+void engine(webServ & web, int connection, int addrlen)
 {
-    for(int i = 0; i <= conf.getNbrServer(); i++)
+    for(int i = 0; i <= web.getConf().getNbrServer(); i++)
     {
-        if (FD_ISSET((*sock)[i].getFd(), &fdset))
+        if (FD_ISSET(web.getSock()[i].getFd(), &fdset))
         {
             struct sockaddr client_address;
             addrlen = sizeof((socklen_t *)&client_address);
             std::cout << "Accept ... " << std::endl; 
-            if ((connection = accept((*sock)[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
+            if ((connection = accept(web.getSock()[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
                 printerr("cannot connect ...");
             std::cout << "Accept done ..." << std::endl;
-            req.getInfo(connection);
-            //Autodex index(req.getUrl(), conf.getConflist(0));
-            res.find_method(req, conf.getConflist(i));
-            res.concat_response();      
-            write(connection, res.getResponse().c_str(), res.getResponse().size());
+            web.getReq().getInfo(connection);
+            std::cout << "Info done ..." << std::endl;
+            web.getRes().find_method(web, i);
+            web.getRes().concat_response();      
+            write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
             close(connection);
             exit(0);
         }
@@ -87,6 +82,7 @@ void engine(int connection, int addrlen)
 int main(int argc, char **argv)
 {
     struct timeval tv;
+    webServ web(argv[1]);
     int i = -1;
     int connection = 0;
     int addrlen = 0;
@@ -96,8 +92,8 @@ int main(int argc, char **argv)
     tv.tv_usec = 0;
     if (argc != 2)
         printerr("Usage : ./Webserv [conf file]");
-    setup(argv, backlog);
-    error_handling();
+    setup(web, argv, backlog);
+    error_handling(web);
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
     memcpy(&copyset, &fdset, sizeof(fdset));
     while(1)
@@ -105,6 +101,6 @@ int main(int argc, char **argv)
         if ((retval = select(FD_SETSIZE, &copyset, NULL, NULL, &tv)) == -1)
             printerr("Error with select ...");
         else if (retval)
-            engine(connection, addrlen);
+            engine(web, connection, addrlen);
     }
 }

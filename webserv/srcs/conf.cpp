@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conf.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/17 15:48:42 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/18 19:13:57 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ confData & Conf::getConflist(int index)
     return (*confList)[index];
 }
 
-void Conf::parsing(char *path)
+void Conf::parsing(std::string path)
 {
     confList = new std::vector<confData>(1);
     if (!(nbr_serv = (*confList)[0].parsing(path)))
@@ -78,5 +78,6 @@ void Conf::parsing(char *path)
     confList = new std::vector<confData>(nbr_serv);
     for (int i = 0; i < nbr_serv; i++)
         (*confList)[i].scrapData();
+    std::cout << "nbr_serv == " <<nbr_serv << std::endl;
     print_info();
 }

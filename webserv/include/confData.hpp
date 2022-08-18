@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:45:59 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/17 15:33:47 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/18 18:52:04 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class confData
         confData();
         ~confData();
         confData(const confData & other);
-        int parsing(char *path);
+        int parsing(std::string path);
         int getLocationNbr();
         int getAutoIndex();
         int LocationFinder(std::string str);

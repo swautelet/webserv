@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/17 17:06:17 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/18 20:10:59 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,33 +18,6 @@ std::pair<std::string, std::string> find_base_location(confData & conf, std::str
 		if (!conf.getLocation(x).getLocation_name().compare("/"))
 			return std::make_pair(url.substr(1, url.size()), conf.getLocation(x).getPath());	
 	return std::make_pair(url.substr(1, url.size()), conf.getPath());
-}
-
-std::pair<std::string, std::string> goodIndex(confData & conf, std::string url)
-{
-	int i = -1;
-	int index = 0;
-	if (!url.compare("/"))
-		return std::make_pair(url, conf.getPath());		
-	else
-	{	
-		std::string urlz = url;
-		if ((index = urlz.rfind('/')) == 0)
-			return find_base_location(conf, urlz);
-		urlz = urlz.substr(0, index);
-		
-		while(++i < conf.getLocationNbr())
-		{
-			if (!urlz.compare(conf.getLocation(i).getLocation_name()))
-			{
-				if(!conf.getPath().empty())
-					return std::make_pair(urlz,conf.getLocation(i).getPath());
-				else
-					return std::make_pair(urlz, conf.getPath());
-			}
-		}
-	}
-	return std::make_pair("", "");
 }
 
 std::string location_exe(confData & conf, std::string req_file)
@@ -94,8 +67,10 @@ std::string index_exe(confData & conf, std::string url, std::string loc)
 			index = conf.getPath() + "/" + conf.getIndex()[i];
 			std::cout << "Index == " << index << std::endl;
 			if (stat(index.c_str(), &info) < 0)
+            {
 				if (errno == ENOENT)
 					return "";
+            }
 			else
 				return index;
 		}
@@ -103,7 +78,7 @@ std::string index_exe(confData & conf, std::string url, std::string loc)
 	return "";
 }
 
-std::string readHTML(confData & conf, std::string req_file, std::pair<std::string, std::string> index) // Need to be change, actually disgusting
+std::string readHTML(webServ & web, confData & conf, std::string req_file) // Need to be change, actually disgusting
 {
 	int j;
     int autodex = 0;
@@ -120,8 +95,6 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
     std::string loc;
 	std::string index_path;
     
-    
-	//Find if the url is in the location list
 	loc = location_exe(conf, req_file);
 	if (!loc.empty() && conf.LocationFinder(loc))
 	{
@@ -163,7 +136,7 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
             if (!conf.getGoodLocation(loc).getAutoIndex() && conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = PATH_ERROR;
             if (conf.getGoodLocation(loc).getAutoIndex())
-                printerr("AutoIndex is on, but not implemented yet");
+                return web.getAutodex().create_dex(web, conf);            
             if (!conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = index_path;
             
@@ -176,7 +149,7 @@ std::string readHTML(confData & conf, std::string req_file, std::pair<std::strin
                 if (!conf.getAutoIndex() && conf.getIndex().empty())
                     fullpath = PATH_ERROR;
                 else if (conf.getAutoIndex())
-                    printerr("AutoIndex is on, but not implemented yet");
+                    return web.getAutodex().create_dex(web, conf);                
                 else if (!conf.getIndex().empty())
                     fullpath = index_path;
             }

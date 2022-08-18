@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/11 15:43:45 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/18 20:09:43 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,15 @@ Response &Response::operator=(Response const & other)
 	return (*this);
 }
 
-void Response::find_method(Request & req, confData & conf)
+void Response::find_method(webServ & web, int i)
 {
-    std::cout << req.getMethod() << std::endl;
-    if (req.getMethod() == "GET")
-        getMethod(req, conf);
-    if (req.getMethod() == "DELETE")
+    std::cout << "find_method" << std::endl;
+    std::cout << web.getReq().getMethod() << std::endl;
+    if (web.getReq().getMethod() == "GET")
+        MethodGet(web, web.getConf().getConflist(i));
+    if (web.getReq().getMethod() == "DELETE")
         delMethod();
-    if (req.getMethod() == "POST")
+    if (web.getReq().getMethod() == "POST")
         postMethod();
 }
 
@@ -72,13 +73,12 @@ int how_many(std::string str)
     return count;
 }
  
-void Response::getMethod(Request & req, confData & conf)
+void Response::MethodGet(webServ & web, confData & conf)
 {
-    version = req.getVersion();
+    version = web.getReq().getVersion();
     status = setStatus();
     stat_msg = setStatMsg();
-    body = readHTML(conf, req.getUrl(), goodIndex(conf, req.getUrl()));
-    //exit(0);
+    body = readHTML(web, conf, web.getReq().getUrl());
     content_lenght = itoa(body.size() + how_many(body));
     content_type = setContentType();
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/08 02:22:05 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/18 19:39:06 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 Socket::Socket()
 {
-        
+    std::cout << "Socket constructor" << std::endl;
 }
 
 Socket::~Socket()

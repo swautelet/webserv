@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   autoindex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/17 17:05:48 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/18 20:14:53 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/autoindex.hpp"
+#include "../include/header.hpp"
 
 Autodex::Autodex()
 {
@@ -27,18 +27,20 @@ Autodex::Autodex(const Autodex & other)
     *this = other;
 }
 
-Autodex::Autodex(std::string path, confData & conf)
+std::string Autodex::create_dex(webServ & web, confData & conf)
 {
-    (void)conf;
-    (void)path;
     DIR *dir;
     struct dirent *ent;
     struct stat info;
     std::ofstream out;
     std::string full_path;
+    std::string path;
     std::string tmp;
     int i = -1;
     int autodex = 0;
+
+    std::cout << "--------------AUTOINDEX CREATION---------------" << std::endl;
+    path = web.getReq().getUrl();
 
     std::cout << "FULL_PATH == " << full_path << std::endl;
     std::cout << "PATH == " << path << std::endl;
@@ -46,17 +48,13 @@ Autodex::Autodex(std::string path, confData & conf)
         std::cout << "AH\n";
     while(++i < conf.getLocationNbr())
     {
-        
         if (!conf.getLocation(i).getLocation_name().compare(path))
         {
             std::cout << "---- " << conf.getLocation(i).getLocation_name() << std::endl;
             std::cout << "---- " << conf.getLocation(i).getAutoIndex() << std::endl;
             autodex = conf.getLocation(i).getAutoIndex();
             full_path = path + "/" + conf.getLocation(i).getIndex()[0];
-            if (!conf.getPath().compare("./www/index"))
-                path = conf.getPath();
-            else
-                path = conf.getPath() + "/" + "index"; 
+            path = conf.getGoodLocation(path).getPath();
             break;
         }
     }
@@ -83,9 +81,10 @@ Autodex::Autodex(std::string path, confData & conf)
         tmp += "</ul>";
     }
     index_str = tmp;
+    return index_str;
 }
 
-std::string Autodex::getIndex()
+std::string Autodex::getIndexStr()
 {
     return index_str;
 }
