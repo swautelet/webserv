@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 20:41:40 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/18 22:11:52 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
             if (!conf.getGoodLocation(loc).getAutoIndex() && conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = PATH_ERROR;
             if (conf.getGoodLocation(loc).getAutoIndex())
-                return web.getAutodex().create_dex(web, conf);            
+                return web.getAutodex().create_dex(web, conf, url);            
             if (!conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = index_path;
             
@@ -149,7 +149,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
                 if (!conf.getAutoIndex() && conf.getIndex().empty())
                     fullpath = PATH_ERROR;
                 else if (conf.getAutoIndex())
-                    return web.getAutodex().create_dex(web, conf);                
+                    return web.getAutodex().create_dex(web, conf, url);                
                 else if (!conf.getIndex().empty())
                     fullpath = index_path;
             }

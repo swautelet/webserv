@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/18 20:43:24 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/18 22:26:45 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,10 @@ Autodex::Autodex(const Autodex & other)
     *this = other;
 }
 
-std::string Autodex::create_dex(webServ & web, confData & conf)
+std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
 {
     DIR *dir;
+    
     struct dirent *ent;
     struct stat info;
     std::ofstream out;
@@ -43,7 +44,8 @@ std::string Autodex::create_dex(webServ & web, confData & conf)
         path = web.getReq().getUrl().substr(1, web.getReq().getUrl().size());
     else
         path = web.getReq().getUrl();
-    // std::cout << "PATH == " << path << std::endl;
+    std::cout << "!!!!!!!!!!!!!!PATH == " << path << std::endl;
+    std::cout << "*---------------------------------------------*url == " << url << std::endl;
     if (stat(path.c_str(), &info) != 0)
         std::cout << "AH\n";
     while(++i < conf.getLocationNbr())
@@ -57,20 +59,33 @@ std::string Autodex::create_dex(webServ & web, confData & conf)
             break;
         }
     }
-    if ((dir = opendir(path.c_str())) != NULL)
+    if ((dir = opendir(url.c_str())) != NULL)
     {
-        tmp += "<p>Index of " + path + "</p>\n\n<ul>\n";
+        tmp += "<html><head><title>Index of " + url + "</title></head>\n<body><h1>Index of </h1><hr><pre>" ;
         while ((ent = readdir(dir)) != NULL)
         {
-            if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, ".."))
+            if (strcmp(ent->d_name, "."))
             {
-                tmp += "<li><a href=\"";
-                tmp += path + "/" + ent->d_name + "\"" + ">" + ent->d_name + "</a><li>\n";
-                //std::cout << "NAME : " <<ent->d_name << std::endl;
+                std::cout << "---- " << url << std::endl;
+                tmp += "<a href=";
+                if (!strcmp(ent->d_name, ".."))
+                    tmp += url.substr(0, url.rfind("/"));
+                else
+				    tmp += url;
+				if (url[url.size() - 1] != '/')
+					tmp += '/';
+				tmp += ent->d_name;
+				tmp += ">";
+				tmp += ent->d_name;
+				tmp += " </a>\n";
+                std::cout << "NAME : " <<ent->d_name << std::endl;
             }
         }
-        tmp += "</ul>";
+        closedir(dir);
+        tmp += "</pre><hr></body>";
+		tmp += "</html>";
     }
+    std::cout << tmp << std::endl;
     index_str = tmp;
     return index_str;
 }
