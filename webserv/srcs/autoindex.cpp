@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/18 20:14:53 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/18 20:43:24 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,17 @@ std::string Autodex::create_dex(webServ & web, confData & conf)
     struct dirent *ent;
     struct stat info;
     std::ofstream out;
-    std::string full_path;
     std::string path;
     std::string tmp;
     int i = -1;
     int autodex = 0;
 
     std::cout << "--------------AUTOINDEX CREATION---------------" << std::endl;
-    path = web.getReq().getUrl();
-
-    std::cout << "FULL_PATH == " << full_path << std::endl;
-    std::cout << "PATH == " << path << std::endl;
+    if (web.getReq().getUrl().size() > 1)
+        path = web.getReq().getUrl().substr(1, web.getReq().getUrl().size());
+    else
+        path = web.getReq().getUrl();
+    // std::cout << "PATH == " << path << std::endl;
     if (stat(path.c_str(), &info) != 0)
         std::cout << "AH\n";
     while(++i < conf.getLocationNbr())
@@ -53,19 +53,10 @@ std::string Autodex::create_dex(webServ & web, confData & conf)
             std::cout << "---- " << conf.getLocation(i).getLocation_name() << std::endl;
             std::cout << "---- " << conf.getLocation(i).getAutoIndex() << std::endl;
             autodex = conf.getLocation(i).getAutoIndex();
-            full_path = path + "/" + conf.getLocation(i).getIndex()[0];
             path = conf.getGoodLocation(path).getPath();
             break;
         }
     }
-
-    full_path = "www/index/index.html";
-    if (autodex)
-        out.open(full_path, std::ofstream::trunc);
-    else
-        out.open(path, std::ofstream::trunc);
-    if (out.is_open())
-        std::cout << "index open ..." << std::endl;
     if ((dir = opendir(path.c_str())) != NULL)
     {
         tmp += "<p>Index of " + path + "</p>\n\n<ul>\n";
@@ -75,7 +66,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf)
             {
                 tmp += "<li><a href=\"";
                 tmp += path + "/" + ent->d_name + "\"" + ">" + ent->d_name + "</a><li>\n";
-                std::cout << "NAME : " <<ent->d_name << std::endl;
+                //std::cout << "NAME : " <<ent->d_name << std::endl;
             }
         }
         tmp += "</ul>";

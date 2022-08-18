@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 20:10:59 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/18 20:41:40 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ std::string location_exe(confData & conf, std::string req_file)
 			return conf.getGoodLocation(req_file).getLocation_name();
 		if (!req_file.rfind('/') && conf.LocationFinder("/"))
 			return "/";
-		else
-			break;
 		req_file = req_file.substr(0, req_file.rfind('/'));
 	}
 	return "";
@@ -99,7 +97,8 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 	if (!loc.empty() && conf.LocationFinder(loc))
 	{
 		std::cout << "Final location is " << loc <<std::endl;
-		if (!conf.getPath().compare("./"))
+        std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
+		if (!conf.getGoodLocation(loc).getPath().compare("./"))
 			url = "." + req_file;
 		else
 			url = conf.getPath() + req_file;
@@ -112,6 +111,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 		else
 			url = conf.getGoodLocation(loc).getPath() + req_file;
 	}
+    std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, url, loc);
 	if (index_path.empty())
 		std::cout << "No index found" << std::endl;
