@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 20:04:18 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/20 01:04:36 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,6 @@ void print(std::string str);
 char *strnstr(const char *s, const char *find, size_t slen);
 void remove_spaces(std::string &str);
 std::string BaseLocationExist(confData conf);
+std::string location_exe(confData & conf, std::string req_file);
 
 #endif

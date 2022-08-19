@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/18 22:26:45 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/20 01:16:35 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
     std::ofstream out;
     std::string path;
     std::string tmp;
+    std::string urlz(url);
     int i = -1;
     int autodex = 0;
 
@@ -44,10 +45,14 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
         path = web.getReq().getUrl().substr(1, web.getReq().getUrl().size());
     else
         path = web.getReq().getUrl();
-    std::cout << "!!!!!!!!!!!!!!PATH == " << path << std::endl;
-    std::cout << "*---------------------------------------------*url == " << url << std::endl;
+    if (path.rfind("/") == path.size() - 1)
+        path = path.substr(0, path.size() - 1);
+    if (url.rfind("/") == url.size() - 1)
+        url = url.substr(0, url.size() - 1);
     if (stat(path.c_str(), &info) != 0)
         std::cout << "AH\n";
+    std::cout << "!!!!!!!!!!!!!!PATH == " << path << std::endl;
+    std::cout << "*---------------------------------------------*url == " << url << std::endl;
     while(++i < conf.getLocationNbr())
     {
         if (!conf.getLocation(i).getLocation_name().compare(path))
@@ -61,24 +66,38 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
     }
     if ((dir = opendir(url.c_str())) != NULL)
     {
-        tmp += "<html><head><title>Index of " + url + "</title></head>\n<body><h1>Index of </h1><hr><pre>" ;
+        tmp += "<html>";
+		tmp += "<head><title>Index of";
+		tmp += url + "</title></head>\n";
+		tmp += "<body>";
+		tmp += "<h1>Index of ";
+		tmp += url + "</h1><hr><pre>";
         while ((ent = readdir(dir)) != NULL)
         {
             if (strcmp(ent->d_name, "."))
             {
-                std::cout << "---- " << url << std::endl;
-                tmp += "<a href=";
-                if (!strcmp(ent->d_name, ".."))
-                    tmp += url.substr(0, url.rfind("/"));
-                else
-				    tmp += url;
-				if (url[url.size() - 1] != '/')
-					tmp += '/';
-				tmp += ent->d_name;
-				tmp += ">";
-				tmp += ent->d_name;
-				tmp += " </a>\n";
-                std::cout << "NAME : " <<ent->d_name << std::endl;
+                    std::cout << "---- " << url << std::endl;
+                    tmp += "<a href=";
+                    if (!strcmp(ent->d_name, ".."))
+                    {
+                        if (urlz[0] == '.')
+                            urlz.erase(0, 1);
+                        tmp += urlz.substr(0, urlz.rfind("/"));
+                        tmp += ">";
+                        tmp += ent->d_name;
+                        tmp += " </a>\n";
+                    }
+                    else
+                    {
+                        std::cout << "Hyperlink " << path + "/" + ent->d_name << std::endl;
+                        tmp += path;
+                        tmp += "/";
+                        tmp += ent->d_name;
+                        tmp += ">";
+                        tmp += ent->d_name;
+                        tmp += " </a>\n";
+                    }
+                    std::cout << "NAME : " <<ent->d_name << std::endl;
             }
         }
         closedir(dir);

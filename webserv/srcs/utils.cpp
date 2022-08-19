@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 22:11:52 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/20 01:13:26 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ std::string location_exe(confData & conf, std::string req_file)
 		return req_file;
 	if (req_file.back() == '/')
 		req_file.pop_back();
-	while (!req_file.empty())
+	while (!req_file.empty() && req_file.find("/") != std::string::npos)
 	{
 		std::cout << "Actual req_file : " << req_file << std::endl;
 		if (conf.LocationFinder(req_file))
