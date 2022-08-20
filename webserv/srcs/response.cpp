@@ -44,22 +44,43 @@ void Response::find_method(webServ & web, int i)
         postMethod();
 }
 
-int Response::setStatus() // Todo : make the status code work
+void Response::setStatus(int status) // Todo : make the status code work
 {
-    if (true)
-        return 200;
+    this->status = status;
 }
 
 std::string Response::setStatMsg()
 {
-    if (true)
+    if (status / 100 == 2)
         return "OK";
+	else 
+		return "KO";
 }
 
-std::string Response::setContentType()
+void Response::setContentType(std::string fullpath)
 {
-    if (true)
-        return "text/html";
+	std:: cout << "i received fullpath =========== " << fullpath << std::endl;
+	if (fullpath.rfind('.') != std::string::npos)
+	{
+		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size() - fullpath.rfind("."));
+		std::cout << "looking for type of file with = " << type << std::endl;
+		if (type == "html")
+			content_type = "text/html";
+		else if (type == "css")
+			content_type = "text/css";
+		else if (type == "js")
+			content_type = "text/javascript";
+		else if (type == "jpeg" || type == "jpg")
+			content_type = "image/jpeg";
+		else if (type == "png")
+			content_type = "image/png";
+		else if (type == "bmp")
+			content_type = "image/bmp";
+		else
+			content_type = "text/plain";
+	}
+	else
+		content_type = "text/plain";
 }
 
 int how_many(std::string str)
@@ -76,11 +97,16 @@ int how_many(std::string str)
 void Response::MethodGet(webServ & web, confData & conf)
 {
     version = web.getReq().getVersion();
-    status = setStatus();
-    stat_msg = setStatMsg();
     body = readHTML(web, conf, web.getReq().getUrl());
+	setStatus(200);
+    stat_msg = setStatMsg();
     content_lenght = itoa(body.size() + how_many(body));
-    content_type = setContentType();
+	std::cout << "data_type possible ------------------" << std::endl << std::endl;
+	for (int i = 0; i < web.getReq().getDataType().size(); i++)
+	{
+		std::cout << web.getReq().getDataType()[i] << std::endl;
+	}
+   // setContentType(web.getReq().getDataType()[0]);
 }
 
 void Response::postMethod()
@@ -95,8 +121,9 @@ void Response::delMethod()
 
 void Response::concat_response()
 {
-    std::cout << content_lenght << std::endl;
-    full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
+    std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
+	full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
+//	std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
 }
 
 std::string Response::getResponse()

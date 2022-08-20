@@ -30,7 +30,7 @@ confData::confData(const confData & other)
     *this = other;
 }
 
-std::string confData::getAdress()
+const std::string& confData::getAdress() const
 {
     return address;
 }

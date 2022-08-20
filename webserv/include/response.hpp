@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Response.hpp                                           :+:      :+:    :+:   */
+/*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -33,9 +33,9 @@ class Response
         void postMethod();
         void init();
         void concat_response();
-        int setStatus();
+    	void  setStatus(int status);
         std::string setStatMsg();
-        std::string setContentType();
+    	void  setContentType(std::string str);
         std::string getResponse();
         std::string getContentLenght();
         std::string getContentType();

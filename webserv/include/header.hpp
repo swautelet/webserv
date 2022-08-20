@@ -12,6 +12,7 @@
 
 #ifndef HEADER_HPP
 #define HEADER_HPP
+#include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -39,8 +40,6 @@
 #include <dirent.h>
 #include <utility>
 
-#include <vector>
-
 #define PATH_ERROR "www/error/403.html"
 
 int printerr(const char *str);
@@ -59,5 +58,6 @@ char *strnstr(const char *s, const char *find, size_t slen);
 void remove_spaces(std::string &str);
 std::string BaseLocationExist(confData conf);
 std::string location_exe(confData & conf, std::string req_file);
+void	splitstring(std::string str, std::vector<std::string>& vect, char c);
 
 #endif

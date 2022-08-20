@@ -180,6 +180,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
             printerr("Error with file opening ... (ReadHTML)");
     }
     buff << fd.rdbuf();
+	web.getRes().setContentType(fullpath);
     return buff.str();
 }
 
@@ -454,4 +455,22 @@ std::string BaseLocationExist(confData conf)
         i++;
     }
     return "";
+}
+
+void	splitstring(std::string str, std::vector<std::string>& vect, char c)
+{
+	std::string temp = "";
+	for(int i=0; i < str.length(); ++i)
+	{
+		if(str[i] == c)
+		{
+			vect.push_back(temp);
+			temp = "";
+		}
+		else
+		{
+			temp.push_back(str[i]);
+		}
+	}
+	vect.push_back(temp);
 }

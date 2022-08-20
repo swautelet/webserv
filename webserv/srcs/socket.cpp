@@ -26,6 +26,7 @@ Socket::~Socket()
 
 Socket::Socket(std::string ip, std::string port)
 {
+	std::cout << "socket second constructor called " << std::endl;
     this->ip = ip;
     this->port = port;
 }
@@ -43,7 +44,9 @@ void Socket::setup(int backlog, confData & conf)
     create_socket(conf);
     create_bind();
     listen_socket(backlog);
+std::cout << conf.getAdress() << std::endl;	
     set_ip(conf.getAdress());
+std::cout << "soket initialized" << std::endl;
     set_port(conf.getPort());
 }
 
@@ -74,7 +77,7 @@ int Socket::listen_socket(int max_queue)
     return 1;
 }
 
-void Socket::set_ip(std::string ip)
+void Socket::set_ip(const std::string& ip)
 {
     this->ip = ip;
 }

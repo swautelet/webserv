@@ -17,6 +17,13 @@ fclean:		clean
 			$(RM) $(NAME)
 			$(RM) $(OBJS)
 
+test: $(NAME)
+	@./Webserv conf/nginx.conf
+
 re:			fclean all
 
-.PHONY:		all clean fclean re
+save:
+	git commit -am "$(MAKECMDGOALS)";
+	git push https://github.com/4b93f/webserv.git
+
+.PHONY:		all clean fclean re test save

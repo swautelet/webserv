@@ -25,7 +25,7 @@ class Socket
         Socket(const Socket & other);
         Socket &operator=(const Socket & other);
         void setup(int backlog, confData & conf);
-        void set_ip(std::string ip);
+        void set_ip(const std::string& ip);
         void set_port(std::string port);
         int create_socket(confData & conf);
         int create_bind();

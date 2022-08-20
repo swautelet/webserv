@@ -27,7 +27,7 @@ class confData
         int getLocationNbr();
         int getAutoIndex();
         int LocationFinder(std::string str);
-        std::string getAdress();
+        const std::string& getAdress() const;
         std::string getPort();
         std::string getPath();
         std::string getServName();
