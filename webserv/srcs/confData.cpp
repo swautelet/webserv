@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/22 12:28:52 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/22 12:48:32 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,6 @@ void confData::scrapData()
     int index = -1;
     std::string tmp;
     std::string cpy_data(data);
-    std::cout << "mh\n";
     while (!data.empty())
     {   
         tmp = data.substr(0, data.find("\n"));

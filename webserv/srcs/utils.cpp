@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/22 12:43:36 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/22 12:49:50 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,6 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
             printerr("Error with file opening ... (ReadHTML)");
     }
     buff << fd.rdbuf();
-    std::cout << buff.str() << std::endl;
     return buff.str();
 }
 
