@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/22 12:49:50 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/22 13:04:44 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,12 +174,13 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     }
     // std::cout << "req_file = " << req_file << std::endl;
     // std::cout << "fullpath = " << fullpath << std::endl;
-    // std::cout << "Final fullpath = " << fullpath << std::endl;
+    std::cout << "Final fullpath = " << fullpath << std::endl;
     if (file_exist(url) == 0)
     {
         web.getRes().setContentType(".html");
         fullpath = PATH_ERROR;
     }
+    
     fd.open(fullpath);
     if (!fd.is_open())
     {
