@@ -53,6 +53,11 @@ void Request::getInfo(int connection)
         if (!str.substr(0, searched.size()).compare(searched))
         {
 			splitstring(str.substr(searched.size(), str.size()), type_data, ',');
+/*	std::cout << "data_type possible ------------------" << std::endl << std::endl;
+	for (int i = 0; i < getDataType().size(); i++)
+	{
+		std::cout << getDataType()[i] << std::endl;
+	}*/
             //type_data = str.substr(searched.size(), str.find(',') - searched.size());
             //std::cout << "i found that type of request::  " << type_data << std::endl;
             break ;

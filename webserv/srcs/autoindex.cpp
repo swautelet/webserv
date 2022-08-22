@@ -66,6 +66,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
     }
     if ((dir = opendir(url.c_str())) != NULL)
     {
+		std::cout << "i begin to write autoindex " << std::endl;
         tmp += "<html>";
 		tmp += "<head><title>Index of";
 		tmp += url + "</title></head>\n";
@@ -90,7 +91,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
                     else
                     {
                         std::cout << "Hyperlink " << path + "/" + ent->d_name << std::endl;
-                        tmp += path;
+                        tmp += "/" + path;
                         tmp += "/";
                         tmp += ent->d_name;
                         tmp += ">";

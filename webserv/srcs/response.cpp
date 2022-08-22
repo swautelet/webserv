@@ -57,9 +57,13 @@ std::string Response::setStatMsg()
 		return "KO";
 }
 
+void Response::setContentType()
+{
+	content_type = "text/html";
+}
+
 void Response::setContentType(std::string fullpath)
 {
-	std:: cout << "i received fullpath =========== " << fullpath << std::endl;
 	if (fullpath.rfind('.') != std::string::npos)
 	{
 		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size() - fullpath.rfind("."));
@@ -76,6 +80,8 @@ void Response::setContentType(std::string fullpath)
 			content_type = "image/png";
 		else if (type == "bmp")
 			content_type = "image/bmp";
+		else if (type == "ico")
+			content_type = "image/png";
 		else
 			content_type = "text/plain";
 	}
@@ -97,16 +103,10 @@ int how_many(std::string str)
 void Response::MethodGet(webServ & web, confData & conf)
 {
     version = web.getReq().getVersion();
-    body = readHTML(web, conf, web.getReq().getUrl());
 	setStatus(200);
     stat_msg = setStatMsg();
+    body = readHTML(web, conf, web.getReq().getUrl());
     content_lenght = itoa(body.size() + how_many(body));
-	std::cout << "data_type possible ------------------" << std::endl << std::endl;
-	for (int i = 0; i < web.getReq().getDataType().size(); i++)
-	{
-		std::cout << web.getReq().getDataType()[i] << std::endl;
-	}
-   // setContentType(web.getReq().getDataType()[0]);
 }
 
 void Response::postMethod()
@@ -121,9 +121,9 @@ void Response::delMethod()
 
 void Response::concat_response()
 {
-    std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
+ //   std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
 	full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
-//	std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
+	std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
 }
 
 std::string Response::getResponse()

@@ -36,6 +36,7 @@ class Response
     	void  setStatus(int status);
         std::string setStatMsg();
     	void  setContentType(std::string str);
+		void  setContentType();
         std::string getResponse();
         std::string getContentLenght();
         std::string getContentType();

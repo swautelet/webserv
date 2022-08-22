@@ -149,7 +149,11 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
                 if (!conf.getAutoIndex() && conf.getIndex().empty())
                     fullpath = PATH_ERROR;
                 else if (conf.getAutoIndex())
-                    return web.getAutodex().create_dex(web, conf, url);                
+				{
+					web.getRes().setStatus(201);
+					web.getRes().setContentType();
+                    return web.getAutodex().create_dex(web, conf, url);
+				}
                 else if (!conf.getIndex().empty())
                     fullpath = index_path;
             }
