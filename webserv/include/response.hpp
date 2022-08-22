@@ -34,7 +34,7 @@ class Response
         void init();
         void concat_response();
     	void  setStatus(int status);
-        std::string setStatMsg();
+        void  setStatMsg();
     	void  setContentType(std::string str);
 		void  setContentType();
         std::string getResponse();

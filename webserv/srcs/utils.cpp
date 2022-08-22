@@ -151,7 +151,6 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
                 else if (conf.getAutoIndex())
 				{
 					web.getRes().setStatus(201);
-					web.getRes().setContentType();
                     return web.getAutodex().create_dex(web, conf, url);
 				}
                 else if (!conf.getIndex().empty())
