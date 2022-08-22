@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:39 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/17 15:53:51 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/22 11:04:52 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class location
         void setIndex(std::string str);
         void setAutoIndex(std::string str);
         void setErrorPage(std::string str);
-        int scrapData(char *str, int i);
+        int scrapData(std::string str, int i);
         void print_info();
     private:
         std::string path;

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 20:09:43 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/22 12:43:22 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,33 @@ std::string Response::setStatMsg()
         return "OK";
 }
 
-std::string Response::setContentType()
+void Response::setContentType(std::string fullpath)
 {
-    if (true)
-        return "text/html";
+    //std:: cout << "i received fullpath =========== " << fullpath << std::endl;
+	if (fullpath.rfind('.') != std::string::npos)
+	{
+		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size() - fullpath.rfind("."));
+		std::cout << "looking for type of file with = " << type << std::endl;
+		if (type == "html")
+			content_type = "text/html";
+        else if (type == "gif")
+			content_type = "image/gif";
+		else if (type == "css")
+			content_type = "text/css";
+		else if (type == "js")
+			content_type = "text/javascript";
+		else if (type == "jpeg" || type == "jpg")
+			content_type = "image/jpeg";
+		else if (type == "png")
+			content_type = "image/png";
+		else if (type == "bmp")
+			content_type = "image/bmp";
+		else
+			content_type = "text/plain";
+	}
+	else
+		content_type = "text/plain";
+    std::cout << content_type << std::endl;
 }
 
 int how_many(std::string str)
@@ -78,9 +101,9 @@ void Response::MethodGet(webServ & web, confData & conf)
     version = web.getReq().getVersion();
     status = setStatus();
     stat_msg = setStatMsg();
+    setContentType(web.getReq().getUrl());
     body = readHTML(web, conf, web.getReq().getUrl());
     content_lenght = itoa(body.size() + how_many(body));
-    content_type = setContentType();
 }
 
 void Response::postMethod()

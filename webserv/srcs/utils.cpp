@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/20 01:13:26 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/22 12:43:36 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,15 @@ std::string index_exe(confData & conf, std::string url, std::string loc)
 	return "";
 }
 
+int file_exist(std::string file)
+{
+    std::ifstream infile(file);
+
+    if (!infile.good())
+        return 0;
+    return 1;
+}
+
 std::string readHTML(webServ & web, confData & conf, std::string req_file) // Need to be change, actually disgusting
 {
 	int j;
@@ -93,11 +102,12 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     std::string loc;
 	std::string index_path;
     
+    
 	loc = location_exe(conf, req_file);
 	if (!loc.empty() && conf.LocationFinder(loc))
 	{
-		std::cout << "Final location is " << loc <<std::endl;
-        std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
+		// std::cout << "Final location is " << loc <<std::endl;
+        // std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
 		if (!conf.getGoodLocation(loc).getPath().compare("./"))
 			url = "." + req_file;
 		else
@@ -105,25 +115,22 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 	}
 	else
 	{
-		std::cout << "No similar location found : base location will be used" <<std::endl;
+		// std::cout << "No similar location found : base location will be used" <<std::endl;
 		if (!conf.getGoodLocation(loc).getPath().compare("./"))
 			url = "." + req_file;
 		else
 			url = conf.getGoodLocation(loc).getPath() + req_file;
 	}
-    std::cout << "!url = " << url << std::endl;
+    // std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, url, loc);
 	if (index_path.empty())
-		std::cout << "No index found" << std::endl;
-    std::cout << "req_file = " << req_file << std::endl;
-    std::cout << "fullpath = " << fullpath << std::endl;
-	std::cout << "url = " << url << std::endl;
-	std::cout << "index_path = " << index_path << std::endl;
-	if (stat(url.c_str(), &info) < 0)
-    {
-        if (errno == ENOENT)
-            fullpath = PATH_ERROR;
-    }
+		// std::cout << "No index found" << std::endl;
+    // std::cout << "req_file = " << req_file << std::endl;
+    // std::cout << "fullpath = " << fullpath << std::endl;
+	// std::cout << "url = " << url << std::endl;
+	// std::cout << "index_path = " << index_path << std::endl;
+    if (file_exist(url) == 0)
+        fullpath = PATH_ERROR;
     if ((dir = opendir(url.c_str())) != NULL)
     {
         std::cout << "-------------------------- "<< std::endl;
@@ -143,7 +150,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
         }
         else
         {
-            std::cout << "didnt found location" << std::endl;
+            // std::cout << "didnt found location" << std::endl;
             if (BaseLocationExist(conf).empty())
             {
                 if (!conf.getAutoIndex() && conf.getIndex().empty())
@@ -165,13 +172,13 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 				fullpath = conf.getGoodLocation(loc).getPath();
 		}
     }
-    std::cout << "req_file = " << req_file << std::endl;
-    std::cout << "fullpath = " << fullpath << std::endl;
-    std::cout << "Final fullpath = " << fullpath << std::endl;
-    if (stat(fullpath.c_str(), &info) < 0)
+    // std::cout << "req_file = " << req_file << std::endl;
+    // std::cout << "fullpath = " << fullpath << std::endl;
+    // std::cout << "Final fullpath = " << fullpath << std::endl;
+    if (file_exist(url) == 0)
     {
-        if (errno == ENOENT)
-            fullpath = PATH_ERROR;
+        web.getRes().setContentType(".html");
+        fullpath = PATH_ERROR;
     }
     fd.open(fullpath);
     if (!fd.is_open())
@@ -180,6 +187,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
             printerr("Error with file opening ... (ReadHTML)");
     }
     buff << fd.rdbuf();
+    std::cout << buff.str() << std::endl;
     return buff.str();
 }
 
@@ -299,13 +307,15 @@ int check_server_nbr(std::string str, std::string to_find)
 	int find = 0;
 	if (str.empty() || to_find.empty())
 		return 0;
-	while(1)
+	while(!str.empty())
 	{
-		count = str.find(to_find, count);
-		if (count >= strlen(str.c_str()) - 1 || count == -1)
-			break;
-		count += 6;
-		find += 1;
+        if (str.find(to_find) != std::string::npos)
+        {
+            find += 1;
+            str = str.substr(str.find(to_find) + 1, + str.size());
+        }
+        else
+            break;
 	}
 	return find;
 }
@@ -439,7 +449,8 @@ void remove_spaces(std::string &str)
             i++;
         while(isspace(str[j]))
             j--;
-        str = str.substr(i, j);
+        if (i != 0 || j != str.size() - 1)
+            str = str.substr(i, j);
         break;
     }
 }

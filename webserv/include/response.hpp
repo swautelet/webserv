@@ -35,7 +35,7 @@ class Response
         void concat_response();
         int setStatus();
         std::string setStatMsg();
-        std::string setContentType();
+        void setContentType(std::string fullpath);
         std::string getResponse();
         std::string getContentLenght();
         std::string getContentType();

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/20 01:16:35 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/22 12:47:28 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
     int i = -1;
     int autodex = 0;
 
-    std::cout << "--------------AUTOINDEX CREATION---------------" << std::endl;
+    std::cout << "autoindex" << std::endl;
+    // std::cout << "--------------AUTOINDEX CREATION---------------" << std::endl;
     if (web.getReq().getUrl().size() > 1)
         path = web.getReq().getUrl().substr(1, web.getReq().getUrl().size());
     else
@@ -50,15 +51,15 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
     if (url.rfind("/") == url.size() - 1)
         url = url.substr(0, url.size() - 1);
     if (stat(path.c_str(), &info) != 0)
-        std::cout << "AH\n";
-    std::cout << "!!!!!!!!!!!!!!PATH == " << path << std::endl;
-    std::cout << "*---------------------------------------------*url == " << url << std::endl;
+        // std::cout << "AH\n";
+    // std::cout << "!!!!!!!!!!!!!!PATH == " << path << std::endl;
+    // std::cout << "*---------------------------------------------*url == " << url << std::endl;
     while(++i < conf.getLocationNbr())
     {
         if (!conf.getLocation(i).getLocation_name().compare(path))
         {
-            std::cout << "---- " << conf.getLocation(i).getLocation_name() << std::endl;
-            std::cout << "---- " << conf.getLocation(i).getAutoIndex() << std::endl;
+            // std::cout << "---- " << conf.getLocation(i).getLocation_name() << std::endl;
+            // std::cout << "---- " << conf.getLocation(i).getAutoIndex() << std::endl;
             autodex = conf.getLocation(i).getAutoIndex();
             path = conf.getGoodLocation(path).getPath();
             break;
@@ -76,20 +77,26 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
         {
             if (strcmp(ent->d_name, "."))
             {
-                    std::cout << "---- " << url << std::endl;
+                    // std::cout << "---- " << url << std::endl;
                     tmp += "<a href=";
                     if (!strcmp(ent->d_name, ".."))
                     {
                         if (urlz[0] == '.')
                             urlz.erase(0, 1);
-                        tmp += urlz.substr(0, urlz.rfind("/"));
+                        if (urlz.rfind("/") == 0)
+                            tmp += "/";
+                        else
+                            tmp += urlz.substr(0, urlz.rfind("/"));
+                        
                         tmp += ">";
                         tmp += ent->d_name;
                         tmp += " </a>\n";
                     }
                     else
                     {
-                        std::cout << "Hyperlink " << path + "/" + ent->d_name << std::endl;
+                        if (url.compare("."))
+                            tmp += "/";
+                        // std::cout << "Hyperlink " << path + "/" + ent->d_name << std::endl;
                         tmp += path;
                         tmp += "/";
                         tmp += ent->d_name;
@@ -97,15 +104,15 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
                         tmp += ent->d_name;
                         tmp += " </a>\n";
                     }
-                    std::cout << "NAME : " <<ent->d_name << std::endl;
+                    // std::cout << "NAME : " <<ent->d_name << std::endl;
             }
         }
         closedir(dir);
         tmp += "</pre><hr></body>";
 		tmp += "</html>";
     }
-    std::cout << tmp << std::endl;
     index_str = tmp;
+    web.getRes().setContentType(".html");
     return index_str;
 }
 

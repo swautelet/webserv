@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/17 16:18:29 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/08/22 12:46:56 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int location::getAutoIndex()
 void location::setLocation_name(std::string str)
 {
     remove_spaces(str);
-    location_name = str.substr(strlen("location "), str.size());
+    location_name = str.substr(str.find("location") + strlen("location "), str.size());
 }
 
 void location::setPath(std::string str)
@@ -131,6 +131,7 @@ void location::setBodySize(std::string str)
 void location::setAutoIndex(std::string str)
 {
     remove_spaces(str);
+    std::cout << "str : " << str << std::endl;
     if (!str.compare("autoindex on;"))
         autoindex = 1;
     else if (!str.compare("autoindex off;"))
@@ -159,44 +160,41 @@ void location::print_info()
         std::cout << "Body_size->       " << "[" << body_size << "]" << std::endl;
     std::cout << "AutoIndex->       " << "[" << autoindex << "]" << std::endl << std::endl;
 }
-int location::scrapData(char *str, int i)
+int location::scrapData(std::string data, int i)
 {
-    char **tmp;
-    int x = 0;
-
-    tmp = ft_split(str, '\n');
-    while (tmp[++i])
-    {   
-        if (strnstr(tmp[i], "location ", strlen(tmp[i])))
-        {
-            autoindex = 0;
-            setLocation_name(tmp[i]);
-            while (tmp[++i] && !strnstr(tmp[i], "}", strlen(tmp[i])))
-            {
-                std::string semicolon(tmp[i]);
-                if (strnstr(tmp[i], "{", strlen(tmp[i])))
-                    continue;
-                else if (semicolon.back() != ';')
-                    printerr("Error with conf file syntax ...");
-                else if (strnstr(tmp[i], "root", strlen(tmp[i])))
-                    setPath(tmp[i]);
-                else if (strnstr(tmp[i], "methods", strlen(tmp[i])))
-                    setMethod(tmp[i]);
-                else if (strnstr(tmp[i], "error_page", strlen(tmp[i])))
-                    setErrorPage(tmp[i]);
-                else if (strnstr(tmp[i], "autoindex", strlen(tmp[i])))
-                    setAutoIndex(tmp[i]);
-                else if (strnstr(tmp[i], "index", strlen(tmp[i])))
-                    setIndex(tmp[i]);
-                else if (strnstr(tmp[i], "client_max_body_size", strlen(tmp[i])))
-                    setBodySize(tmp[i]);
-                else
-                    printerr("Something is wrong with your config file ...");
-            }
-            return i;
-        }
-        if (path.empty())
-            path = "./";
+    (void)data;
+    (void)i;
+    
+    std::string tmp;
+    tmp = data.substr(0, data.find("\n"));
+    setLocation_name(tmp);
+    autoindex = 0;
+    while (!data.empty())
+    {
+        tmp = data.substr(0, data.find("\n"));
+        data = data.substr(data.find("\n") + 1, data.size());
+        if (tmp.find("{") != std::string::npos || tmp.find("location")!= std::string::npos)
+            continue;
+        if (tmp.find("}") != std::string::npos)
+            break;
+        else if (tmp.back() != ';')
+            printerr("Error with conf file syntax ...");
+        else if (tmp.find("root")!= std::string::npos)
+            setPath(tmp);
+        else if (tmp.find("methods")!= std::string::npos)
+            setMethod(tmp);
+        else if (tmp.find("error_page")!= std::string::npos)
+            setErrorPage(tmp);
+        else if (tmp.find("autoindex")!= std::string::npos)
+            setAutoIndex(tmp);
+        else if (tmp.find("index")!= std::string::npos)
+            setIndex(tmp);
+        else if (tmp.find("client_max_body_size")!= std::string::npos)
+            setBodySize(tmp);
+        else
+            printerr("Something is wrong with your config file ...");
     }
-    return i;
+    if (path.empty())
+        path = "./";
+    return 0;
 }
