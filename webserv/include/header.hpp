@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/20 01:04:36 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 14:31:05 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,8 @@ void remove_spaces(std::string &str);
 std::string BaseLocationExist(confData conf);
 std::string location_exe(confData & conf, std::string req_file);
 void	splitstring(std::string str, std::vector<std::string>& vect, char c);
+int post_element_nbr(std::string str);
+std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int nbr);
+void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post, confData & conf);
 
 #endif

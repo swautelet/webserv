@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 21:30:15 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/22 11:27:09 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,18 @@ void engine(webServ & web, int connection, int addrlen)
             web.getReq().getInfo(connection);
             std::cout << "Info done ..." << std::endl;
             web.getRes().find_method(web, i);
-            web.getRes().concat_response();      
+            web.getRes().concat_response();     
             write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
             close(connection);
         }
     }
 }
+void ctr_c(int sig)
+{
+    std::cout << "\nBye bye" << std::endl;
+    exit(0);
+}
+
 
 int main(int argc, char **argv)
 {
@@ -95,11 +101,14 @@ int main(int argc, char **argv)
     error_handling(web);
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
     memcpy(&copyset, &fdset, sizeof(fdset));
+    signal(SIGINT, &ctr_c);
     while(1)
     {
         if ((retval = select(FD_SETSIZE, &copyset, NULL, NULL, &tv)) == -1)
             printerr("Error with select ...");
-        else if (retval)
+        else if (retval == 0)
+            printerr("Timeout ...");
+        else
             engine(web, connection, addrlen);
     }
 }

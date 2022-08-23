@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/09 18:32:44 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 14:56:24 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ void Request::getInfo(int connection)
             break ;
         }
     }
+    body = buff;
+    //body.resize("content_lenght");
     return;
 }
 
@@ -75,10 +77,12 @@ std::string Request::getMethod()
 {
     return method;
 }
+
 std::string Request::getVersion()
 {
     return version;
 }
+
 std::string Request::getHeader()
 {
     return header;
@@ -87,4 +91,9 @@ std::string Request::getHeader()
 std::vector<std::string>&	Request::getDataType()
 {
 	return type_data;
+}
+
+std::string Request::getBody()
+{
+    return body;
 }

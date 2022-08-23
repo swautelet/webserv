@@ -30,7 +30,7 @@ class Response
         void find_method(webServ & web, int i);
         void MethodGet(webServ & web, confData & conf);
         void delMethod();
-        void postMethod();
+        void MethodPost(webServ & web, confData & conf);
         void init();
         void concat_response();
     	void  setStatus(int status);

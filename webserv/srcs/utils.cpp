@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/20 01:13:26 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 14:45:44 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,15 @@ std::string index_exe(confData & conf, std::string url, std::string loc)
 	return "";
 }
 
+int file_exist(std::string file)
+{
+    std::ifstream infile(file);
+
+    if (!infile.good())
+        return 0;
+    return 1;
+}
+
 std::string readHTML(webServ & web, confData & conf, std::string req_file) // Need to be change, actually disgusting
 {
 	int j;
@@ -93,15 +102,25 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     std::string loc;
 	std::string index_path;
     
+    
 	loc = location_exe(conf, req_file);
 	if (!loc.empty() && conf.LocationFinder(loc))
 	{
 		std::cout << "Final location is " << loc <<std::endl;
         std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
-		if (!conf.getGoodLocation(loc).getPath().compare("./"))
+        if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
+        {
+            req_file = req_file.substr(conf.getGoodLocation(loc).getLocation_name().size(), req_file.size());
+            std::cout << "Found it = " << req_file <<std::endl;
+            url = conf.getGoodLocation(loc).getPath() + req_file;
+        }       
+		else if (!conf.getGoodLocation(loc).getPath().compare("./"))
 			url = "." + req_file;
 		else
-			url = conf.getPath() + req_file;
+        {
+            std::cout << "dupe" << std::endl;
+			url = conf.getGoodLocation(loc).getPath() + req_file;
+        }
 	}
 	else
 	{
@@ -114,16 +133,13 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, url, loc);
 	if (index_path.empty())
-		std::cout << "No index found" << std::endl;
-    std::cout << "req_file = " << req_file << std::endl;
-    std::cout << "fullpath = " << fullpath << std::endl;
-	std::cout << "url = " << url << std::endl;
-	std::cout << "index_path = " << index_path << std::endl;
-	if (stat(url.c_str(), &info) < 0)
-    {
-        if (errno == ENOENT)
-            fullpath = PATH_ERROR;
-    }
+		// std::cout << "No index found" << std::endl;
+    // std::cout << "req_file = " << req_file << std::endl;
+    // std::cout << "fullpath = " << fullpath << std::endl;
+	// std::cout << "url = " << url << std::endl;
+	// std::cout << "index_path = " << index_path << std::endl;
+    if (file_exist(url) == 0)
+        fullpath = PATH_ERROR;
     if ((dir = opendir(url.c_str())) != NULL)
     {
         std::cout << "-------------------------- "<< std::endl;
@@ -143,7 +159,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
         }
         else
         {
-            std::cout << "didnt found location" << std::endl;
+            // std::cout << "didnt found location" << std::endl;
             if (BaseLocationExist(conf).empty())
             {
                 if (!conf.getAutoIndex() && conf.getIndex().empty())
@@ -168,14 +184,15 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 				fullpath = conf.getGoodLocation(loc).getPath();
 		}
     }
-    std::cout << "req_file = " << req_file << std::endl;
-    std::cout << "fullpath = " << fullpath << std::endl;
+    // std::cout << "req_file = " << req_file << std::endl;
+    // std::cout << "fullpath = " << fullpath << std::endl;
     std::cout << "Final fullpath = " << fullpath << std::endl;
-    if (stat(fullpath.c_str(), &info) < 0)
+    if (file_exist(url) == 0)
     {
-        if (errno == ENOENT)
-            fullpath = PATH_ERROR;
+        web.getRes().setContentType(".html");
+        fullpath = PATH_ERROR;
     }
+    
     fd.open(fullpath);
     if (!fd.is_open())
     {
@@ -303,13 +320,15 @@ int check_server_nbr(std::string str, std::string to_find)
 	int find = 0;
 	if (str.empty() || to_find.empty())
 		return 0;
-	while(1)
+	while(!str.empty())
 	{
-		count = str.find(to_find, count);
-		if (count >= strlen(str.c_str()) - 1 || count == -1)
-			break;
-		count += 6;
-		find += 1;
+        if (str.find(to_find) != std::string::npos)
+        {
+            find += 1;
+            str = str.substr(str.find(to_find) + 1, + str.size());
+        }
+        else
+            break;
 	}
 	return find;
 }
@@ -443,7 +462,8 @@ void remove_spaces(std::string &str)
             i++;
         while(isspace(str[j]))
             j--;
-        str = str.substr(i, j);
+        if (i != 0 || j != str.size() - 1)
+            str = str.substr(i, j);
         break;
     }
 }
@@ -476,4 +496,80 @@ void	splitstring(std::string str, std::vector<std::string>& vect, char c)
 		}
 	}
 	vect.push_back(temp);
+}
+
+int post_element_nbr(std::string str)
+{
+    int count = 0;
+    //std::cout << str << std::endl;
+    while (!str.empty())
+    {
+        count++;
+        if (str.find('&') == std::string::npos)
+            break;
+        str = str.substr(str.find('&') + 1, str.size());
+    }
+    return count;
+}
+
+std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int nbr)
+{
+    std::vector<std::pair<std::string, std::string> > vec(nbr);
+    int i = 0;
+    std::string tmp;
+    std::string cut;
+    tmp = str.substr(str.rfind("\n") + 1, str.size());
+    while(!tmp.empty())
+    {
+        cut = tmp.substr(0, tmp.find('&'));
+        vec[i].first = cut.substr(0, tmp.find('='));
+        vec[i].second = cut.substr(tmp.find('=') + 1, tmp.size());
+        tmp = tmp.substr(tmp.find('&') + 1, tmp.size());
+        if (tmp.find('&') == std::string::npos)
+        {
+            vec[i + 1].first = tmp.substr(0, tmp.find('='));
+            vec[i + 1].second = tmp.substr(tmp.find('=') + 1, tmp.size());
+            return vec;
+        }
+        i++;
+    }
+    return vec;
+}
+
+void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post, confData & conf)
+{
+    DIR *dir;
+    struct dirent *ent;
+    std::string url(web.getReq().getUrl());
+    
+    std::string fullpath(url);
+    std::string loc = location_exe(conf, url);
+    if (loc.empty())
+        url = conf.getPath() + url.substr(1, url.size());
+    else
+    {
+        fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(1, url.size());
+        url = url.substr(1, url.size());
+    }
+    std::cout << "Url = " << url << std::endl;
+    if (!(dir = opendir(fullpath.c_str())))
+    {
+        if (fullpath[0] == '.' && fullpath[1] == '/')
+            fullpath.erase(0, 2);
+        std::cout << fullpath << std::endl;
+        std::ofstream out(fullpath.c_str());
+        if (!out.is_open())
+        {
+            std::cout << errno << std::endl;
+        }
+        for(int i = 0; i < post.size(); i++)
+        {
+            out << post[i].first + "=" + post[i].second;
+            if (i + 1 < post.size())
+                out << "\n";
+        }
+        out.close();
+    }
+    else
+        printerr("Error: Outpout file is a directory ...");
 }

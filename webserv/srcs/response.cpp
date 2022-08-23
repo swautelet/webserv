@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 20:09:43 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 14:30:00 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void Response::find_method(webServ & web, int i)
     if (web.getReq().getMethod() == "DELETE")
         delMethod();
     if (web.getReq().getMethod() == "POST")
-        postMethod();
+        MethodPost(web, web.getConf().getConflist(i));
 }
 
 void Response::setStatus(int status) // Todo : make the status code work
@@ -256,12 +256,15 @@ void Response::setContentType()
 
 void Response::setContentType(std::string fullpath)
 {
+    //std:: cout << "i received fullpath =========== " << fullpath << std::endl;
 	if (fullpath.rfind('.') != std::string::npos)
 	{
-		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size() - fullpath.rfind("."));
-		std::cout << "looking for type of file with = " << type << std::endl;
+		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size());
+//		std::cout << "looking for type of file with = " << type << std::endl;
 		if (type == "html")
 			content_type = "text/html";
+        else if (type == "gif")
+			content_type = "image/gif";
 		else if (type == "css")
 			content_type = "text/css";
 		else if (type == "js")
@@ -279,6 +282,7 @@ void Response::setContentType(std::string fullpath)
 	}
 	else
 		content_type = "text/plain";
+    std::cout << "content_type = " << content_type << std::endl;
 }
 
 int how_many(std::string str)
@@ -296,13 +300,20 @@ void Response::MethodGet(webServ & web, confData & conf)
 {
     version = web.getReq().getVersion();
 	setStatus(200);
+//    setContentType(web.getReq().getUrl());
     body = readHTML(web, conf, web.getReq().getUrl());
     content_lenght = itoa(body.size() + how_many(body));
 }
 
-void Response::postMethod()
+void Response::MethodPost(webServ & web, confData & conf)
 {
-    
+    std::cout << "POST\n";
+    int nbr = post_element_nbr(web.getReq().getBody());
+    if (!nbr)
+        printerr("Error: Body doesnt have arguement ...");        
+    std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
+    post_exe(web, post, conf);
+    MethodGet(web, conf);
 }
 
 void Response::delMethod()

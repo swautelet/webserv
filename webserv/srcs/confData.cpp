@@ -6,13 +6,14 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 18:51:49 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/22 12:48:32 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/header.hpp"
 
-char **data_split;
+std::string data_split;
+std::string data;
 
 confData::confData()
 {
@@ -194,15 +195,15 @@ int confData::parsing(std::string path)
 {
     std::ifstream fd;
     std::stringstream buff;
-    std::string data;
     fd.open(path, std::ifstream::in);
     if (!fd)
         printerr("Error with file opening ...");
     buff << fd.rdbuf();
-    
     data = buff.str();
     check_quote(data);
-    data_split = server_split(data, "server ");
+    //data_split = server_split(data, "server ");
+    
+    std::cout << "mh\n";
     return check_server_nbr(data, "server ");
 }
 
@@ -236,7 +237,7 @@ void confData::print_info()
     if (!body_size.empty())
         std::cout << "Body->            " << "[" << body_size << "]" << std::endl;
     std::cout << "Autoindex->       " << "[" << autoindex << "]" << std::endl;
-    while(data_split[j] && ++x < check_server_nbr(data_split[j], "location "))
+    while(++x < nbr_loc)
     {
         (*loc)[x].print_info();
         j++;
@@ -244,49 +245,69 @@ void confData::print_info()
     std::cout << "--------------------------------------" << std::endl;
 }
 
+std::string location_str(std::string str)
+{
+    std::string tmp;
+    
+    if (str.find("location"))
+        str = str.substr(str.find("location"), str.size());
+    while(1)
+    {
+        tmp += str.substr(0, str.find("\n"));
+        tmp += "\n";
+        str = str.substr(str.find("\n") + 1, str.size());
+        if (tmp.find("}") == std::string::npos)
+            continue;
+        else    
+            break;
+    }
+    return tmp;
+}
+
 void confData::scrapData()
 {
     int j;
     static int i = 0;
     int index = -1;
-    char **tmp;
-    if (data_split[i])
-    {
-        j = -1;
-        tmp = ft_split(data_split[i], '\n');
-        while (tmp[++j] && !strnstr(tmp[j], "location ", strlen(tmp[j])))
-        {
-            
-            std::string semicolon(tmp[j]);
-            if (strnstr(tmp[j], "server", strlen(tmp[j])))
+    std::string tmp;
+    std::string cpy_data(data);
+    while (!data.empty())
+    {   
+        tmp = data.substr(0, data.find("\n"));
+        data = data.substr(data.find("\n") + 1, data.size());
+        if (tmp.find("location") != std::string::npos)
+            break;
+        if (!tmp.find("server"))
                 continue;
-            else if (semicolon.back() != ';')
-                printerr("Error with conf file syntax ...");
-            else if (strnstr(tmp[j], "listen", strlen(tmp[j])))
-                setAddress(tmp[j]);
-            else if (strnstr(tmp[j], "server_name", strlen(tmp[j])))
-                setServName(tmp[j]);
-            else if (strnstr(tmp[j], "root", strlen(tmp[j])))
-                setPath(tmp[j]);
-            else if (strnstr(tmp[j], "methods", strlen(tmp[j])))
-                setMethod(tmp[j]);
-            else if (strnstr(tmp[j], "error_page", strlen(tmp[j])))
-                setErrorPage(tmp[j]);
-            else if (strnstr(tmp[j], "autoindex", strlen(tmp[j])))
-                setAutoIndex(tmp[j]);
-            else if (strnstr(tmp[j], "index", strlen(tmp[j])))
-                setIndex(tmp[j]);
-            else if (strnstr(tmp[j], "client_max_body_size", strlen(tmp[j])))
-                setBodySize(tmp[j]);
-            else
-                printerr("Something is wrong with your config file ...");
-        }
-        if (path.empty())
-            path = "./";
-        nbr_loc = check_server_nbr(data_split[i], "location ");
-        loc = new std::vector<location>(nbr_loc);
-        for (int x = 0; x < nbr_loc; x++)
-            index = (*loc)[x].scrapData(data_split[i], index);
+        else if (tmp.back() != ';')
+            printerr("Error with conf file syntax ...");
+        else if (tmp.find("listen")!= std::string::npos)
+            setAddress(tmp);
+        else if (tmp.find("server_name")!= std::string::npos)
+            setServName(tmp);
+        else if (tmp.find("root")!= std::string::npos)
+            setPath(tmp);
+        else if (tmp.find("methods")!= std::string::npos)
+            setMethod(tmp);
+        else if (tmp.find("error_page")!= std::string::npos)
+            setErrorPage(tmp);
+        else if (tmp.find("autoindex")!= std::string::npos)
+            setAutoIndex(tmp);
+        else if (tmp.find("index")!= std::string::npos)
+            setIndex(tmp);
+        else if (tmp.find("client_max_body_size")!= std::string::npos)
+            setBodySize(tmp);
+        else
+            printerr("Something is wrong with your config file ...");
     }
-    i++;
+    if (path.empty())
+        path = "./";
+    nbr_loc = check_server_nbr(cpy_data, "location ");
+    std::cout << "Nbr of location : " << nbr_loc << std::endl;
+    loc = new std::vector<location>(nbr_loc);
+    for (int x = 0; x < nbr_loc; x++)
+    {
+        index = (*loc)[x].scrapData(location_str(cpy_data), index);
+        cpy_data = cpy_data.substr(cpy_data.find("location") + 1, cpy_data.size());
+    }
 }
