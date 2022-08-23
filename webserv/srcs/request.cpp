@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/09 18:32:44 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 08:10:20 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void Request::getInfo(int connection)
     url = req2[1];
     version = req2[2];
     version.resize(strlen(version.c_str()) - 1);
+    body = buff;
     return;
 }
 
@@ -56,11 +57,18 @@ std::string Request::getMethod()
 {
     return method;
 }
+
 std::string Request::getVersion()
 {
     return version;
 }
+
 std::string Request::getHeader()
 {
     return header;
+}
+
+std::string Request::getBody()
+{
+    return body;
 }

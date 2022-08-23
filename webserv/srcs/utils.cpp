@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/22 13:04:44 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 09:29:10 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -465,4 +465,67 @@ std::string BaseLocationExist(confData conf)
         i++;
     }
     return "";
+}
+
+int post_element_nbr(std::string str)
+{
+    int count = 0;
+    //std::cout << str << std::endl;
+    while (!str.empty())
+    {
+        count++;
+        if (str.find('&') == std::string::npos)
+            break;
+        str = str.substr(str.find('&') + 1, str.size());
+    }
+    return count;
+}
+
+std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int nbr)
+{
+    std::vector<std::pair<std::string, std::string> > vec(nbr);
+    int i = 0;
+    std::string tmp;
+    std::string cut;
+    tmp = str.substr(str.rfind("\n") + 1, str.size());
+    while(!tmp.empty())
+    {
+        cut = tmp.substr(0, tmp.find('&'));
+        vec[i].first = cut.substr(0, tmp.find('='));
+        vec[i].second = cut.substr(tmp.find('=') + 1, tmp.size());
+        tmp = tmp.substr(tmp.find('&') + 1, tmp.size());
+        if (tmp.find('&') == std::string::npos)
+        {
+            vec[i + 1].first = tmp.substr(0, tmp.find('='));
+            vec[i + 1].second = tmp.substr(tmp.find('=') + 1, tmp.size());
+            return vec;
+        }
+        i++;
+    }
+    return vec;
+}
+
+void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post)
+{
+    DIR *dir;
+    struct dirent *ent;
+    std::string url(web.getReq().getUrl());
+    
+    url = url.substr(1, url.size());
+    std::cout << "Url = " << url << std::endl;
+    if (!(dir = opendir(url.c_str())))
+    {
+        std::ofstream out(url.c_str());
+        if (!out.is_open())
+            printerr("Thinkge");
+        for(int i = 0; i < post.size(); i++)
+        {
+            out << post[i].first + "=" + post[i].second;
+            if (i + 1 < post.size())
+                out << "\n";
+        }
+        out.close();
+    }
+    else
+        printerr("Error: Outpout file is a directory ...");
 }

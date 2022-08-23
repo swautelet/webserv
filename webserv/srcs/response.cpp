@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/22 12:59:41 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 09:37:24 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void Response::find_method(webServ & web, int i)
     if (web.getReq().getMethod() == "DELETE")
         delMethod();
     if (web.getReq().getMethod() == "POST")
-        postMethod();
+        MethodPost(web, web.getConf().getConflist(i));
 }
 
 int Response::setStatus() // Todo : make the status code work
@@ -106,9 +106,15 @@ void Response::MethodGet(webServ & web, confData & conf)
     content_lenght = itoa(body.size() + how_many(body));
 }
 
-void Response::postMethod()
+void Response::MethodPost(webServ & web, confData & conf)
 {
-    
+    std::cout << "POST\n";
+    int nbr = post_element_nbr(web.getReq().getBody());
+    if (!nbr)
+        printerr("Error: Body doesnt have arguement ...");        
+    std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
+    post_exe(web, post);
+    MethodGet(web, conf);
 }
 
 void Response::delMethod()
