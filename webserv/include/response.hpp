@@ -29,7 +29,7 @@ class Response
         Response &operator=(const Response & other);
         void find_method(webServ & web, int i);
         void MethodGet(webServ & web, confData & conf);
-        void delMethod();
+        void delMethod(webServ& web, confData& conf);
         void MethodPost(webServ & web, confData & conf);
         void init();
         void concat_response();

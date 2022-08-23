@@ -12,7 +12,7 @@
 
 #include "../include/header.hpp"
 
-Response::Response()
+Response::Response():content_lenght("0")
 {
     
 }
@@ -39,7 +39,7 @@ void Response::find_method(webServ & web, int i)
     if (web.getReq().getMethod() == "GET")
         MethodGet(web, web.getConf().getConflist(i));
     if (web.getReq().getMethod() == "DELETE")
-        delMethod();
+        delMethod(web, web.getConf().getConflist(i));
     if (web.getReq().getMethod() == "POST")
         MethodPost(web, web.getConf().getConflist(i));
 }
@@ -302,7 +302,8 @@ void Response::MethodGet(webServ & web, confData & conf)
 	setStatus(200);
 //    setContentType(web.getReq().getUrl());
     body = readHTML(web, conf, web.getReq().getUrl());
-    content_lenght = itoa(body.size() + how_many(body));
+    content_lenght = itoa(body.size());
+	//+ how_many(body));
 }
 
 void Response::MethodPost(webServ & web, confData & conf)
@@ -316,9 +317,32 @@ void Response::MethodPost(webServ & web, confData & conf)
     MethodGet(web, conf);
 }
 
-void Response::delMethod()
+void Response::delMethod(webServ&  web, confData& conf)
 {
-
+	std::cout << "DELETE Method " << std::endl;
+	std::string url(web.getReq().getUrl());
+    std::string fullpath(url);
+    std::string loc = location_exe(conf, url);
+	if (loc.empty())
+        url = conf.getPath() + url.substr(1, url.size());
+    else
+    {
+        fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(loc.size(), url.size());
+        url = url.substr(1, url.size());
+    }
+	if( remove(fullpath.c_str()) != 0 )
+	{
+		std::cout << "File " << fullpath << " deleted successfully" << std::endl;
+		setStatus(200);
+		setContentType();
+		body = 	"File " + fullpath + " deleted successfully\n";
+}
+	else
+	{
+		std::cout << "File could'nt be deleted" << std::endl;
+		setStatus(404);
+		body = "";
+	}
 }
 
 void Response::concat_response()

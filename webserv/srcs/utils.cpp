@@ -548,7 +548,7 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
         url = conf.getPath() + url.substr(1, url.size());
     else
     {
-        fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(1, url.size());
+        fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(loc.size(), url.size());
         url = url.substr(1, url.size());
     }
     std::cout << "Url = " << url << std::endl;
@@ -556,7 +556,6 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
     {
         if (fullpath[0] == '.' && fullpath[1] == '/')
             fullpath.erase(0, 2);
-        std::cout << fullpath << std::endl;
         std::ofstream out(fullpath.c_str());
         if (!out.is_open())
         {
