@@ -330,13 +330,13 @@ void Response::delMethod(webServ&  web, confData& conf)
         fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(loc.size(), url.size());
         url = url.substr(1, url.size());
     }
-	if( remove(fullpath.c_str()) != 0 )
+	if(remove(fullpath.c_str()) == 0 )
 	{
 		std::cout << "File " << fullpath << " deleted successfully" << std::endl;
 		setStatus(200);
 		setContentType();
 		body = 	"File " + fullpath + " deleted successfully\n";
-}
+	}
 	else
 	{
 		std::cout << "File could'nt be deleted" << std::endl;
