@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/23 09:29:10 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 14:45:44 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,22 +106,31 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 	loc = location_exe(conf, req_file);
 	if (!loc.empty() && conf.LocationFinder(loc))
 	{
-		// std::cout << "Final location is " << loc <<std::endl;
-        // std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
-		if (!conf.getGoodLocation(loc).getPath().compare("./"))
+		std::cout << "Final location is " << loc <<std::endl;
+        std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
+        if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
+        {
+            req_file = req_file.substr(conf.getGoodLocation(loc).getLocation_name().size(), req_file.size());
+            std::cout << "Found it = " << req_file <<std::endl;
+            url = conf.getGoodLocation(loc).getPath() + req_file;
+        }       
+		else if (!conf.getGoodLocation(loc).getPath().compare("./"))
 			url = "." + req_file;
 		else
-			url = conf.getPath() + req_file;
+        {
+            std::cout << "dupe" << std::endl;
+			url = conf.getGoodLocation(loc).getPath() + req_file;
+        }
 	}
 	else
 	{
-		// std::cout << "No similar location found : base location will be used" <<std::endl;
+		std::cout << "No similar location found : base location will be used" <<std::endl;
 		if (!conf.getGoodLocation(loc).getPath().compare("./"))
 			url = "." + req_file;
 		else
 			url = conf.getGoodLocation(loc).getPath() + req_file;
 	}
-    // std::cout << "!url = " << url << std::endl;
+    std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, url, loc);
 	if (index_path.empty())
 		// std::cout << "No index found" << std::endl;
@@ -505,19 +514,32 @@ std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int 
     return vec;
 }
 
-void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post)
+void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post, confData & conf)
 {
     DIR *dir;
     struct dirent *ent;
     std::string url(web.getReq().getUrl());
     
-    url = url.substr(1, url.size());
-    std::cout << "Url = " << url << std::endl;
-    if (!(dir = opendir(url.c_str())))
+    std::string fullpath(url);
+    std::string loc = location_exe(conf, url);
+    if (loc.empty())
+        url = conf.getPath() + url.substr(1, url.size());
+    else
     {
-        std::ofstream out(url.c_str());
+        fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(1, url.size());
+        url = url.substr(1, url.size());
+    }
+    std::cout << "Url = " << url << std::endl;
+    if (!(dir = opendir(fullpath.c_str())))
+    {
+        if (fullpath[0] == '.' && fullpath[1] == '/')
+            fullpath.erase(0, 2);
+        std::cout << fullpath << std::endl;
+        std::ofstream out(fullpath.c_str());
         if (!out.is_open())
-            printerr("Thinkge");
+        {
+            std::cout << errno << std::endl;
+        }
         for(int i = 0; i < post.size(); i++)
         {
             out << post[i].first + "=" + post[i].second;

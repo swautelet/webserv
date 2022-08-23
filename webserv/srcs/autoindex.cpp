@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/22 12:47:28 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 14:25:44 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,21 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
     int autodex = 0;
 
     std::cout << "autoindex" << std::endl;
-    // std::cout << "--------------AUTOINDEX CREATION---------------" << std::endl;
+    std::cout << "--------------AUTOINDEX CREATION---------------" << std::endl;
     if (web.getReq().getUrl().size() > 1)
-        path = web.getReq().getUrl().substr(1, web.getReq().getUrl().size());
+        path = conf.getPath();
     else
-        path = web.getReq().getUrl();
+        path = conf.getPath();
     if (path.rfind("/") == path.size() - 1)
         path = path.substr(0, path.size() - 1);
     if (url.rfind("/") == url.size() - 1)
         url = url.substr(0, url.size() - 1);
+    if (url[0] == '.' && url[1] == '/')
+        url.erase(0, 2);
     if (stat(path.c_str(), &info) != 0)
         // std::cout << "AH\n";
-    // std::cout << "!!!!!!!!!!!!!!PATH == " << path << std::endl;
-    // std::cout << "*---------------------------------------------*url == " << url << std::endl;
+    std::cout << "!!!!!!!!!!!!!!PATH == " << path << std::endl;
+    std::cout << "*---------------------------------------------*url == " << url << std::endl;
     while(++i < conf.getLocationNbr())
     {
         if (!conf.getLocation(i).getLocation_name().compare(path))
@@ -73,32 +75,34 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
 		tmp += "<body>";
 		tmp += "<h1>Index of ";
 		tmp += url + "</h1><hr><pre>";
+        if (url.find("/") == std::string::npos)
+            url = "";
+        else
+            url = url.substr(url.find("/"), url.size());
+        std::cout << url << std::endl;
         while ((ent = readdir(dir)) != NULL)
         {
             if (strcmp(ent->d_name, "."))
             {
-                    // std::cout << "---- " << url << std::endl;
+                    std::cout << "---- " << url << std::endl;
+                    std::cout << "---- " << path << std::endl;
                     tmp += "<a href=";
                     if (!strcmp(ent->d_name, ".."))
                     {
-                        if (urlz[0] == '.')
-                            urlz.erase(0, 1);
-                        if (urlz.rfind("/") == 0)
-                            tmp += "/";
-                        else
-                            tmp += urlz.substr(0, urlz.rfind("/"));
-                        
+                        tmp += url.substr(0, url.rfind("/"));
+                        tmp += "/";
                         tmp += ">";
                         tmp += ent->d_name;
                         tmp += " </a>\n";
                     }
                     else
                     {
-                        if (url.compare("."))
+                        if (!url.empty())
+                        {
+                            tmp += url;
                             tmp += "/";
+                        }
                         // std::cout << "Hyperlink " << path + "/" + ent->d_name << std::endl;
-                        tmp += path;
-                        tmp += "/";
                         tmp += ent->d_name;
                         tmp += ">";
                         tmp += ent->d_name;
@@ -112,6 +116,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
 		tmp += "</html>";
     }
     index_str = tmp;
+    std::cout << index_str << std::endl;
     web.getRes().setContentType(".html");
     return index_str;
 }

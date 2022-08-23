@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/23 09:37:24 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/23 14:30:00 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void Response::MethodPost(webServ & web, confData & conf)
     if (!nbr)
         printerr("Error: Body doesnt have arguement ...");        
     std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
-    post_exe(web, post);
+    post_exe(web, post, conf);
     MethodGet(web, conf);
 }
 
