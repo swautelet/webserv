@@ -29,6 +29,12 @@ Response::Response(const Response & other)
 
 Response &Response::operator=(Response const & other)
 {
+	version = other.getVersion();
+	status = other.getStatus();
+	setStatMsg();
+	content_type = other.getContentType();
+	body = other.getBody();
+	full_response = other.getFullResponse();
 	return (*this);
 }
 
@@ -347,16 +353,14 @@ std::cout << "DELETE Method " << std::endl;
 std::cout << "File " << fullpath << " deleted successfully" << std::endl;
 		setStatus(200);
 		setContentType();
-		body = 	"File " + fullpath + " deleted successfully\n";
-		setContentLenght();
+		setBody("File " + fullpath + " deleted successfully\n");
 	}
 	else
 	{
 std::cout << "File could'nt be deleted fullpath was : " << fullpath << std::endl;
 		setStatus(404);
-		body = "";
-		setContentLenght();
-	}
+		setBody("");
+		}
 }
 
 void Response::concat_response()
@@ -391,6 +395,11 @@ std::string Response::getFullResponse() const
     return full_response;
 }
 
+std::string Response::getVersion() const
+{
+	return version;
+}
+
 void Response::init()
 {
     
@@ -421,4 +430,15 @@ void	Response::seterrorpage()
 void  Response::setContentLenght()
 {
 	content_lenght = itoa(body.size());
+}
+
+void Response::setBody(std::string str)
+{
+	body = str;
+	setContentLenght();
+}
+
+int Response::getStatus() const
+{
+	return status;
 }

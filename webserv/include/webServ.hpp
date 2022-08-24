@@ -20,7 +20,7 @@ class webServ
         webServ();
         ~webServ();
         webServ(std::string argv);
-        webServ(const webServ & other);
+        webServ(webServ & other);
         webServ &operator=(webServ const & other);
         Conf &getConf();
         Request & getReq();

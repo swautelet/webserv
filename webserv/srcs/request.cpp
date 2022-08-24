@@ -22,9 +22,8 @@ Request::~Request()
 
 }
 
-Request::Request(const Request & other)
+Request::Request(const Request & other):method(other.getMethod()), url(other.getUrl()), version(other.getVersion()), header(other.getHeader()), body(other.getBody()), type_data(other.getDataType())
 {
-    *this = other;
 }
             
 void Request::getInfo(int connection)

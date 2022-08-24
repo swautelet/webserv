@@ -38,7 +38,7 @@ webServ::~webServ()
 	}
 }
 
-webServ::webServ(const webServ & other)
+webServ::webServ(webServ & other):conf(other.getConf()), req(other.getReq()), res(other.getRes()), sock(other.getSock()), indexing(other.getAutodex())
 {
     
 }

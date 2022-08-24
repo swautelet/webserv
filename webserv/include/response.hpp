@@ -38,12 +38,15 @@ class Response
     	void  setContentType(std::string str);
 		void  setContentType();
 		void  seterrorpage();
+		void  setBody(std::string str);
 		void  setContentLenght();
+		std::string getVersion() const;
         std::string getResponse() const;
         std::string getContentLenght() const;
         std::string getContentType() const;
         std::string getBody() const;
         std::string getFullResponse() const;
+		int getStatus() const;
     private:
         std::string version;
         int status;

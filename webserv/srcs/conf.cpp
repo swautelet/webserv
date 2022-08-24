@@ -24,7 +24,12 @@ Conf::~Conf()
 
 Conf::Conf(const Conf & other)
 {
-    *this = other;
+	nbr_serv = other.getNbrServer();
+	confList = new std::vector<confData>(nbr_serv);
+	for (int i = 0; i < nbr_serv; i++)
+	{
+		(*confList)[i] = other.getConflist(i);
+	}
 }
 
 void Conf::print_info()

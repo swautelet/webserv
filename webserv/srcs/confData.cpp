@@ -26,9 +26,13 @@ confData::~confData()
 
 }
 
-confData::confData(const confData & other)
+confData::confData(const confData & other):address(other.getAdress()), port(other.getPort()), path(other.getPath()), serv_name(other.getServName()), method(other.getMethod()), index(other.getIndex()), error_page(other.getErrorPage()), body_size(other.getBodySize()), autoindex(other.getAutoIndex()), nbr_loc(other.getLocationNbr())
 {
-    *this = other;
+	loc = new std::vector<location>(nbr_loc);
+	for (int i = 0; i < nbr_loc; i++)
+	{
+		(*loc)[i] = other.getLocation(i);
+	}
 }
 
 const std::string& confData::getAdress() const
