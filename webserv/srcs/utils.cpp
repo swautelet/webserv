@@ -30,7 +30,7 @@ std::string location_exe(confData & conf, std::string req_file)
 	{
 		std::cout << "Actual req_file : " << req_file << std::endl;
 		if (!conf.LocationFinder(req_file).getLocation_name().empty())
-			return conf.getGoodLocation(req_file).getLocation_name();
+			return conf.LocationFinder(req_file).getLocation_name();
 		if (!req_file.rfind('/') && !conf.LocationFinder("/").getLocation_name().empty())
 			return "/";
 		req_file = req_file.substr(0, req_file.rfind('/'));

@@ -68,32 +68,32 @@ void Request::getInfo(int connection)
     return;
 }
 
-std::string Request::getUrl()
+std::string Request::getUrl() const
 {
     return url;
 }
 
-std::string Request::getMethod()
+std::string Request::getMethod() const
 {
     return method;
 }
 
-std::string Request::getVersion()
+std::string Request::getVersion() const
 {
     return version;
 }
 
-std::string Request::getHeader()
+std::string Request::getHeader() const
 {
     return header;
 }
 
-std::vector<std::string>&	Request::getDataType()
+ const std::vector<std::string>&	Request::getDataType() const
 {
 	return type_data;
 }
 
-std::string Request::getBody()
+std::string Request::getBody() const
 {
     return body;
 }

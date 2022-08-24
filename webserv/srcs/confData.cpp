@@ -36,56 +36,56 @@ const std::string& confData::getAdress() const
     return address;
 }
 
-std::string confData::getPort()
+std::string confData::getPort() const
 {
     return port;
 }
-std::string confData::getPath()
+std::string confData::getPath() const
 {
     return path;
 }
 
-std::string confData::getServName()
+std::string confData::getServName() const
 {
     return serv_name;
 }
 
-std::string confData::getMethod()
+std::string confData::getMethod() const
 {
     return method;
 }
 
-std::vector<std::string> confData::getIndex()
+std::vector<std::string> confData::getIndex() const
 {
     return index;
 }
 
-std::string confData::getErrorPage()
+std::string confData::getErrorPage() const
 {
     return error_page;
 }
 
-std::string confData::getBodySize()
+std::string confData::getBodySize() const
 {
     return body_size;
 }
 
-int confData::getLocationNbr()
+int confData::getLocationNbr() const
 {
     return nbr_loc;
 }
 
-int confData::getAutoIndex()
+int confData::getAutoIndex() const
 {
     return autoindex;
 }
 
-location & confData::getLocation(int index)
+location & confData::getLocation(int index) const
 {
     return (*loc)[index];
 }
 
-location & confData::getGoodLocation(std::string str)
+location & confData::getGoodLocation(std::string str) const
 {
     for (int i = 0; i < nbr_loc; i++)
         if (!(*loc)[i].getLocation_name().compare(str))
@@ -93,16 +93,16 @@ location & confData::getGoodLocation(std::string str)
     return (*loc)[0];
 }
 
-location& confData::LocationFinder(std::string str)
+location& confData::LocationFinder(std::string str) const
 {
 	std::string name = str.substr(0, str.find('/', 1));
-	std::cout << "I look for the location with name : " << name << std::endl;
+//std::cout << "I look for the location with name : " << name << std::endl;
     for (int i = 0; i < nbr_loc; i++)
 	{
-		//std::cout << "I compare  with location : " << (*loc)[i].getLocation_name() << std::endl;
+//std::cout << "I compare  with location : " << (*loc)[i].getLocation_name() << std::endl;
         if (!(*loc)[i].getLocation_name().compare(name))
 		{
-			std::cout << "I return a location " << std::endl;
+//std::cout << "I return a location " << std::endl;
             return (*loc)[i];
 		}
 	}

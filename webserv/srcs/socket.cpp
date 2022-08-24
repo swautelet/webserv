@@ -87,22 +87,22 @@ void Socket::set_port(std::string port)
     this->port = port;
 }
 
-sockaddr_in Socket::getServ_address()
+sockaddr_in Socket::getServ_address() const
 {
     return serv_address;
 }
 
-std::string Socket::getIp()
+std::string Socket::getIp() const
 {
     return ip;
 }
 
-std::string Socket::getPort()
+std::string Socket::getPort() const
 {
     return port;
 }
 
-int Socket::getFd()
+int Socket::getFd() const
 {
     return fd;
 }

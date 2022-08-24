@@ -33,39 +33,39 @@ void Conf::print_info()
         (*confList)[i].print_info();
 }
 
-std::string Conf::getAddress(int index)
+std::string Conf::getAddress(int index) const
 {
     return (*confList)[index].getAdress();
 }
 
-std::string Conf::getPort(int index)
+std::string Conf::getPort(int index) const
 {
     return (*confList)[index].getPort();
 }
 
-std::string Conf::getPath(int index)
+std::string Conf::getPath(int index) const
 {
     return (*confList)[index].getPath();
 }
-std::string Conf::getServName(int index)
+std::string Conf::getServName(int index) const
 {
     return (*confList)[index].getServName();  
 }
-std::string Conf::getMethod(int index)
+std::string Conf::getMethod(int index) const
 {
     return (*confList)[index].getMethod();     
 }
-std::vector<std::string> Conf::getIndex(int index)
+std::vector<std::string> Conf::getIndex(int index) const
 {
     return (*confList)[index].getIndex();
 }
 
-int Conf::getNbrServer()
+int Conf::getNbrServer() const
 {
     return nbr_serv;
 }
 
-confData & Conf::getConflist(int index)
+confData & Conf::getConflist(int index) const
 {
     return (*confList)[index];
 }

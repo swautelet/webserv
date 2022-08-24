@@ -22,9 +22,9 @@ Autodex::~Autodex()
             
 }
 
-Autodex::Autodex(const Autodex & other)
+Autodex::Autodex(const Autodex & other):index_str(other.getIndexStr())
 {
-    *this = other;
+//    *this = other;
 }
 
 std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
@@ -122,7 +122,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
     return index_str;
 }
 
-std::string Autodex::getIndexStr()
+std::string Autodex::getIndexStr() const
 {
     return index_str;
 }

@@ -30,10 +30,10 @@ class Socket
         int create_socket(confData & conf);
         int create_bind();
         int listen_socket(int max_queue);
-        sockaddr_in getServ_address();
-        std::string getIp();
-        std::string getPort();
-        int getFd();
+        sockaddr_in getServ_address() const;
+        std::string getIp() const;
+        std::string getPort() const;
+        int getFd() const;
         ~Socket();
     private:
         sockaddr_in serv_address;

@@ -43,27 +43,27 @@ webServ::webServ(const webServ & other)
     
 }
 
-Conf & webServ::getConf()
+Conf & webServ::getConf() 
 {
     return conf;
 }
 
-std::vector<Socket> & webServ::getSock()
+std::vector<Socket> & webServ::getSock() 
 {
     return sock;
 }
 
-Request & webServ::getReq()
+Request & webServ::getReq() 
 {
     return req;
 }
 
-Response & webServ::getRes()
+Response & webServ::getRes() 
 {
     return res;
 }
 
-Autodex & webServ::getAutodex()
+Autodex & webServ::getAutodex() 
 {
     return indexing;
 }

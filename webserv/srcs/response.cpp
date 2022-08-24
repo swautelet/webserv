@@ -34,10 +34,10 @@ Response &Response::operator=(Response const & other)
 
 void Response::find_method(webServ & web, int i)
 {
-    std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
-    std::cout << "Method available = " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod() << std::endl;
-	std::cout << "In location : " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getLocation_name() << std::endl;
-	std::cout << "With URL : " << web.getReq().getUrl() << std::endl;
+//std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
+//std::cout << "Method available = " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod() << std::endl;
+//std::cout << "In location : " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getLocation_name() << std::endl;
+//std::cout << "With URL : " << web.getReq().getUrl() << std::endl;
 	version = web.getReq().getVersion();
     if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
@@ -50,6 +50,8 @@ void Response::find_method(webServ & web, int i)
 		std::cout << "Method forbidden" << std::endl;
 		setStatus(405);
 		setContentType();
+		content_lenght = "0";
+		body = "";
 	}
 }
 
@@ -337,7 +339,7 @@ std::cout << "DELETE Method " << std::endl;
         url = conf.getPath() + url.substr(1, url.size());
     else
     {
-        fullpath = loc.getPath() + "/" +url.substr(loc.getLocation_name().size(), url.size());
+        fullpath = loc.getPath() + url.substr(loc.getLocation_name().size(), url.size());
         url = url.substr(1, url.size());
     }
 	if(remove(fullpath.c_str()) == 0 )
@@ -346,12 +348,14 @@ std::cout << "File " << fullpath << " deleted successfully" << std::endl;
 		setStatus(200);
 		setContentType();
 		body = 	"File " + fullpath + " deleted successfully\n";
+		setContentLenght();
 	}
 	else
 	{
 std::cout << "File could'nt be deleted fullpath was : " << fullpath << std::endl;
 		setStatus(404);
 		body = "";
+		setContentLenght();
 	}
 }
 
@@ -362,27 +366,27 @@ void Response::concat_response()
 //	std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
 }
 
-std::string Response::getResponse()
+std::string Response::getResponse() const
 {
     return full_response;
 }
 
-std::string Response::getContentLenght()
+std::string Response::getContentLenght() const
 {
     return content_lenght;
 }
 
-std::string Response::getContentType()
+std::string Response::getContentType() const
 {
     return content_type;
 }
 
-std::string Response::getBody()
+std::string Response::getBody() const
 {
     return body;
 }
 
-std::string Response::getFullResponse()
+std::string Response::getFullResponse() const
 {
     return full_response;
 }
@@ -390,4 +394,31 @@ std::string Response::getFullResponse()
 void Response::init()
 {
     
+}
+
+void	Response::seterrorpage()
+{
+	std::ifstream errorpage;
+	std::string tmp;
+	std::cout << "Try to set errorpage : " << "www/error/" + itoa(status) + ".html" << std::endl;
+	errorpage.open("www/error/" + itoa(status) + ".html");
+	if (errorpage.is_open())
+	{
+		body.clear();
+		while(getline(errorpage, tmp))
+		{
+			body += tmp;
+		}
+		errorpage.close();
+	}
+	else
+	{
+		body = "";
+	}
+	setContentLenght();
+}
+
+void  Response::setContentLenght()
+{
+	content_lenght = itoa(body.size());
 }

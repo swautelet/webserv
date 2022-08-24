@@ -37,11 +37,13 @@ class Response
         void  setStatMsg();
     	void  setContentType(std::string str);
 		void  setContentType();
-        std::string getResponse();
-        std::string getContentLenght();
-        std::string getContentType();
-        std::string getBody();
-        std::string getFullResponse();
+		void  seterrorpage();
+		void  setContentLenght();
+        std::string getResponse() const;
+        std::string getContentLenght() const;
+        std::string getContentType() const;
+        std::string getBody() const;
+        std::string getFullResponse() const;
     private:
         std::string version;
         int status;
