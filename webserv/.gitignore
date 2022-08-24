@@ -1,5 +1,5 @@
-*/*.o
-*/*.DS_Store
-*/*.out
-*/*.log
+**/**.o
+**/**.DS_Store
+**/**.out
+**/**.log
 Webserv
