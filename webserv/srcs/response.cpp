@@ -34,10 +34,10 @@ Response &Response::operator=(Response const & other)
 
 void Response::find_method(webServ & web, int i)
 {
-/*    std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
+    std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
     std::cout << "Method available = " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod() << std::endl;
 	std::cout << "In location : " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getLocation_name() << std::endl;
-	std::cout << "With URL : " << web.getReq().getUrl() << std::endl;*/
+	std::cout << "With URL : " << web.getReq().getUrl() << std::endl;
 	version = web.getReq().getVersion();
     if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
@@ -48,7 +48,7 @@ void Response::find_method(webServ & web, int i)
 	else
 	{
 		std::cout << "Method forbidden" << std::endl;
-		setStatus(403);
+		setStatus(405);
 		setContentType();
 	}
 }
@@ -328,27 +328,28 @@ void Response::MethodPost(webServ & web, confData & conf)
 
 void Response::delMethod(webServ&  web, confData& conf)
 {
-//std::cout << "DELETE Method " << std::endl;
+std::cout << "DELETE Method " << std::endl;
 	std::string url(web.getReq().getUrl());
-    std::string fullpath(url);
-    std::string loc = location_exe(conf, url);
-	if (loc.empty())
+    location loc = conf.LocationFinder(url);
+    std::string fullpath(loc.getPath() + url.substr(loc.getLocation_name().size(), url.size()));
+	std::cout << "url = " << url << std::endl << "loc = " << loc.getLocation_name() << std::endl << "fullpath = " << fullpath << std::endl;
+	if (loc.getLocation_name().empty())
         url = conf.getPath() + url.substr(1, url.size());
     else
     {
-        fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(loc.size(), url.size());
+        fullpath = loc.getPath() + "/" +url.substr(loc.getLocation_name().size(), url.size());
         url = url.substr(1, url.size());
     }
 	if(remove(fullpath.c_str()) == 0 )
 	{
-//std::cout << "File " << fullpath << " deleted successfully" << std::endl;
+std::cout << "File " << fullpath << " deleted successfully" << std::endl;
 		setStatus(200);
 		setContentType();
 		body = 	"File " + fullpath + " deleted successfully\n";
 	}
 	else
 	{
-//std::cout << "File could'nt be deleted" << std::endl;
+std::cout << "File could'nt be deleted fullpath was : " << fullpath << std::endl;
 		setStatus(404);
 		body = "";
 	}

@@ -29,9 +29,9 @@ std::string location_exe(confData & conf, std::string req_file)
 	while (!req_file.empty() && req_file.find("/") != std::string::npos)
 	{
 		std::cout << "Actual req_file : " << req_file << std::endl;
-		if (conf.LocationFinder(req_file))
+		if (!conf.LocationFinder(req_file).getLocation_name().empty())
 			return conf.getGoodLocation(req_file).getLocation_name();
-		if (!req_file.rfind('/') && conf.LocationFinder("/"))
+		if (!req_file.rfind('/') && !conf.LocationFinder("/").getLocation_name().empty())
 			return "/";
 		req_file = req_file.substr(0, req_file.rfind('/'));
 	}
@@ -104,7 +104,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     
     
 	loc = location_exe(conf, req_file);
-	if (!loc.empty() && conf.LocationFinder(loc))
+	if (!loc.empty() && !conf.LocationFinder(loc).getLocation_name().empty())
 	{
 		std::cout << "Final location is " << loc <<std::endl;
         std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
@@ -147,7 +147,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
         std::cout << "tmp path = " << tmp_path << std::endl;
         std::cout << "req_file = " << req_file << std::endl;
         std::cout << "fullpath = " << fullpath << std::endl;
-        if (conf.LocationFinder(loc))
+        if (!conf.LocationFinder(loc).getLocation_name().empty())
         {
             if (!conf.getGoodLocation(loc).getAutoIndex() && conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = PATH_ERROR;

@@ -96,9 +96,16 @@ location & confData::getGoodLocation(std::string str)
 location& confData::LocationFinder(std::string str)
 {
 	std::string name = str.substr(0, str.find('/', 1));
+	std::cout << "I look for the location with name : " << name << std::endl;
     for (int i = 0; i < nbr_loc; i++)
+	{
+		//std::cout << "I compare  with location : " << (*loc)[i].getLocation_name() << std::endl;
         if (!(*loc)[i].getLocation_name().compare(name))
+		{
+			std::cout << "I return a location " << std::endl;
             return (*loc)[i];
+		}
+	}
     return (*loc)[0];
 }
 

@@ -25,42 +25,42 @@ location::~location()
 
 }
 
-location::location(const location & other)
+location::location(const location & other):path(other.getPath()), method(other.getMethod()), error_page(other.getErrorPage()), index(other.getIndex()), location_name(other.getLocation_name()), body_size(other.getBodySize()), autoindex(other.getAutoIndex())
 {
     
 }
 
-std::string location::getPath()
+std::string location::getPath() const
 {
     return path;
 }
 
-std::vector<std::string> location::getIndex()
+std::vector<std::string> location::getIndex() const
 {
     return index;
 }
 
-std::string location::getMethod()
+std::string location::getMethod() const
 {
     return method;   
 }
 
-std::string location::getLocation_name()
+std::string location::getLocation_name() const
 {
     return location_name;   
 }
 
-std::string location::getErrorPage()
+std::string location::getErrorPage() const
 {
     return location_name;   
 }
 
-std::string location::getBodySize()
+std::string location::getBodySize() const
 {
     return body_size;   
 }
 
-int location::getAutoIndex()
+int location::getAutoIndex() const
 {
     return autoindex;
 }
