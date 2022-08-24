@@ -93,12 +93,13 @@ location & confData::getGoodLocation(std::string str)
     return (*loc)[0];
 }
 
-int confData::LocationFinder(std::string str)
+location& confData::LocationFinder(std::string str)
 {
+	std::string name = str.substr(0, str.find('/', 1));
     for (int i = 0; i < nbr_loc; i++)
-        if (!(*loc)[i].getLocation_name().compare(str))
-            return 1;
-    return 0;
+        if (!(*loc)[i].getLocation_name().compare(name))
+            return (*loc)[i];
+    return (*loc)[0];
 }
 
 void confData::setAddress(std::string str)

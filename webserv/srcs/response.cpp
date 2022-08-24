@@ -34,14 +34,23 @@ Response &Response::operator=(Response const & other)
 
 void Response::find_method(webServ & web, int i)
 {
-    std::cout << "find_method" << std::endl;
-    std::cout << web.getReq().getMethod() << std::endl;
-    if (web.getReq().getMethod() == "GET")
+/*    std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
+    std::cout << "Method available = " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod() << std::endl;
+	std::cout << "In location : " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getLocation_name() << std::endl;
+	std::cout << "With URL : " << web.getReq().getUrl() << std::endl;*/
+	version = web.getReq().getVersion();
+    if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
-    if (web.getReq().getMethod() == "DELETE")
+    else if (web.getReq().getMethod() == "DELETE" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("DELETE") != std::string::npos)
         delMethod(web, web.getConf().getConflist(i));
-    if (web.getReq().getMethod() == "POST")
+    else if (web.getReq().getMethod() == "POST" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("POST") != std::string::npos)
         MethodPost(web, web.getConf().getConflist(i));
+	else
+	{
+		std::cout << "Method forbidden" << std::endl;
+		setStatus(403);
+		setContentType();
+	}
 }
 
 void Response::setStatus(int status) // Todo : make the status code work
@@ -256,11 +265,11 @@ void Response::setContentType()
 
 void Response::setContentType(std::string fullpath)
 {
-    //std:: cout << "i received fullpath =========== " << fullpath << std::endl;
+//std:: cout << "i received fullpath =========== " << fullpath << std::endl;
 	if (fullpath.rfind('.') != std::string::npos)
 	{
 		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size());
-//		std::cout << "looking for type of file with = " << type << std::endl;
+//std::cout << "looking for type of file with = " << type << std::endl;
 		if (type == "html")
 			content_type = "text/html";
         else if (type == "gif")
@@ -282,7 +291,7 @@ void Response::setContentType(std::string fullpath)
 	}
 	else
 		content_type = "text/plain";
-    std::cout << "content_type = " << content_type << std::endl;
+//std::cout << "content_type = " << content_type << std::endl;
 }
 
 int how_many(std::string str)
@@ -292,7 +301,7 @@ int how_many(std::string str)
     while(str[++i])
         if(isspace(str[i]))
             count++;
-    std::cout << count << std::endl;
+//std::cout << count << std::endl;
     return count;
 }
  
@@ -308,7 +317,7 @@ void Response::MethodGet(webServ & web, confData & conf)
 
 void Response::MethodPost(webServ & web, confData & conf)
 {
-    std::cout << "POST\n";
+//std::cout << "POST\n";
     int nbr = post_element_nbr(web.getReq().getBody());
     if (!nbr)
         printerr("Error: Body doesnt have arguement ...");        
@@ -319,7 +328,7 @@ void Response::MethodPost(webServ & web, confData & conf)
 
 void Response::delMethod(webServ&  web, confData& conf)
 {
-	std::cout << "DELETE Method " << std::endl;
+//std::cout << "DELETE Method " << std::endl;
 	std::string url(web.getReq().getUrl());
     std::string fullpath(url);
     std::string loc = location_exe(conf, url);
@@ -332,14 +341,14 @@ void Response::delMethod(webServ&  web, confData& conf)
     }
 	if(remove(fullpath.c_str()) == 0 )
 	{
-		std::cout << "File " << fullpath << " deleted successfully" << std::endl;
+//std::cout << "File " << fullpath << " deleted successfully" << std::endl;
 		setStatus(200);
 		setContentType();
 		body = 	"File " + fullpath + " deleted successfully\n";
 	}
 	else
 	{
-		std::cout << "File could'nt be deleted" << std::endl;
+//std::cout << "File could'nt be deleted" << std::endl;
 		setStatus(404);
 		body = "";
 	}

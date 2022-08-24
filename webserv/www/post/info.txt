@@ -1,2 +1,2 @@
-login=a
-password=f
+login=awd
+password=awd
