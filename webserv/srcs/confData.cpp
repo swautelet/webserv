@@ -119,11 +119,12 @@ const location & confData::getGoodLocation(std::string str) const
 
 const location& confData::LocationFinder(std::string str) const
 {
-	std::string name = str.substr(0, str.find('/', 1));
+//	std::string name = str.substr(0, str.find('/', 1));
 //std::cout << "I look for the location with name : " << name << std::endl;
-    for (unsigned long i = 0; i < nbr_loc; i++)
+    for (unsigned long i = 1; i < nbr_loc; i++)
 	{
 //std::cout << "I compare  with location : " << (*loc)[i].getLocation_name() << std::endl;
+		std::string name = str.substr(0, loc[i].getLocation_name().size());
         if (!(loc)[i].getLocation_name().compare(name))
 		{
 //std::cout << "I return a location " << std::endl;

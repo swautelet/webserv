@@ -45,8 +45,8 @@ void Request::getInfo(int connection)
     char buff[10000];
     if ((ret = recv(connection, buff, sizeof(buff), 0)) < 0)
         printerr("Error with recv ...");
-    if (ret == 0)
-        printerr("Error with recv : Connection close ...");
+//	if (ret == 0)
+//        printerr("Error with recv : Connection close ...");
     std::cout << "---------------------------\n" << buff << "\n-------------------------\n";
  //   req = ft_split(buff, '\n');
  //   req2 = ft_split(req[0], ' ');

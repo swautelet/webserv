@@ -35,7 +35,7 @@ class location
         void setAutoIndex(std::string str);
         void setErrorPage(std::string str);
         int scrapData(std::string str, int i);
-        void print_info();
+        void print_info() const;
     private:
         std::string path;
         std::string method;

@@ -149,7 +149,7 @@ void location::setAutoIndex(std::string str)
         autoindex = 0;
 }
 
-void location::print_info()
+void location::print_info() const
 {
 //    int i = -1;
     if (!location_name.empty())

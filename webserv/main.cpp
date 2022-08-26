@@ -102,6 +102,8 @@ int main(int argc, char **argv)
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
     memcpy(&copyset, &fdset, sizeof(fdset));
     signal(SIGINT, &ctr_c);
+	std::cout << "location 0 is :" << std::endl;
+	web.getConf().getConflist(0).getLocation(0).print_info();
     while(1)
     {
 		//
