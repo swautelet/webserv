@@ -57,7 +57,7 @@ void error_handling(webServ & web)
 
 void engine(webServ & web, int connection, int addrlen)
 {
-    for(unsigned long i = 0; i <= web.getConf().getNbrServer(); i++)
+    for(unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         if (FD_ISSET(web.getSock()[i].getFd(), &fdset))
         {

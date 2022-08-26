@@ -102,7 +102,7 @@ std::string Socket::getPort() const
     return port;
 }
 
-int Socket::getFd() const
+const int& Socket::getFd() const
 {
     return fd;
 }

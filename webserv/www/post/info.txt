@@ -1,2 +1,2 @@
-login=adef
-password=esfesv=awd
+login=awd
+password=awd

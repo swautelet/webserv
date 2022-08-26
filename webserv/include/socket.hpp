@@ -33,7 +33,7 @@ class Socket
         sockaddr_in getServ_address() const;
         std::string getIp() const;
         std::string getPort() const;
-        int getFd() const;
+        const int& getFd() const;
         ~Socket();
     private:
         sockaddr_in serv_address;
