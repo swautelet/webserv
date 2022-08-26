@@ -21,6 +21,7 @@ class Autodex
         Autodex();
         ~Autodex();
         Autodex(const Autodex & other);
+		Autodex& operator=(const Autodex& other);
         Autodex(std::string path, confData & conf);
         std::string create_dex(webServ & web, confData & conf, std::string url);
         std::string getIndexStr() const;

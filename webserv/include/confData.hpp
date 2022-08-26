@@ -23,6 +23,7 @@ class confData
         confData();
         ~confData();
         confData(const confData & other);
+		confData& operator=(const confData& other);
         int parsing(std::string path);
         int getLocationNbr() const;
         int getAutoIndex() const;
@@ -57,7 +58,7 @@ class confData
         std::string error_page;
         std::string body_size;
         int autoindex;
-        int nbr_loc;
+        unsigned long nbr_loc;
         std::vector<location> loc;
 };
 

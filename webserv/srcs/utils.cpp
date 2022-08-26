@@ -40,11 +40,12 @@ std::string location_exe(confData & conf, std::string req_file)
 
 std::string index_exe(confData & conf, std::string url, std::string loc)
 {
+	(void)url;
 	std::string index = "";
 	struct stat info;
 	if (!loc.empty())
 	{
-		for (int i = 0; i < conf.getGoodLocation(loc).getIndex().size(); i++)
+		for (unsigned long i = 0; i < conf.getGoodLocation(loc).getIndex().size(); i++)
 		{
 			index = conf.getGoodLocation(loc).getPath() + "/" + conf.getGoodLocation(loc).getIndex()[i];
 			std::cout << "Index location == " << index << std::endl;
@@ -60,7 +61,7 @@ std::string index_exe(confData & conf, std::string url, std::string loc)
 	}
 	else
 	{
-		for (int i = 0; i < conf.getIndex().size(); i++)
+		for (unsigned long i = 0; i < conf.getIndex().size(); i++)
 		{
 			index = conf.getPath() + "/" + conf.getIndex()[i];
 			std::cout << "Index == " << index << std::endl;
@@ -87,15 +88,14 @@ int file_exist(std::string file)
 
 std::string readHTML(webServ & web, confData & conf, std::string req_file) // Need to be change, actually disgusting
 {
-	int j;
-    int autodex = 0;
-    struct stat info;
+//    int autodex = 0;
+//    struct stat info;
 	std::stringstream buff;
     std::string error_path;
     std::ifstream fd;
     std::string tmp;
     DIR *dir;
-    struct dirent *ent;
+//    struct dirent *ent;
     std::string fullpath;
 	std::string url;
     std::string tmp_path;
@@ -316,7 +316,7 @@ int check_quote(std::string str)
 
 int check_server_nbr(std::string str, std::string to_find)
 {
-	int count = 0;
+//	int count = 0;
 	int find = 0;
 	if (str.empty() || to_find.empty())
 		return 0;
@@ -395,7 +395,7 @@ char	*next_string(std::string str , std::string c)
 char	**server_split(std::string str, std::string strset)
 {
 	int		i;
-	int j  = 0;
+//	int j  = 0;
 	char	**tab;
 
 	i = 0;
@@ -455,7 +455,7 @@ char *strnstr(const char *s, const char *find, size_t slen)
 void remove_spaces(std::string &str)
 {
     int i = 0;
-    int j = str.size() - 1;
+    unsigned long j = str.size() - 1;
     while (str[i])
     {
         while(isspace(str[i]))
@@ -483,7 +483,7 @@ std::string BaseLocationExist(confData conf)
 void	splitstring(std::string str, std::vector<std::string>& vect, char c)
 {
 	std::string temp = "";
-	for(int i=0; i < str.length(); ++i)
+	for(unsigned long i=0; i < str.length(); ++i)
 	{
 		if(str[i] == c)
 		{
@@ -539,7 +539,7 @@ std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int 
 void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post, confData & conf)
 {
     DIR *dir;
-    struct dirent *ent;
+//    struct dirent *ent;
     std::string url(web.getReq().getUrl());
     
     std::string fullpath(url);
@@ -561,7 +561,7 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
         {
             std::cout << errno << std::endl;
         }
-        for(int i = 0; i < post.size(); i++)
+        for(unsigned long i = 0; i < post.size(); i++)
         {
             out << post[i].first + "=" + post[i].second;
             if (i + 1 < post.size())

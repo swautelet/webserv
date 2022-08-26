@@ -29,10 +29,30 @@ confData::~confData()
 confData::confData(const confData & other):address(other.getAdress()), port(other.getPort()), path(other.getPath()), serv_name(other.getServName()), method(other.getMethod()), index(other.getIndex()), error_page(other.getErrorPage()), body_size(other.getBodySize()), autoindex(other.getAutoIndex()), nbr_loc(other.getLocationNbr()), loc(nbr_loc)
 {
 //	loc = new std::vector<location>(nbr_loc);
-	for (int i = 0; i < nbr_loc; i++)
+	for (unsigned long i = 0; i < nbr_loc; i++)
 	{
 		(loc)[i] = other.getLocation(i);
 	}
+}
+
+confData& confData::operator=(const confData& other)
+{
+	address = other.getAdress();
+	port = other.getPort();
+	path = other.getPath();
+	serv_name = other.getServName();
+	method = other.getMethod();
+	index = other.getIndex();
+	error_page = other.getErrorPage();
+	body_size = other.getBodySize();
+	autoindex = other.getAutoIndex();
+	nbr_loc = other.getLocationNbr();
+	loc.clear();
+	for (unsigned long i = 0; i < nbr_loc; i++)
+	{
+		loc.push_back(other.getLocation(i));
+	}
+	return *this;
 }
 
 const std::string& confData::getAdress() const
@@ -91,7 +111,7 @@ const location & confData::getLocation(int index) const
 
 const location & confData::getGoodLocation(std::string str) const
 {
-    for (int i = 0; i < nbr_loc; i++)
+    for (unsigned long i = 0; i < nbr_loc; i++)
         if (!(loc)[i].getLocation_name().compare(str))
             return (loc)[i];
     return (loc)[0];
@@ -101,7 +121,7 @@ const location& confData::LocationFinder(std::string str) const
 {
 	std::string name = str.substr(0, str.find('/', 1));
 //std::cout << "I look for the location with name : " << name << std::endl;
-    for (int i = 0; i < nbr_loc; i++)
+    for (unsigned long i = 0; i < nbr_loc; i++)
 	{
 //std::cout << "I compare  with location : " << (*loc)[i].getLocation_name() << std::endl;
         if (!(loc)[i].getLocation_name().compare(name))
@@ -115,16 +135,18 @@ const location& confData::LocationFinder(std::string str) const
 
 void confData::setAddress(std::string str)
 {
-    char **tmp;
+    std::vector<std::string> tmp;
     remove_spaces(str);
     address = str.substr(strlen("listen "), str.size());
     if (address.empty() || address.find(":") == std::string::npos)
         return;
-    address.resize(address.size() - 1);
-    tmp = ft_split((char*)address.c_str(), ':');    
+//	address.resize(address.size() - 1);
+//    tmp = ft_split((char*)address.c_str(), ':');
+	splitstring(address, tmp, ':');
     address = tmp[0];
     port = tmp[1];
-    free(tmp);
+	port.pop_back();
+//    free(tmp);
 }
 
 void confData::setPath(std::string str)
@@ -178,10 +200,15 @@ void confData::setIndex(std::string str)
             return;
         str = str.substr(str.find(" ") + 1, str.size());
     }
+	str.pop_back();
     index.push_back(str);
+	for (unsigned long i = 0; i < index.size(); i++)
+	{
+		std::cout << "Index is |" << index[i] << "|" << std::endl;
+	}
     if (index.back().empty())
         return;
-    index.resize(index.size() - 1);
+//    index.resize(index.size() - 1);
 }
 
 void confData::setAutoIndex(std::string str)
@@ -221,9 +248,9 @@ int confData::parsing(std::string path)
 
 void confData::print_info()
 {
-    int x = -1;
-    int i = -1;
-    int j = 0;
+//    int x = -1;
+//    int i = -1;
+//    int j = 0;
     std::cout << "[Default]" << std::endl;
     if (!address.empty())
         std::cout << "Address->         " << "[" << address << "]" << std::endl;
@@ -238,7 +265,7 @@ void confData::print_info()
     if (!index.empty())
     {
         std::cout << "Index->           ";
-        while (++i < index.size())
+        for (unsigned long i = 0;i < index.size(); i++)
             std::cout << "[" << index[i] << "]";
         std::cout << std::endl;
     }
@@ -249,10 +276,10 @@ void confData::print_info()
     if (!body_size.empty())
         std::cout << "Body->            " << "[" << body_size << "]" << std::endl;
     std::cout << "Autoindex->       " << "[" << autoindex << "]" << std::endl;
-    while(++x < nbr_loc)
+    for (unsigned long x = 0; x < nbr_loc; x++)
     {
         (loc)[x].print_info();
-        j++;
+//        j++;
     }
     std::cout << "--------------------------------------" << std::endl;
 }
@@ -278,8 +305,8 @@ std::string location_str(std::string str)
 
 void confData::scrapData()
 {
-    int j;
-    static int i = 0;
+  //  int j;
+  //  static int i = 0;
     int index = -1;
     std::string tmp;
     std::string cpy_data(data);
@@ -323,7 +350,7 @@ void confData::scrapData()
 		location next;
 		loc.push_back(next);
 	}
-    for (int x = 0; x < nbr_loc; x++)
+    for (unsigned long x = 0; x < nbr_loc; x++)
     {
         index = (loc)[x].scrapData(location_str(cpy_data), index);
         cpy_data = cpy_data.substr(cpy_data.find("location") + 1, cpy_data.size());

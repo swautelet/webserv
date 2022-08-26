@@ -30,6 +30,18 @@ location::location(const location & other):path(other.getPath()), method(other.g
     
 }
 
+location& location::operator=(const location& other)
+{
+	path = other.getPath();
+	method = other.getMethod();
+	error_page = other.getErrorPage();
+	index = other.getIndex();
+	location_name = other.getLocation_name();
+	body_size = other.getBodySize();
+	autoindex = other.getAutoIndex();
+	return *this;
+}
+
 std::string location::getPath() const
 {
     return path;
@@ -69,9 +81,7 @@ int location::getAutoIndex() const
 void location::setLocation_name(std::string& str)
 {
     remove_spaces(str);
-	std::cout << "second test str.find = " << str.find("location") + strlen("location ")<< "str size = "  << str.size() << "str : " << str  << "string::npos = " << std::string::npos << std::endl;
     location_name = str.substr(str.find("location") + strlen("location "), str.size());
-	std::cout << "third test " << std::endl;
 }
 
 void location::setPath(std::string str)
@@ -105,11 +115,11 @@ void location::setIndex(std::string str)
         index.push_back(tmp);
         str = str.substr(str.find(" ") + 1, str.size());
     }
-    str.pop_back();
+	str.pop_back();
     index.push_back(str);
     if (index.back().empty())
         return;
-    index.resize(index.size() - 1);
+//    index.resize(index.size());
 }
 
 void location::setErrorPage(std::string str)
@@ -141,7 +151,7 @@ void location::setAutoIndex(std::string str)
 
 void location::print_info()
 {
-    int i = -1;
+//    int i = -1;
     if (!location_name.empty())
         std::cout << "[location " << location_name << "]" << std::endl;
     if (!path.empty())
@@ -151,8 +161,10 @@ void location::print_info()
     if (!index.empty())
     {
         std::cout << "Index->           ";
-        while (++i <= index.size())
+        for (unsigned long i = 0; i < index.size(); i++)
+		{
             std::cout << "[" << index[i] << "]";
+		}
         std::cout << std::endl;
     }
     if (!error_page.empty())
@@ -161,10 +173,11 @@ void location::print_info()
         std::cout << "Body_size->       " << "[" << body_size << "]" << std::endl;
     std::cout << "AutoIndex->       " << "[" << autoindex << "]" << std::endl << std::endl;
 }
+
 int location::scrapData(std::string data, int i)
 {
    // (void)data;
-   // (void)i;
+    (void)i;
     std::string tmp;
     tmp = data.substr(0, data.find("\n"));
     setLocation_name(tmp);

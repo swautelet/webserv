@@ -19,6 +19,7 @@ class location
         location();
         location(const location & other);
         ~location();
+		location& operator=(const location& other);
         std::string getLocation_name() const;
         std::string getMethod() const;
         std::vector<std::string> getIndex() const;

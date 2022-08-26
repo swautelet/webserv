@@ -31,7 +31,7 @@ webServ::webServ(std::string argv)
     conf->parsing(argv);
     sock.reserve(conf->getNbrServer());
 	std::cout << "nombre de server = " << conf->getNbrServer() << std::endl;
-	for (int i = 0; i < conf->getNbrServer(); i++)
+	for (unsigned long i = 0; i < conf->getNbrServer(); i++)
 	{
 		Socket* next = new Socket;
 		sock.push_back(*next);

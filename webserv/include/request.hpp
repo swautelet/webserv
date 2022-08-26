@@ -21,6 +21,7 @@ class Request
         Request();
         ~Request();
         Request(const Request & other);
+		Request& operator=(const Request& other);
         void getInfo(int connection);
         std::string getUrl() const;
         std::string getMethod() const;

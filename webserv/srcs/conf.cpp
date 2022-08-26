@@ -12,7 +12,7 @@
 
 #include "../include/header.hpp"
 
-Conf::Conf():confList(1)
+Conf::Conf()
 {
     nbr_serv = 0;
 }
@@ -34,9 +34,16 @@ Conf::Conf(const Conf & other)
 	confList = other.getVectorConflist();
 }
 
+Conf& Conf::operator=(const Conf& other)
+{
+	confList = other.getVectorConflist();
+	nbr_serv = other.getNbrServer();
+	return *this;
+}
+
 void Conf::print_info()
 {
-    for(int i = 0; i < nbr_serv; i++)
+    for(unsigned long i = 0; i < nbr_serv; i++)
         (confList)[i].print_info();
 }
 
@@ -67,7 +74,7 @@ std::vector<std::string> Conf::getIndex(int index) const
     return (confList)[index].getIndex();
 }
 
-int Conf::getNbrServer() const
+unsigned long Conf::getNbrServer() const
 {
     return nbr_serv;
 }
@@ -87,7 +94,7 @@ void Conf::parsing(std::string path)
 		confData next;
 		confList.push_back(next);
 	}
-    for (int i = 0; i < nbr_serv; i++)
+    for (unsigned long i = 0; i < nbr_serv; i++)
         (confList)[i].scrapData();
     std::cout << "nbr_serv == " <<nbr_serv << std::endl;
     print_info();

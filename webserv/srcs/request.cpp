@@ -26,6 +26,18 @@ Request::Request(const Request & other):method(other.getMethod()), url(other.get
 {
 }
             
+Request& Request::operator=(const Request& other)
+{
+	method = other.getMethod();
+	url = other.getUrl();
+	version = other.getVersion();
+	header = other.getHeader();
+	body = other.getBody();
+	type_data = other.getDataType();
+	return *this;
+
+}
+
 void Request::getInfo(int connection)
 {
     std::vector<std::string> req, req2;
@@ -48,7 +60,7 @@ void Request::getInfo(int connection)
 	type_data.clear();
 	std::string str;
     std::string searched = "Accept: ";
-    for (int i = 0; i < req.size(); i++)
+    for (unsigned long i = 0; i < req.size(); i++)
     {
         str = req[i];
         if (!str.substr(0, searched.size()).compare(searched))

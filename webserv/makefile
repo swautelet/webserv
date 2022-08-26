@@ -3,12 +3,12 @@ SRC			= main.cpp srcs/utils.cpp srcs/socket.cpp srcs/response.cpp srcs/request.c
 OBJS	= $(SRC:.cpp=.o)
 CXX			= c++
 RM			= rm -f
-FLAGS		= -Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -I   .
+CPPFLAGS		= -Wall -Wextra -Werror -fsanitize=address -g3 -std=c++98 -I   .
 
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-			$(CXX) $(FLAGS) -o $(NAME) $(OBJS)
+			$(CXX) $(CPPFLAGS) -o $(NAME) $(OBJS)
 
 clean:
 			@$(RM) $(OBJS)
