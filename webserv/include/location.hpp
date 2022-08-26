@@ -26,7 +26,7 @@ class location
         std::string getErrorPage() const;
         std::string getBodySize() const;
         int getAutoIndex() const;
-        void setLocation_name(std::string str);
+        void setLocation_name(std::string& str);
         void setBodySize(std::string str);
         void setPath(std::string str);
         void setMethod(std::string str);

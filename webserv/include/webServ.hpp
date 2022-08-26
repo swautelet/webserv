@@ -28,11 +28,11 @@ class webServ
         std::vector<Socket> &getSock();
         Autodex & getAutodex();
     private:
-        Conf conf;
-        Request req;
-        Response res;
+        Conf* conf;
+        Request* req;
+        Response* res;
         std::vector<Socket> sock;
-        Autodex indexing;
+        Autodex* indexing;
 };
 
 #endif

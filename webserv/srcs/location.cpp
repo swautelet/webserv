@@ -66,10 +66,12 @@ int location::getAutoIndex() const
 }
 
 
-void location::setLocation_name(std::string str)
+void location::setLocation_name(std::string& str)
 {
     remove_spaces(str);
+	std::cout << "second test str.find = " << str.find("location") + strlen("location ")<< "str size = "  << str.size() << "str : " << str  << "string::npos = " << std::string::npos << std::endl;
     location_name = str.substr(str.find("location") + strlen("location "), str.size());
+	std::cout << "third test " << std::endl;
 }
 
 void location::setPath(std::string str)
@@ -161,9 +163,8 @@ void location::print_info()
 }
 int location::scrapData(std::string data, int i)
 {
-    (void)data;
-    (void)i;
-    
+   // (void)data;
+   // (void)i;
     std::string tmp;
     tmp = data.substr(0, data.find("\n"));
     setLocation_name(tmp);

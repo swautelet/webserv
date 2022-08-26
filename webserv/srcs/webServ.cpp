@@ -14,16 +14,24 @@
 
 webServ::webServ()
 {
-    
+    conf = new Conf;
+	req = new Request;
+	res = new Response;
+	indexing = new Autodex;
 }
 
 
 webServ::webServ(std::string argv)
 {
-    conf.parsing(argv);
-    sock.reserve(conf.getNbrServer());
-	std::cout << "nombre de server = " << conf.getNbrServer() << std::endl;
-	for (int i = 0; i < conf.getNbrServer(); i++)
+	conf = new Conf;
+	req = new Request;
+	res = new Response;
+	indexing = new Autodex;
+
+    conf->parsing(argv);
+    sock.reserve(conf->getNbrServer());
+	std::cout << "nombre de server = " << conf->getNbrServer() << std::endl;
+	for (int i = 0; i < conf->getNbrServer(); i++)
 	{
 		Socket* next = new Socket;
 		sock.push_back(*next);
@@ -36,16 +44,20 @@ webServ::~webServ()
 	{
 		delete &(*iter);
 	}
+	delete conf;
+	delete req;
+	delete res;
+	delete indexing;
 }
 
-webServ::webServ(webServ & other):conf(other.getConf()), req(other.getReq()), res(other.getRes()), sock(other.getSock()), indexing(other.getAutodex())
+webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Request(other.getReq())), res(new Response(other.getRes())), sock(other.getSock()), indexing(new Autodex(other.getAutodex()))
 {
     
 }
 
 Conf & webServ::getConf() 
 {
-    return conf;
+    return *conf;
 }
 
 std::vector<Socket> & webServ::getSock() 
@@ -55,15 +67,15 @@ std::vector<Socket> & webServ::getSock()
 
 Request & webServ::getReq() 
 {
-    return req;
+    return *req;
 }
 
 Response & webServ::getRes() 
 {
-    return res;
+    return *res;
 }
 
 Autodex & webServ::getAutodex() 
 {
-    return indexing;
+    return *indexing;
 }

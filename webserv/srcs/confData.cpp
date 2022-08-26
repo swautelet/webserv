@@ -26,12 +26,12 @@ confData::~confData()
 
 }
 
-confData::confData(const confData & other):address(other.getAdress()), port(other.getPort()), path(other.getPath()), serv_name(other.getServName()), method(other.getMethod()), index(other.getIndex()), error_page(other.getErrorPage()), body_size(other.getBodySize()), autoindex(other.getAutoIndex()), nbr_loc(other.getLocationNbr())
+confData::confData(const confData & other):address(other.getAdress()), port(other.getPort()), path(other.getPath()), serv_name(other.getServName()), method(other.getMethod()), index(other.getIndex()), error_page(other.getErrorPage()), body_size(other.getBodySize()), autoindex(other.getAutoIndex()), nbr_loc(other.getLocationNbr()), loc(nbr_loc)
 {
-	loc = new std::vector<location>(nbr_loc);
+//	loc = new std::vector<location>(nbr_loc);
 	for (int i = 0; i < nbr_loc; i++)
 	{
-		(*loc)[i] = other.getLocation(i);
+		(loc)[i] = other.getLocation(i);
 	}
 }
 
@@ -84,33 +84,33 @@ int confData::getAutoIndex() const
     return autoindex;
 }
 
-location & confData::getLocation(int index) const
+const location & confData::getLocation(int index) const
 {
-    return (*loc)[index];
+    return (loc)[index];
 }
 
-location & confData::getGoodLocation(std::string str) const
+const location & confData::getGoodLocation(std::string str) const
 {
     for (int i = 0; i < nbr_loc; i++)
-        if (!(*loc)[i].getLocation_name().compare(str))
-            return (*loc)[i];
-    return (*loc)[0];
+        if (!(loc)[i].getLocation_name().compare(str))
+            return (loc)[i];
+    return (loc)[0];
 }
 
-location& confData::LocationFinder(std::string str) const
+const location& confData::LocationFinder(std::string str) const
 {
 	std::string name = str.substr(0, str.find('/', 1));
 //std::cout << "I look for the location with name : " << name << std::endl;
     for (int i = 0; i < nbr_loc; i++)
 	{
 //std::cout << "I compare  with location : " << (*loc)[i].getLocation_name() << std::endl;
-        if (!(*loc)[i].getLocation_name().compare(name))
+        if (!(loc)[i].getLocation_name().compare(name))
 		{
 //std::cout << "I return a location " << std::endl;
-            return (*loc)[i];
+            return (loc)[i];
 		}
 	}
-    return (*loc)[0];
+    return (loc)[0];
 }
 
 void confData::setAddress(std::string str)
@@ -251,7 +251,7 @@ void confData::print_info()
     std::cout << "Autoindex->       " << "[" << autoindex << "]" << std::endl;
     while(++x < nbr_loc)
     {
-        (*loc)[x].print_info();
+        (loc)[x].print_info();
         j++;
     }
     std::cout << "--------------------------------------" << std::endl;
@@ -316,10 +316,16 @@ void confData::scrapData()
         path = "./";
     nbr_loc = check_server_nbr(cpy_data, "location ");
     std::cout << "Nbr of location : " << nbr_loc << std::endl;
-    loc = new std::vector<location>(nbr_loc);
+    loc.reserve(nbr_loc);
+	std::cout << loc.size() << std::endl << std::endl;
+	while(loc.size() < nbr_loc)
+	{
+		location next;
+		loc.push_back(next);
+	}
     for (int x = 0; x < nbr_loc; x++)
     {
-        index = (*loc)[x].scrapData(location_str(cpy_data), index);
+        index = (loc)[x].scrapData(location_str(cpy_data), index);
         cpy_data = cpy_data.substr(cpy_data.find("location") + 1, cpy_data.size());
     }
 }

@@ -26,7 +26,7 @@ class confData
         int parsing(std::string path);
         int getLocationNbr() const;
         int getAutoIndex() const;
-        location& LocationFinder(std::string str) const;
+        const location& LocationFinder(std::string str) const;
         const std::string& getAdress() const;
         std::string getPort() const;
         std::string getPath() const;
@@ -35,8 +35,8 @@ class confData
         std::vector<std::string> getIndex() const;
         std::string getErrorPage() const;
         std::string getBodySize() const;
-        location & getLocation(int index) const;
-        location & getGoodLocation(std::string str) const;
+        const location & getLocation(int index) const;
+        const location & getGoodLocation(std::string str) const;
         void print_info();
         void scrapData();
         void setAddress(std::string str);
@@ -58,7 +58,7 @@ class confData
         std::string body_size;
         int autoindex;
         int nbr_loc;
-        std::vector<location> *loc;
+        std::vector<location> loc;
 };
 
 #endif

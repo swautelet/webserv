@@ -29,13 +29,14 @@ class Conf
         std::string getPath(int index) const;
         std::string getServName(int index) const;
         std::string getMethod(int index) const;
+		const std::vector <confData> getVectorConflist() const;
         std::vector<std::string> getIndex(int index) const;
-        confData & getConflist(int index) const;
+        confData & getConflist(int index);
         int getNbrServer() const;
         void parsing(std::string path);
         void print_info();
     private:
-        std::vector<confData> *confList;
+        std::vector<confData> confList;
         int nbr_serv;
 };
 

@@ -56,8 +56,7 @@ void Response::find_method(webServ & web, int i)
 		std::cout << "Method forbidden" << std::endl;
 		setStatus(405);
 		setContentType();
-		content_lenght = "0";
-		body = "";
+		setBody("");
 	}
 }
 
@@ -319,7 +318,8 @@ void Response::MethodGet(webServ & web, confData & conf)
 	setStatus(200);
 //    setContentType(web.getReq().getUrl());
     body = readHTML(web, conf, web.getReq().getUrl());
-    content_lenght = itoa(body.size());
+   // content_lenght = itoa(body.size());
+	setContentLenght();
 	//+ how_many(body));
 }
 
