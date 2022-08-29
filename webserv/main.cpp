@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/22 11:27:09 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/29 17:04:13 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,6 @@ int main(int argc, char **argv)
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
     memcpy(&copyset, &fdset, sizeof(fdset));
     signal(SIGINT, &ctr_c);
-	std::cout << "location 0 is :" << std::endl;
-	web.getConf().getConflist(0).getLocation(0).print_info();
     while(1)
     {
 		//
