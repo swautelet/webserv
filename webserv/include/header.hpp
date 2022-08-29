@@ -39,6 +39,9 @@
 #include <sys/ioctl.h>
 #include <dirent.h>
 #include <utility>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #define PATH_ERROR "www/error/403.html"
 
@@ -62,5 +65,6 @@ void	splitstring(std::string str, std::vector<std::string>& vect, char c);
 int post_element_nbr(std::string str);
 std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int nbr);
 void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post, confData & conf);
+std::string start_script(webServ web, std::string path, char **arg, char **env);
 
 #endif

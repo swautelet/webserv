@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/23 14:30:00 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/29 16:20:56 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -409,8 +409,9 @@ void	Response::seterrorpage()
 {
 	std::ifstream errorpage;
 	std::string tmp;
-	std::cout << "Try to set errorpage : " << "www/error/" + itoa(status) + ".html" << std::endl;
-	errorpage.open("www/error/" + itoa(status) + ".html");
+	std::string path("www/error/" + itoa(status) + ".html");
+	std::cout << "Try to set errorpage : " << path << std::endl;
+	errorpage.open(path.c_str());
 	if (errorpage.is_open())
 	{
 		body.clear();

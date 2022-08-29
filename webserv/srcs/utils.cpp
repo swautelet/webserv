@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/23 14:45:44 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/29 16:21:15 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ std::string location_exe(confData & conf, std::string req_file)
 	if (!req_file.compare("/"))
 		return req_file;
 	if (req_file.back() == '/')
-		req_file.pop_back();
+		req_file.substr(0, req_file.size() - 1);
 	while (!req_file.empty() && req_file.find("/") != std::string::npos)
 	{
 		std::cout << "Actual req_file : " << req_file << std::endl;
@@ -193,7 +193,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
         fullpath = PATH_ERROR;
     }
     
-    fd.open(fullpath);
+    fd.open(fullpath.c_str());
     if (!fd.is_open())
     {
         if (fd.good())
