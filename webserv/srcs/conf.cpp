@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conf.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/22 11:07:05 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/08/29 17:32:30 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ Conf::~Conf()
 Conf::Conf(const Conf & other)
 {
 	nbr_serv = other.getNbrServer();
-	confList.reserve(nbr_serv);
-	while (confList.size() < nbr_serv)
-	{
-		confData next;
-		confList.push_back(next);
-	}
+	confList.resize(nbr_serv, confData());
+	// while (confList.size() < nbr_serv)
+	// {
+	// 	confData next;
+	// 	confList.push_back(next);
+	// }
 	confList = other.getVectorConflist();
 }
 
@@ -88,12 +88,12 @@ void Conf::parsing(std::string path)
 {
     if (!(nbr_serv = (confList)[0].parsing(path)))
         printerr("Error with parsing, 0 server found ...");
-    confList.reserve(nbr_serv);
-	while (confList.size() < nbr_serv)
-	{
-		confData next;
-		confList.push_back(next);
-	}
+    confList.resize(nbr_serv, confData());
+	// while (confList.size() < nbr_serv)
+	// {
+	// 	confData next;
+	// 	confList.push_back(next);
+	// }
     for (unsigned long i = 0; i < nbr_serv; i++)
         (confList)[i].scrapData();
     std::cout << "nbr_serv == " <<nbr_serv << std::endl;

@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/29 17:18:54 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/08/29 17:32:58 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,11 +346,12 @@ void confData::scrapData()
     std::cout << "Nbr of location : " << nbr_loc << std::endl;
     loc.reserve(nbr_loc);
 	std::cout << loc.size() << std::endl << std::endl;
-	while(loc.size() < nbr_loc)
-	{
-		location next;
-		loc.push_back(next);
-	}
+    loc.resize(nbr_loc, location());
+	// while(loc.size() < nbr_loc)
+	// {
+	// 	location next;
+	// 	loc.push_back(next);
+	// }
     for (unsigned long x = 0; x < nbr_loc; x++)
     {
         index = (loc)[x].scrapData(location_str(cpy_data), index);
