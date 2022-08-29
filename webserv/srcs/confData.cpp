@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/29 17:04:24 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/08/29 17:18:54 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,7 +319,7 @@ void confData::scrapData()
             break;
         if (!tmp.find("server"))
                 continue;
-        else if (tmp[tmp.size() - 1] != ';')
+        else if (tmp.size() >= 1 && tmp[tmp.size() - 1] != ';')
             printerr("Error with conf file syntax ...");
         else if (tmp.find("listen")!= std::string::npos)
             setAddress(tmp);

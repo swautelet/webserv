@@ -24,7 +24,7 @@ std::string location_exe(confData & conf, std::string req_file)
 {
 	if (!req_file.compare("/"))
 		return req_file;
-	if (req_file[req_file.size() - 1] == '/')
+	if (req_file.size() >= 1 && req_file[req_file.size() - 1] == '/')
 		req_file = req_file.substr(0, req_file.size() - 1);
 	while (!req_file.empty() && req_file.find("/") != std::string::npos)
 	{

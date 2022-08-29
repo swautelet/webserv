@@ -316,7 +316,7 @@ void Response::MethodGet(webServ & web, confData & conf)
 {
     version = web.getReq().getVersion();
 	setStatus(200);
-//    setContentType(web.getReq().getUrl());
+	setContentType(web.getReq().getUrl());
     body = readHTML(web, conf, web.getReq().getUrl());
    // content_lenght = itoa(body.size());
 	setContentLenght();
