@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/29 16:19:40 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/08/29 16:27:27 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ void confData::setAddress(std::string str)
 	splitstring(address, tmp, ':');
     address = tmp[0];
     port = tmp[1];
-	port.substr(0, port.size() - 1);
+	port = port.substr(0, port.size() - 1);
 //    free(tmp);
 }
 
@@ -201,7 +201,7 @@ void confData::setIndex(std::string str)
             return;
         str = str.substr(str.find(" ") + 1, str.size());
     }
-	str.substr(0, str.size() - 1);
+	str = str.substr(0, str.size() - 1);
     index.push_back(str);
 	for (unsigned long i = 0; i < index.size(); i++)
 	{

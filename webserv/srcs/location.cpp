@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/29 16:18:55 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/08/29 16:27:02 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void location::setIndex(std::string str)
         index.push_back(tmp);
         str = str.substr(str.find(" ") + 1, str.size());
     }
-	str.substr(0, str.size() - 1);
+	str = str.substr(0, str.size() - 1);
     index.push_back(str);
     if (index.back().empty())
         return;

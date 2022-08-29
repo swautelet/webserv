@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/29 16:21:15 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/08/29 16:26:25 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ std::string location_exe(confData & conf, std::string req_file)
 	if (!req_file.compare("/"))
 		return req_file;
 	if (req_file.back() == '/')
-		req_file.substr(0, req_file.size() - 1);
+		req_file = req_file.substr(0, req_file.size() - 1);
 	while (!req_file.empty() && req_file.find("/") != std::string::npos)
 	{
 		std::cout << "Actual req_file : " << req_file << std::endl;
