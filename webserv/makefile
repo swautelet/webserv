@@ -3,7 +3,7 @@ SRC			= main.cpp srcs/utils.cpp srcs/socket.cpp srcs/response.cpp srcs/request.c
 OBJS	= $(SRC:.cpp=.o)
 CXX			= g++
 RM			= rm -f
-CPPFLAGS		= -Wall -Wextra -Werror -Iinclude -fsanitize=address -ansi -g3 -stdlib=libc++ -std=gnu++98 -pedantic
+CPPFLAGS		= -Wall -Wextra -Werror -Iinclude -fsanitize=address -g3 -std=c++98 
 
 all:		$(NAME)
 
