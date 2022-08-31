@@ -84,11 +84,13 @@ void ctr_c(int sig)
 }
 
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **envp)
 {
 //    struct timeval tv;
     webServ web(argv[1]);
 //    int i = -1;
+	web.setServ_Root(envp);
+	web.env = envp;
     int connection = 0;
     int addrlen = 0;
     int backlog = 10;

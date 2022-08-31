@@ -13,6 +13,7 @@
 #ifndef HEADER_HPP
 #define HEADER_HPP
 #include <vector>
+#include <map>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -23,6 +24,7 @@
 #include <sys/stat.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <errno.h>
 #include "errno.h"
 #include "fstream"
 #include "sstream"
@@ -35,6 +37,7 @@
 #include "confData.hpp"
 #include "location.hpp"
 #include "autoindex.hpp"
+#include "cgi.hpp"
 #include "webServ.hpp"
 #include <sys/ioctl.h>
 #include <dirent.h>
@@ -65,6 +68,9 @@ void	splitstring(std::string str, std::vector<std::string>& vect, char c);
 int post_element_nbr(std::string str);
 std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int nbr);
 void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post, confData & conf);
-std::string start_script(webServ web, std::string path, char **arg, char **env);
+void run_api(webServ& web, confData& conf);
+char** vectstring_tochartable(const std::vector<std::string> vect);
+void  free_table(char** table);
+std::string	search_value_vect(std::vector<std::string> vect, std::string searched);
 
 #endif

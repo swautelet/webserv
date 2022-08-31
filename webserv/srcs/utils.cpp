@@ -572,3 +572,42 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
     else
         printerr("Error: Outpout file is a directory ...");
 }
+
+char** vectstring_tochartable(const std::vector<std::string> vect)
+{
+	char** table = (char**)malloc(sizeof(char*) * (vect.size() + 1));
+	table [vect.size()] = NULL;
+	for (unsigned long i = 0; i < vect.size(); i++)
+	{
+		table[i] = (char*)malloc(sizeof(char) * (vect[i].size() + 1));
+		for (unsigned long j = 0; j < vect[i].size(); j++)
+		{
+			table[i][j] = vect[i][j];
+		}
+		table[i][vect[i].size()] = '\0';
+	}
+	return table;
+}
+
+void	free_table(char** table)
+{
+	for (int i = 0; table[i]; i++)
+	{
+		free (table[i]);
+	}
+	free (table);
+}
+
+std::string search_value_vect(std::vector<std::string> vect, std::string searched)
+{
+	std::string ret;
+	for (unsigned long i = 0; i < vect.size(); i++)
+	{
+		if (!vect[i].substr(0, searched.size()).compare(searched))
+		{
+			ret = vect[i].substr(searched.size() + 1, vect[i].size());
+			return ret;
+		}
+	}
+	return ret;
+}

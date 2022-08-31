@@ -18,6 +18,7 @@ webServ::webServ()
 	req = new Request;
 	res = new Response;
 	indexing = new Autodex;
+	_cgi = new Cgi;
 }
 
 
@@ -50,7 +51,7 @@ webServ::~webServ()
 	delete indexing;
 }
 
-webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Request(other.getReq())), res(new Response(other.getRes())), sock(other.getSock()), indexing(new Autodex(other.getAutodex()))
+webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Request(other.getReq())), res(new Response(other.getRes())), sock(other.getSock()), indexing(new Autodex(other.getAutodex())), serv_root(other.getServ_Root())
 {
     
 }
@@ -78,4 +79,28 @@ Response & webServ::getRes()
 Autodex & webServ::getAutodex() 
 {
     return *indexing;
+}
+void	webServ::setServ_Root(char **env)
+{
+	std::string searched("PWD=");
+	for (int i = 0; env[i]; i++)
+	{
+		std::string tmp(env[i]);
+		if (!tmp.substr(0, searched.size()).compare(searched))
+		{
+			serv_root = tmp.substr(searched.size(), tmp.size());
+			std::cout << "serv_root = " << serv_root << std::endl;
+			return;
+		}
+	}
+}
+
+const std::string&	webServ::getServ_Root() const 
+{
+	return serv_root;
+}
+
+Cgi& webServ::getCgi()
+{
+	return *_cgi;
 }

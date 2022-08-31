@@ -270,7 +270,7 @@ void Response::setContentType()
 	content_type = "text/html";
 }
 
-void Response::setContentType(std::string fullpath)
+int Response::setContentType(std::string fullpath)
 {
 //std:: cout << "i received fullpath =========== " << fullpath << std::endl;
 	if (fullpath.rfind('.') != std::string::npos)
@@ -293,11 +293,14 @@ void Response::setContentType(std::string fullpath)
 			content_type = "image/bmp";
 		else if (type == "ico")
 			content_type = "image/png";
+		else if (type == "php")
+			return 1;
 		else
 			content_type = "text/plain";
 	}
 	else
 		content_type = "text/plain";
+	return 0;
 //std::cout << "content_type = " << content_type << std::endl;
 }
 
@@ -316,11 +319,16 @@ void Response::MethodGet(webServ & web, confData & conf)
 {
     version = web.getReq().getVersion();
 	setStatus(200);
-	setContentType(web.getReq().getUrl());
-    body = readHTML(web, conf, web.getReq().getUrl());
-   // content_lenght = itoa(body.size());
-	setContentLenght();
-	//+ how_many(body));
+	if (setContentType(web.getReq().getUrl()) == 0)
+	{
+		body = readHTML(web, conf, web.getReq().getUrl());
+		setContentLenght();
+	}
+	else
+	{
+		run_api(web, conf);
+		std::cout << "made my way to api" << std::endl;
+	}
 }
 
 void Response::MethodPost(webServ & web, confData & conf)

@@ -35,7 +35,7 @@ class Response
         void concat_response();
     	void  setStatus(int status);
         void  setStatMsg();
-    	void  setContentType(std::string str);
+    	int   setContentType(std::string str);
 		void  setContentType();
 		void  seterrorpage();
 		void  setBody(std::string str);
