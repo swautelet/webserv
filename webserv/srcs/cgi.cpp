@@ -85,7 +85,7 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	std::vector<std::string> header;
 	splitstring(web.getReq().getHeader(), header, '\n');
 	
-	std::string req_head = web.getReq().getHeader();
+//	std::string req_head = web.getReq().getHeader();
 	env.clear();
 	std::string redirect_status = "REDIRECT_STATUS=200";
 	env.push_back(redirect_status);
@@ -99,33 +99,33 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(request_method);
 	std::string content_lenght = "CONTENT_LENGTH=" + std::to_string(body.size());
 	env.push_back(content_lenght);
-	std::string content_type = "CONTENT_TYPE=" + search_value_vect(header, "CONTENT_TYPE=");
+	std::string content_type = "CONTENT_TYPE=" + search_value_vect(header, "Accept: ");
 	env.push_back(content_type);
-	std::string path_info = "PATH_INFO=" + ;
+/*	std::string path_info = "PATH_INFO=" + ;
 	env.push_back(path_info);
 	std::string path_translated = "PATH_TRANSLATED=" + ;
 	env.push_back(path_translated);
 	std::string query_string = "QUERY_STRING=" + ;
 	env.push_back(query_string);
 	std::string remoteaddr = "REMOTEaddr=" + ;
-	env.push_back(remoteaddr);
-	std::string remote_ident = "REMOTE_IDENT=" + ;
+	env.push_back(remoteaddr);*/
+	std::string remote_ident = "REMOTE_IDENT=" + search_value_vect(header, "Authorization: ");
 	env.push_back(remote_ident);
-	std::string remote_user = "REMOTE_USER=" + ;
+	std::string remote_user = "REMOTE_USER=" + search_value_vect(header, "Authorization: ");
 	env.push_back(remote_user);
-	std::string request_uri = "REQUEST_URI=" + ;
+	std::string request_uri = "REQUEST_URI=" + web.getReq().getUrl();
 	env.push_back(request_uri);
 	std::string server_name = "SERVER_NAME=";
-	if(search_value_vect(header, "Hostname=").size())
+	if(search_value_vect(header, "Host: ").size())
 	{
-		server_name += search_value_vect(header, "Hostname=");
+		server_name += search_value_vect(header, "Host: ");
 	}
 	else
 	{
-		server_name += web.getConf().getServName();
+		server_name += conf.getServName();
 	}
 	env.push_back(server_name);
-	std::string server_port = "SERVER_PORT=" + web.getConf().getPort();
+	std::string server_port = "SERVER_PORT=" + conf.getPort();
 	env.push_back(server_port);
 	std::string server_protocol = "SERVER_PROTOCOL=HTTP/1.1";
 	env.push_back(server_protocol);
