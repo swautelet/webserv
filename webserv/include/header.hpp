@@ -18,18 +18,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <iostream>
-#include <string.h>
+#include <string>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <errno.h>
-#include "errno.h"
-#include "fstream"
-#include "sstream"
+//#include "errno.h"
+#include <fstream>
+#include <sstream>
 #include <stdlib.h>
-#include "string.h"
+//#include "string.h"
 #include "socket.hpp"
 #include "response.hpp"
 #include "request.hpp"
@@ -42,7 +42,7 @@
 #include <sys/ioctl.h>
 #include <dirent.h>
 #include <utility>
-#include <unistd.h>
+//#include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -72,5 +72,6 @@ void run_api(webServ& web, confData& conf);
 char** vectstring_tochartable(const std::vector<std::string> vect);
 void  free_table(char** table);
 std::string	search_value_vect(std::vector<std::string> vect, std::string searched);
+void	start_script(Cgi& cgi);
 
 #endif

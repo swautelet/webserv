@@ -7,31 +7,25 @@
 
 #include "header.hpp"
 
-enum APPLI{
-	NOTFOUND = 0,
-	PHP = 1,
-
-};
-
 class Cgi{
 	public:
 		Cgi();
 		~Cgi();
-		std::string& getPath(std::string& req_file);
+		std::string& getPath(const std::string& req_file);
 		const std::vector<std::string>& getEnv() const;
-		const std::vector<std::string>& getArg() const;
 		const std::string& getFullpath() const;
+		char**	getArgv();
+		char**	getEnvp();
 		void	setFullpath(webServ& web, confData& conf);
-		void	start_script();
+//		void	start_script();
 		void	setEnv(webServ& web, confData& conf);
 
 	private:
 	std::map<std::string, std::string> pathmap;
 	std::vector<std::string> env;
-	std::vector<std::string> arg;
-	std::string body;
+//	std::string body;
 	std::string empty;
-	std::vector<std::string> fullpath;
+	std::string	path;
 	
 };
 

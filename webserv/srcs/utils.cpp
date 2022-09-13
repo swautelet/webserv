@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/29 16:35:59 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/09/08 14:40:38 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -593,9 +593,9 @@ void	free_table(char** table)
 {
 	for (int i = 0; table[i]; i++)
 	{
-		free (table[i]);
+		delete (table[i]);
 	}
-	free (table);
+	delete (table);
 }
 
 std::string search_value_vect(std::vector<std::string> vect, std::string searched)
@@ -610,4 +610,13 @@ std::string search_value_vect(std::vector<std::string> vect, std::string searche
 		}
 	}
 	return ret;
+}
+
+void run_api(webServ& web, confData& conf)
+{
+	web.getCgi().setFullpath(web, conf);
+	std::cout << "test" << std::endl;
+	web.getCgi().setEnv(web, conf);
+	std::cout << "second test "<< std::endl;
+	start_script(web.getCgi());
 }
