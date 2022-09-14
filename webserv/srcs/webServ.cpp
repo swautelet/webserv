@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 18:43:26 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/13 21:36:02 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/14 18:42:10 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,4 +104,26 @@ const std::string&	webServ::getServ_Root() const
 Cgi& webServ::getCgi()
 {
 	return *_cgi;
+}
+
+std::pair<std::string, std::string> & webServ::getbool_redir()
+{
+    return bool_redir;
+}
+
+void webServ::setbool_redir(std::vector<std::string> vec)
+{
+    std::string str;
+    std::string loc;
+    
+    loc = vec.at(0);
+    str = vec.at(1);
+    bool_redir = std::make_pair(loc, str);
+    std::cout << bool_redir.first << " & " << bool_redir.second << std::endl;
+}
+
+void webServ::del_redir()
+{
+    bool_redir.first = "";
+    bool_redir.second = "";
 }

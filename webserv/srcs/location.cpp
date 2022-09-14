@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/13 18:21:28 by swautele         ###   ########.fr       */
+/*   Updated: 2022/09/14 18:31:29 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,10 @@ int location::getAutoIndex() const
     return autoindex;
 }
 
+const std::vector<std::string> & location::getRedir() const
+{
+    return redir;
+}
 
 void location::setLocation_name(std::string& str)
 {
@@ -149,6 +153,34 @@ void location::setAutoIndex(std::string str)
         autoindex = 0;
 }
 
+void location::setRedir(std::string str)
+{
+    std::string tmp;
+    remove_spaces(str);
+    str = str.substr(str.find(" ") + 1, str.size());
+    while(str.find(" ") != std::string::npos)
+    {
+        tmp = str.substr(0, str.find(" "));
+        if (tmp.find("^") != std::string::npos)
+        {
+            if (!tmp.compare("^"))
+                std::cout << "kekw" << std::endl;
+            if (!tmp.compare("^"))
+                tmp = "/";
+            else
+                tmp.erase(0, 1);
+        }
+        std::cout << "tmp.. " << tmp << std::endl;
+        redir.push_back(tmp);
+        if (str.empty())
+            return;
+        str = str.substr(str.find(" ") + 1, str.size());
+    }
+	str = str.substr(0, str.size() - 1);
+    redir.push_back(str);
+    if (redir.back().empty())
+        return;
+}
 void location::print_info() const
 {
 //    int i = -1;
@@ -164,6 +196,15 @@ void location::print_info() const
         for (unsigned long i = 0; i < index.size(); i++)
 		{
             std::cout << "[" << index[i] << "]";
+		}
+        std::cout << std::endl;
+    }
+    if (!redir.empty())
+    {
+        std::cout << "redir->           ";
+        for (unsigned long i = 0; i < redir.size(); i++)
+		{
+            std::cout << "[" << redir[i] << "]";
 		}
         std::cout << std::endl;
     }
@@ -204,6 +245,8 @@ int location::scrapData(std::string data, int i)
             setIndex(tmp);
         else if (tmp.find("client_max_body_size")!= std::string::npos)
             setBodySize(tmp);
+        else if (tmp.find("return")!= std::string::npos)
+            setRedir(tmp);
         else
             printerr("Something is wrong with your config file ...");
     }

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:39 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/13 18:21:46 by swautele         ###   ########.fr       */
+/*   Updated: 2022/09/14 16:11:33 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class location
         std::string getErrorPage() const;
         std::string getBodySize() const;
         int getAutoIndex() const;
+        const std::vector<std::string> & getRedir() const;
         void setLocation_name(std::string& str);
         void setBodySize(std::string str);
         void setPath(std::string str);
@@ -36,6 +37,7 @@ class location
         void setIndex(std::string str);
         void setAutoIndex(std::string str);
         void setErrorPage(std::string str);
+        void setRedir(std::string str);
         int scrapData(std::string str, int i);
         void print_info() const;
     private:
@@ -46,6 +48,7 @@ class location
         std::string location_name;
         std::string body_size;
         int autoindex;
+        std::vector<std::string> redir;
 };
 
 

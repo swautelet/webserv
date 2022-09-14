@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:45:59 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 18:52:04 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/14 15:47:54 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class confData
         std::vector<std::string> getIndex() const;
         std::string getErrorPage() const;
         std::string getBodySize() const;
+        const std::vector<std::string> & getRedir() const;
         const location & getLocation(int index) const;
         const location & getGoodLocation(std::string str) const;
         void print_info();
@@ -48,6 +49,7 @@ class confData
         void setErrorPage(std::string str);
         void setBodySize(std::string str);
         void setAutoIndex(std::string str);
+        void setRedir(std::string str);
     private:
         std::string address;
         std::string port;
@@ -60,6 +62,7 @@ class confData
         int autoindex;
         unsigned long nbr_loc;
         std::vector<location> loc;
+        std::vector<std::string> redir;
 };
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/13 18:21:00 by swautele         ###   ########.fr       */
+/*   Updated: 2022/09/14 18:31:23 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,11 @@ const location & confData::getGoodLocation(std::string str) const
         if (!(loc)[i].getLocation_name().compare(str))
             return (loc)[i];
     return (loc)[0];
+}
+
+const std::vector<std::string> & confData::getRedir() const
+{
+    return redir;
 }
 
 const location& confData::LocationFinder(std::string str) const
@@ -230,6 +235,34 @@ void confData::setBodySize(std::string str)
     body_size.resize(body_size.size() - 1);
 }
 
+void confData::setRedir(std::string str)
+{
+    std::string tmp;
+    remove_spaces(str);
+    str = str.substr(str.find(" ") + 1, str.size());
+    while(str.find(" ") != std::string::npos)
+    {
+        tmp = str.substr(0, str.find(" "));
+        if (tmp.find("^") != std::string::npos)
+        {
+            if (!tmp.compare("^"))
+                std::cout << "kekw" << std::endl;
+            if (!tmp.compare("^"))
+                tmp = "/";
+            else
+                tmp.erase(0, 1);
+        }
+        std::cout << "tmp.. " << tmp << std::endl;
+        redir.push_back(tmp);
+        if (str.empty())
+            return;
+        str = str.substr(str.find(" ") + 1, str.size());
+    }
+	str = str.substr(0, str.size() - 1);
+    redir.push_back(str);
+    if (redir.back().empty())
+        return;
+}
 
 int confData::parsing(std::string path)
 {
@@ -268,6 +301,13 @@ void confData::print_info()
         std::cout << "Index->           ";
         for (unsigned long i = 0;i < index.size(); i++)
             std::cout << "[" << index[i] << "]";
+        std::cout << std::endl;
+    }
+    if (!redir.empty())
+    {
+        std::cout << "redir->           ";
+        for (unsigned long i = 0;i < redir.size(); i++)
+            std::cout << "[" << redir[i] << "]";
         std::cout << std::endl;
     }
     if (!method.empty())
@@ -314,6 +354,7 @@ void confData::scrapData()
     while (!data.empty())
     {   
         tmp = data.substr(0, data.find("\n"));
+        std::cout << " -- =" << tmp << std::endl;
         data = data.substr(data.find("\n") + 1, data.size());
         if (tmp.find("location") != std::string::npos)
             break;
@@ -337,6 +378,8 @@ void confData::scrapData()
             setIndex(tmp);
         else if (tmp.find("client_max_body_size")!= std::string::npos)
             setBodySize(tmp);
+        else if (tmp.find("return")!= std::string::npos)
+            setRedir(tmp);
         else
             printerr("Something is wrong with your config file ...");
     }

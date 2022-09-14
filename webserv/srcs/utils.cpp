@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/13 21:13:06 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/14 17:57:41 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,12 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 	loc = location_exe(conf, req_file);
 	if (!loc.empty() && !conf.LocationFinder(loc).getLocation_name().empty())
 	{
+        if (!conf.getGoodLocation(loc).getRedir().empty())
+        {
+            web.setbool_redir(conf.getGoodLocation(loc).getRedir());
+            return "";
+        }
+            
 		std::cout << "Final location is " << loc <<std::endl;
         std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
@@ -124,6 +130,11 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 	}
 	else
 	{
+        if (!conf.getGoodLocation(loc).getRedir().empty())
+        {
+            web.setbool_redir(conf.getGoodLocation(loc).getRedir());
+            return "";
+        }
 		std::cout << "No similar location found : base location will be used" <<std::endl;
 		if (!conf.getGoodLocation(loc).getPath().compare("./"))
 			url = "." + req_file;

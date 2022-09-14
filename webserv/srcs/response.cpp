@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/13 18:22:27 by swautele         ###   ########.fr       */
+/*   Updated: 2022/09/14 18:54:52 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ Response &Response::operator=(Response const & other)
 
 void Response::find_method(webServ & web, int i)
 {
-//std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
-//std::cout << "Method available = " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod() << std::endl;
-//std::cout << "In location : " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getLocation_name() << std::endl;
-//std::cout << "With URL : " << web.getReq().getUrl() << std::endl;
+    //std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
+    //std::cout << "Method available = " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod() << std::endl;
+    //std::cout << "In location : " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getLocation_name() << std::endl;
+    //std::cout << "With URL : " << web.getReq().getUrl() << std::endl;
 	version = web.getReq().getVersion();
     if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
@@ -322,6 +322,11 @@ void Response::MethodGet(webServ & web, confData & conf)
 	if (setContentType(web.getReq().getUrl()) == 0)
 	{
 		body = readHTML(web, conf, web.getReq().getUrl());
+        if (!web.getbool_redir().first.empty() && !web.getbool_redir().second.empty())
+        {
+            std::cout << web.getReq().getUrl() << std::endl;
+            web.getRes().setStatus(atoi(web.getbool_redir().first.c_str()));
+        }
 		setContentLenght();
 	}
 	else
@@ -333,7 +338,7 @@ void Response::MethodGet(webServ & web, confData & conf)
 
 void Response::MethodPost(webServ & web, confData & conf)
 {
-//std::cout << "POST\n";
+    //std::cout << "POST\n";
     int nbr = post_element_nbr(web.getReq().getBody());
     if (!nbr)
         printerr("Error: Body doesnt have arguement ...");        
@@ -344,7 +349,7 @@ void Response::MethodPost(webServ & web, confData & conf)
 
 void Response::delMethod(webServ&  web, confData& conf)
 {
-std::cout << "DELETE Method " << std::endl;
+    std::cout << "DELETE Method " << std::endl;
 	std::string url(web.getReq().getUrl());
     location loc = conf.LocationFinder(url);
     std::string fullpath(loc.getPath() + url.substr(loc.getLocation_name().size(), url.size()));
@@ -356,26 +361,30 @@ std::cout << "DELETE Method " << std::endl;
         fullpath = loc.getPath() + url.substr(loc.getLocation_name().size(), url.size());
         url = url.substr(1, url.size());
     }
-	if(remove(fullpath.c_str()) == 0 )
+	if(remove(fullpath.c_str()) == 0)
 	{
-std::cout << "File " << fullpath << " deleted successfully" << std::endl;
+        std::cout << "File " << fullpath << " deleted successfully" << std::endl;
 		setStatus(200);
 		setContentType();
 		setBody("File " + fullpath + " deleted successfully\n");
 	}
 	else
 	{
-std::cout << "File could'nt be deleted fullpath was : " << fullpath << std::endl;
+        std::cout << "File could'nt be deleted fullpath was : " << fullpath << std::endl;
 		setStatus(404);
 		setBody("");
-		}
+	}
 }
 
-void Response::concat_response()
+void Response::concat_response(webServ & web)
 {
-	 std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
-	full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
-//	std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
+    if (status == 301 || status == 302)
+        full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Location : " + web.getbool_redir().second;
+    else
+	    full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
+	std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
+    std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
+    web.del_redir();
 }
 
 std::string Response::getResponse() const

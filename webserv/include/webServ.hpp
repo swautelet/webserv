@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:10:21 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/13 18:32:17 by swautele         ###   ########.fr       */
+/*   Updated: 2022/09/14 18:41:13 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ class webServ
 		Cgi&	getCgi();
         std::vector<Socket> &getSock();
         Autodex & getAutodex();
+        std::pair<std::string, std::string> &getbool_redir();
 		void	setServ_Root(char **env);
+        void setbool_redir(std::vector<std::string> vec);
+        void del_redir();
 		const std::string&	getServ_Root() const;
 		char** env;
     private:
@@ -43,6 +46,7 @@ class webServ
         std::vector<Socket> sock;
         Autodex* indexing;
 		std::string	serv_root;
+        std::pair<std::string, std::string> bool_redir;
 		Cgi* _cgi;
 };
 
