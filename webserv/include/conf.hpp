@@ -24,19 +24,21 @@ class Conf
         Conf();
         ~Conf();
         Conf(const Conf & other);
-        std::string getAddress(int index);
-        std::string getPort(int index);
-        std::string getPath(int index);
-        std::string getServName(int index);
-        std::string getMethod(int index);
-        std::vector<std::string> getIndex(int index);
-        confData & getConflist(int index);
-        int getNbrServer();
+		Conf& operator=(const Conf& other);
+        std::string getAddress(int index) const;
+        std::string getPort(int index) const;
+        std::string getPath(int index) const;
+        std::string getServName(int index) const;
+        std::string getMethod(int index) const;
+		const std::vector <confData> getVectorConflist() const;
+        std::vector<std::string> getIndex(int index) const;
+        confData& getConflist(int index);
+        unsigned long getNbrServer() const;
         void parsing(std::string path);
         void print_info();
     private:
-        std::vector<confData> *confList;
-        int nbr_serv;
+        std::vector<confData> confList;
+        unsigned long nbr_serv;
 };
 
 #endif

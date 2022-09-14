@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   conf.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/22 11:07:05 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/13 21:29:05 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/header.hpp"
+#include "conf.hpp"
 
 Conf::Conf()
 {
+    std::cout << "Conf constructor" << std::endl;
     nbr_serv = 0;
 }
 
@@ -24,60 +25,83 @@ Conf::~Conf()
 
 Conf::Conf(const Conf & other)
 {
-    *this = other;
+	nbr_serv = other.getNbrServer();
+	confList.resize(nbr_serv, confData());
+	// while (confList.size() < nbr_serv)
+	// {
+	// 	confData next;
+	// 	confList.push_back(next);
+	// }
+	confList = other.getVectorConflist();
+}
+
+Conf& Conf::operator=(const Conf& other)
+{
+	confList = other.getVectorConflist();
+	nbr_serv = other.getNbrServer();
+	return *this;
 }
 
 void Conf::print_info()
 {
-    for(int i = 0; i < nbr_serv; i++)
-        (*confList)[i].print_info();
+    for(unsigned long i = 0; i < nbr_serv; i++)
+        (confList)[i].print_info();
 }
 
-std::string Conf::getAddress(int index)
+std::string Conf::getAddress(int index) const
 {
-    return (*confList)[index].getAdress();
+    return (confList)[index].getAdress();
 }
 
-std::string Conf::getPort(int index)
+std::string Conf::getPort(int index) const
 {
-    return (*confList)[index].getPort();
+    return (confList)[index].getPort();
 }
 
-std::string Conf::getPath(int index)
+std::string Conf::getPath(int index) const
 {
-    return (*confList)[index].getPath();
+    return (confList)[index].getPath();
 }
-std::string Conf::getServName(int index)
+std::string Conf::getServName(int index) const
 {
-    return (*confList)[index].getServName();  
+    return (confList)[index].getServName();  
 }
-std::string Conf::getMethod(int index)
+std::string Conf::getMethod(int index) const
 {
-    return (*confList)[index].getMethod();     
+    return (confList)[index].getMethod();     
 }
-std::vector<std::string> Conf::getIndex(int index)
+std::vector<std::string> Conf::getIndex(int index) const
 {
-    return (*confList)[index].getIndex();
+    return (confList)[index].getIndex();
 }
 
-int Conf::getNbrServer()
+unsigned long Conf::getNbrServer() const
 {
     return nbr_serv;
 }
 
-confData & Conf::getConflist(int index)
+confData & Conf::getConflist(int index) 
 {
-    return (*confList)[index];
+    return (confList)[index];
 }
 
 void Conf::parsing(std::string path)
 {
-    confList = new std::vector<confData>(1);
-    if (!(nbr_serv = (*confList)[0].parsing(path)))
+    if (!(nbr_serv = (confList)[0].parsing(path)))
         printerr("Error with parsing, 0 server found ...");
-    confList = new std::vector<confData>(nbr_serv);
-    for (int i = 0; i < nbr_serv; i++)
-        (*confList)[i].scrapData();
+    confList.resize(nbr_serv, confData());
+	// while (confList.size() < nbr_serv)
+	// {
+	// 	confData next;
+	// 	confList.push_back(next);
+	// }
+    for (unsigned long i = 0; i < nbr_serv; i++)
+        (confList)[i].scrapData();
     std::cout << "nbr_serv == " <<nbr_serv << std::endl;
     print_info();
+}
+
+const std::vector<confData> Conf::getVectorConflist() const
+{
+	return confList;
 }

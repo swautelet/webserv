@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   autoindex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/23 14:25:44 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/13 21:34:08 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/header.hpp"
+#include "autoindex.hpp"
 
 Autodex::Autodex()
 {
-    
+    std::cout << "Autoindex constructor " << std::endl;
 }
 
 Autodex::~Autodex()
@@ -22,9 +22,15 @@ Autodex::~Autodex()
             
 }
 
-Autodex::Autodex(const Autodex & other)
+Autodex::Autodex(const Autodex & other):index_str(other.getIndexStr())
 {
-    *this = other;
+//    *this = other;
+}
+
+Autodex& Autodex::operator=(const Autodex& other)
+{
+	index_str = other.getIndexStr();
+	return *this;
 }
 
 std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
@@ -38,7 +44,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
     std::string tmp;
     std::string urlz(url);
     int i = -1;
-    int autodex = 0;
+//    int autodex = 0;
 
     std::cout << "autoindex" << std::endl;
     std::cout << "--------------AUTOINDEX CREATION---------------" << std::endl;
@@ -62,13 +68,14 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
         {
             // std::cout << "---- " << conf.getLocation(i).getLocation_name() << std::endl;
             // std::cout << "---- " << conf.getLocation(i).getAutoIndex() << std::endl;
-            autodex = conf.getLocation(i).getAutoIndex();
+           /* autodex = */conf.getLocation(i).getAutoIndex();
             path = conf.getGoodLocation(path).getPath();
             break;
         }
     }
     if ((dir = opendir(url.c_str())) != NULL)
     {
+		std::cout << "i begin to write autoindex " << std::endl;
         tmp += "<html>";
 		tmp += "<head><title>Index of";
 		tmp += url + "</title></head>\n";
@@ -121,7 +128,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
     return index_str;
 }
 
-std::string Autodex::getIndexStr()
+std::string Autodex::getIndexStr() const
 {
     return index_str;
 }

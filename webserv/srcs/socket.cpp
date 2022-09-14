@@ -6,11 +6,11 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 19:39:06 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/13 18:22:57 by swautele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/header.hpp"
+#include "socket.hpp"
 
 
 Socket::Socket()
@@ -26,6 +26,7 @@ Socket::~Socket()
 
 Socket::Socket(std::string ip, std::string port)
 {
+	std::cout << "socket second constructor called " << std::endl;
     this->ip = ip;
     this->port = port;
 }
@@ -43,7 +44,9 @@ void Socket::setup(int backlog, confData & conf)
     create_socket(conf);
     create_bind();
     listen_socket(backlog);
+std::cout << conf.getAdress() << std::endl;	
     set_ip(conf.getAdress());
+std::cout << "soket initialized" << std::endl;
     set_port(conf.getPort());
 }
 
@@ -74,7 +77,7 @@ int Socket::listen_socket(int max_queue)
     return 1;
 }
 
-void Socket::set_ip(std::string ip)
+void Socket::set_ip(const std::string& ip)
 {
     this->ip = ip;
 }
@@ -84,22 +87,22 @@ void Socket::set_port(std::string port)
     this->port = port;
 }
 
-sockaddr_in Socket::getServ_address()
+sockaddr_in Socket::getServ_address() const
 {
     return serv_address;
 }
 
-std::string Socket::getIp()
+std::string Socket::getIp() const
 {
     return ip;
 }
 
-std::string Socket::getPort()
+std::string Socket::getPort() const
 {
     return port;
 }
 
-int Socket::getFd()
+const int& Socket::getFd() const
 {
     return fd;
 }

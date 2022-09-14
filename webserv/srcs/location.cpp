@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/22 12:48:58 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/13 18:21:28 by swautele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/header.hpp"
+#include "location.hpp"
 
 location::location()
 {
@@ -25,48 +25,60 @@ location::~location()
 
 }
 
-location::location(const location & other)
+location::location(const location & other):path(other.getPath()), method(other.getMethod()), error_page(other.getErrorPage()), index(other.getIndex()), location_name(other.getLocation_name()), body_size(other.getBodySize()), autoindex(other.getAutoIndex())
 {
     
 }
 
-std::string location::getPath()
+location& location::operator=(const location& other)
+{
+	path = other.getPath();
+	method = other.getMethod();
+	error_page = other.getErrorPage();
+	index = other.getIndex();
+	location_name = other.getLocation_name();
+	body_size = other.getBodySize();
+	autoindex = other.getAutoIndex();
+	return *this;
+}
+
+std::string location::getPath() const
 {
     return path;
 }
 
-std::vector<std::string> location::getIndex()
+std::vector<std::string> location::getIndex() const
 {
     return index;
 }
 
-std::string location::getMethod()
+std::string location::getMethod() const
 {
     return method;   
 }
 
-std::string location::getLocation_name()
+std::string location::getLocation_name() const
 {
     return location_name;   
 }
 
-std::string location::getErrorPage()
+std::string location::getErrorPage() const
 {
     return location_name;   
 }
 
-std::string location::getBodySize()
+std::string location::getBodySize() const
 {
     return body_size;   
 }
 
-int location::getAutoIndex()
+int location::getAutoIndex() const
 {
     return autoindex;
 }
 
 
-void location::setLocation_name(std::string str)
+void location::setLocation_name(std::string& str)
 {
     remove_spaces(str);
     location_name = str.substr(str.find("location") + strlen("location "), str.size());
@@ -103,11 +115,11 @@ void location::setIndex(std::string str)
         index.push_back(tmp);
         str = str.substr(str.find(" ") + 1, str.size());
     }
-    str.pop_back();
+	str = str.substr(0, str.size() - 1);
     index.push_back(str);
     if (index.back().empty())
         return;
-    index.resize(index.size() - 1);
+//    index.resize(index.size());
 }
 
 void location::setErrorPage(std::string str)
@@ -137,9 +149,9 @@ void location::setAutoIndex(std::string str)
         autoindex = 0;
 }
 
-void location::print_info()
+void location::print_info() const
 {
-    int i = -1;
+//    int i = -1;
     if (!location_name.empty())
         std::cout << "[location " << location_name << "]" << std::endl;
     if (!path.empty())
@@ -149,8 +161,10 @@ void location::print_info()
     if (!index.empty())
     {
         std::cout << "Index->           ";
-        while (++i <= index.size())
+        for (unsigned long i = 0; i < index.size(); i++)
+		{
             std::cout << "[" << index[i] << "]";
+		}
         std::cout << std::endl;
     }
     if (!error_page.empty())
@@ -159,11 +173,11 @@ void location::print_info()
         std::cout << "Body_size->       " << "[" << body_size << "]" << std::endl;
     std::cout << "AutoIndex->       " << "[" << autoindex << "]" << std::endl << std::endl;
 }
+
 int location::scrapData(std::string data, int i)
 {
-    (void)data;
+   // (void)data;
     (void)i;
-    
     std::string tmp;
     tmp = data.substr(0, data.find("\n"));
     setLocation_name(tmp);
@@ -176,7 +190,7 @@ int location::scrapData(std::string data, int i)
             continue;
         if (tmp.find("}") != std::string::npos)
             break;
-        else if (tmp.back() != ';')
+        else if (tmp.size() >= 1 && tmp[tmp.size() - 1] != ';')
             printerr("Error with conf file syntax ...");
         else if (tmp.find("root")!= std::string::npos)
             setPath(tmp);

@@ -21,18 +21,21 @@ class Request
         Request();
         ~Request();
         Request(const Request & other);
+		Request& operator=(const Request& other);
         void getInfo(int connection);
-        std::string getUrl();
-        std::string getMethod();
-        std::string getVersion();
-        std::string getHeader();
-        std::string getBody();
+        std::string getUrl() const;
+        std::string getMethod() const;
+        std::string getVersion() const;
+        std::string getHeader() const;
+        std::string getBody() const;
+		const std::vector<std::string>& getDataType() const;
     private:
         std::string method;
         std::string url;
         std::string version;
         std::string header;
         std::string body;
+		std::vector<std::string> type_data;
 };
 
 #endif

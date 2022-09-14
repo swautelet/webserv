@@ -1,2 +1,2 @@
-login=cHARLIIII
-password=YAAAAA`KÄ”ÿ
+login=awd
+password=awd

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/22 11:27:09 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/13 21:32:12 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,10 @@ fd_set fdset, copyset;
 
 void setup(webServ & web, char **argv, int backlog)
 {
-    int i = -1;
-
+	(void)argv;
     FD_ZERO(&fdset);
     
-    while (++i < web.getConf().getNbrServer())
+    for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
         FD_SET(web.getSock()[i].getFd(), &fdset);
@@ -29,11 +28,11 @@ void setup(webServ & web, char **argv, int backlog)
 
 void error_handling(webServ & web)
 {
-    int i = -1;
+  //  int i = -1;
     int j;
     if (!web.getConf().getNbrServer())
         printerr("Error : No server configured ...");
-    while(++i < web.getConf().getNbrServer())
+    for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         j = -1;
         if (web.getConf().getAddress(i).empty() || web.getConf().getPort(i).empty())
@@ -58,7 +57,7 @@ void error_handling(webServ & web)
 
 void engine(webServ & web, int connection, int addrlen)
 {
-    for(int i = 0; i <= web.getConf().getNbrServer(); i++)
+    for(unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         if (FD_ISSET(web.getSock()[i].getFd(), &fdset))
         {
@@ -79,22 +78,25 @@ void engine(webServ & web, int connection, int addrlen)
 }
 void ctr_c(int sig)
 {
+	(void)sig;
     std::cout << "\nBye bye" << std::endl;
     exit(0);
 }
 
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **envp)
 {
-    struct timeval tv;
+//    struct timeval tv;
     webServ web(argv[1]);
-    int i = -1;
+//    int i = -1;
+	web.setServ_Root(envp);
+	// web.env = envp;
     int connection = 0;
     int addrlen = 0;
     int backlog = 10;
     int retval = 0;
-    tv.tv_sec = 60;
-    tv.tv_usec = 0;
+//    tv.tv_sec = 60;
+//    tv.tv_usec = 0;
     if (argc != 2)
         printerr("Usage : ./Webserv [conf file]");
     setup(web, argv, backlog);
@@ -104,7 +106,8 @@ int main(int argc, char **argv)
     signal(SIGINT, &ctr_c);
     while(1)
     {
-        if ((retval = select(FD_SETSIZE, &copyset, NULL, NULL, &tv)) == -1)
+		//
+        if ((retval = select(FD_SETSIZE, &copyset, NULL, NULL, 0)) == -1)
             printerr("Error with select ...");
         else if (retval == 0)
             printerr("Timeout ...");

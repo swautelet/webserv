@@ -23,20 +23,21 @@ class confData
         confData();
         ~confData();
         confData(const confData & other);
+		confData& operator=(const confData& other);
         int parsing(std::string path);
-        int getLocationNbr();
-        int getAutoIndex();
-        int LocationFinder(std::string str);
-        std::string getAdress();
-        std::string getPort();
-        std::string getPath();
-        std::string getServName();
-        std::string getMethod();
-        std::vector<std::string> getIndex();
-        std::string getErrorPage();
-        std::string getBodySize();
-        location & getLocation(int index);
-        location & getGoodLocation(std::string str);
+        int getLocationNbr() const;
+        int getAutoIndex() const;
+        const location& LocationFinder(std::string str) const;
+        const std::string& getAdress() const;
+        std::string getPort() const;
+        std::string getPath() const;
+        std::string getServName() const;
+        std::string getMethod() const;
+        std::vector<std::string> getIndex() const;
+        std::string getErrorPage() const;
+        std::string getBodySize() const;
+        const location & getLocation(int index) const;
+        const location & getGoodLocation(std::string str) const;
         void print_info();
         void scrapData();
         void setAddress(std::string str);
@@ -57,8 +58,8 @@ class confData
         std::string error_page;
         std::string body_size;
         int autoindex;
-        int nbr_loc;
-        std::vector<location> *loc;
+        unsigned long nbr_loc;
+        std::vector<location> loc;
 };
 
 #endif
