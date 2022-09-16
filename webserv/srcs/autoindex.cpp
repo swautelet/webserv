@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/13 21:34:08 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/16 03:39:40 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url)
             // std::cout << "---- " << conf.getLocation(i).getAutoIndex() << std::endl;
            /* autodex = */conf.getLocation(i).getAutoIndex();
             path = conf.getGoodLocation(path).getPath();
+            web.setMax_body_size(atoi(conf.getLocation(i).getBodySize().c_str()));
             break;
         }
     }

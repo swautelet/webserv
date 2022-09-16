@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/14 18:21:36 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/16 03:51:25 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void engine(webServ & web, int connection, int addrlen)
             std::cout << "Info done ..." << std::endl;
             web.getRes().find_method(web, i);
             web.getRes().concat_response(web);     
-            write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
+            write(connection, web.getRes().getResponse().c_str(), atoi(web.getRes().getContentLenght().c_str()));
             close(connection);
         }
     }

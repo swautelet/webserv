@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/14 17:57:41 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/16 03:48:15 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,9 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
         if (!conf.getGoodLocation(loc).getRedir().empty())
         {
             web.setbool_redir(conf.getGoodLocation(loc).getRedir());
+			web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().c_str()));
             return "";
-        }
-            
+        }  
 		std::cout << "Final location is " << loc <<std::endl;
         std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
@@ -133,6 +133,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
         if (!conf.getGoodLocation(loc).getRedir().empty())
         {
             web.setbool_redir(conf.getGoodLocation(loc).getRedir());
+			//web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().c_str()));
             return "";
         }
 		std::cout << "No similar location found : base location will be used" <<std::endl;
@@ -141,14 +142,10 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 		else
 			url = conf.getGoodLocation(loc).getPath() + req_file;
 	}
+	web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().c_str()));
     std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, url, loc);
 	if (index_path.empty())
-		// std::cout << "No index found" << std::endl;
-    // std::cout << "req_file = " << req_file << std::endl;
-    // std::cout << "fullpath = " << fullpath << std::endl;
-	// std::cout << "url = " << url << std::endl;
-	// std::cout << "index_path = " << index_path << std::endl;
     if (file_exist(url) == 0)
         fullpath = PATH_ERROR;
     if ((dir = opendir(url.c_str())) != NULL)
@@ -170,6 +167,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
         }
         else
         {
+			web.setMax_body_size(atoi(conf.getBodySize().c_str()));
             // std::cout << "didnt found location" << std::endl;
             if (BaseLocationExist(conf).empty())
             {
@@ -178,6 +176,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
                 else if (conf.getAutoIndex())
 				{
 					web.getRes().setStatus(201);
+					web.setMax_body_size(atoi(conf.getBodySize().c_str()));
                     return web.getAutodex().create_dex(web, conf, url);
 				}
                 else if (!conf.getIndex().empty())

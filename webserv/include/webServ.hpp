@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:10:21 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/14 18:41:13 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/16 03:31:18 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,10 @@ class webServ
 		Cgi&	getCgi();
         std::vector<Socket> &getSock();
         Autodex & getAutodex();
+        int getMax_body_size();
         std::pair<std::string, std::string> &getbool_redir();
 		void	setServ_Root(char **env);
+        void setMax_body_size(int i);
         void setbool_redir(std::vector<std::string> vec);
         void del_redir();
 		const std::string&	getServ_Root() const;
@@ -47,6 +49,7 @@ class webServ
         Autodex* indexing;
 		std::string	serv_root;
         std::pair<std::string, std::string> bool_redir;
+        int max_body_size;
 		Cgi* _cgi;
 };
 

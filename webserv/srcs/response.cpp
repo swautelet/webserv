@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/14 18:54:52 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/16 04:11:05 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,6 +328,8 @@ void Response::MethodGet(webServ & web, confData & conf)
             web.getRes().setStatus(atoi(web.getbool_redir().first.c_str()));
         }
 		setContentLenght();
+		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(content_lenght.c_str()))
+			content_lenght = itoa(web.getMax_body_size());
 	}
 	else
 	{
@@ -447,7 +449,7 @@ void	Response::seterrorpage()
 
 void  Response::setContentLenght()
 {
-	content_lenght = itoa(body.size());
+	content_lenght = itoa(body.size() + how_many(body));
 }
 
 void Response::setBody(std::string str)
