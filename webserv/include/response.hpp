@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:04 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/14 18:21:50 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/16 05:01:48 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class Response
         std::string getContentType() const;
         std::string getBody() const;
         std::string getFullResponse() const;
+        size_t getBodySize() const;
 		int getStatus() const;
     private:
         std::string version;

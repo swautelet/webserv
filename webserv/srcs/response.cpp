@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/16 04:11:05 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/16 05:04:48 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,8 +309,11 @@ int how_many(std::string str)
     int count = 0;
     int i = -1;
     while(str[++i])
-        if(isspace(str[i]))
+	{
+        if (isspace(str[i]))
             count++;
+		count++;
+	}
 //std::cout << count << std::endl;
     return count;
 }
@@ -329,7 +332,11 @@ void Response::MethodGet(webServ & web, confData & conf)
         }
 		setContentLenght();
 		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(content_lenght.c_str()))
+		{
 			content_lenght = itoa(web.getMax_body_size());
+			std::cout << "tHINLGE" << std::endl;
+		}
+		
 	}
 	else
 	{
@@ -363,7 +370,7 @@ void Response::delMethod(webServ&  web, confData& conf)
         fullpath = loc.getPath() + url.substr(loc.getLocation_name().size(), url.size());
         url = url.substr(1, url.size());
     }
-	if(remove(fullpath.c_str()) == 0)
+	if (remove(fullpath.c_str()) == 0)
 	{
         std::cout << "File " << fullpath << " deleted successfully" << std::endl;
 		setStatus(200);
@@ -399,6 +406,10 @@ std::string Response::getContentLenght() const
     return content_lenght;
 }
 
+size_t Response::getBodySize() const
+{
+    return getBody().size();
+}
 std::string Response::getContentType() const
 {
     return content_type;
@@ -449,7 +460,7 @@ void	Response::seterrorpage()
 
 void  Response::setContentLenght()
 {
-	content_lenght = itoa(body.size() + how_many(body));
+	content_lenght = itoa(how_many(body));
 }
 
 void Response::setBody(std::string str)

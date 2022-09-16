@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/13 21:12:41 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/16 04:57:08 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,7 @@ char** vectstring_tochartable(const std::vector<std::string> vect);
 void  free_table(char** table);
 std::string	search_value_vect(std::vector<std::string> vect, std::string searched);
 void	start_script(Cgi& cgi);
+int how_many(std::string str);
+
 
 #endif
