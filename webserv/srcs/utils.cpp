@@ -207,6 +207,8 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 std::string itoa(int a)
 {
     std::string ss="";   //create empty string
+	if (a == 0)
+		ss = "0";
     while(a)
     {
         int x=a%10;
@@ -612,11 +614,3 @@ std::string search_value_vect(std::vector<std::string> vect, std::string searche
 	return ret;
 }
 
-void run_api(webServ& web, confData& conf)
-{
-	web.getCgi().setFullpath(web, conf);
-	std::cout << "test" << std::endl;
-	web.getCgi().setEnv(web, conf);
-	std::cout << "second test "<< std::endl;
-	start_script(web.getCgi());
-}

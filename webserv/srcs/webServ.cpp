@@ -28,6 +28,7 @@ webServ::webServ(std::string argv)
 	req = new Request;
 	res = new Response;
 	indexing = new Autodex;
+	_cgi = new Cgi;
 
     conf->parsing(argv);
     sock.reserve(conf->getNbrServer());
@@ -49,6 +50,7 @@ webServ::~webServ()
 	delete req;
 	delete res;
 	delete indexing;
+	delete _cgi;
 }
 
 webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Request(other.getReq())), res(new Response(other.getRes())), sock(other.getSock()), indexing(new Autodex(other.getAutodex())), serv_root(other.getServ_Root())

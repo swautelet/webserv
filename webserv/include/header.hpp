@@ -68,10 +68,10 @@ void	splitstring(std::string str, std::vector<std::string>& vect, char c);
 int post_element_nbr(std::string str);
 std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int nbr);
 void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post, confData & conf);
-void run_api(webServ& web, confData& conf);
+//void run_api(webServ& web, confData& conf);
 char** vectstring_tochartable(const std::vector<std::string> vect);
 void  free_table(char** table);
 std::string	search_value_vect(std::vector<std::string> vect, std::string searched);
-void	start_script(Cgi& cgi);
+//void	start_script(Cgi& cgi);
 
 #endif

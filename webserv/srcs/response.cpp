@@ -326,8 +326,8 @@ void Response::MethodGet(webServ & web, confData & conf)
 	}
 	else
 	{
-		run_api(web, conf);
-		std::cout << "made my way to api" << std::endl;
+		web.getCgi().run_api(web, conf);
+//		std::cout << "made my way to api" << std::endl;
 	}
 }
 

@@ -11,21 +11,20 @@ class Cgi{
 	public:
 		Cgi();
 		~Cgi();
-		std::string& getPath(const std::string& req_file);
+		std::string& getPath();
 		const std::vector<std::string>& getEnv() const;
 		const std::string& getFullpath() const;
+		void	run_api(webServ& web, confData& conf);
 		char**	getArgv();
 		char**	getEnvp();
 		void	setFullpath(webServ& web, confData& conf);
-//		void	start_script();
+		void	start_script();
 		void	setEnv(webServ& web, confData& conf);
 
 	private:
-	std::map<std::string, std::string> pathmap;
-	std::vector<std::string> env;
-//	std::string body;
-	std::string empty;
-	std::string	path;
+		std::map<std::string, std::string> pathmap;
+		std::vector<std::string> env;
+		std::string	scripath;
 	
 };
 
