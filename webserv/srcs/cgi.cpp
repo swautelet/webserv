@@ -1,8 +1,9 @@
 #include "cgi.hpp"
 #define BUFF_SIZE 50
 
-void	Cgi::start_script()
+std::string	Cgi::start_script()
 {
+	std::string rep;
 	int id;
 	int status;
 	int pip[2];
@@ -18,7 +19,7 @@ void	Cgi::start_script()
 	if (id == -1)
 	{
 		std::cout << "could'nt fork" << std::endl;
-		return ;
+		return rep;
 	}
 	if (id == 0)
 	{
@@ -39,18 +40,23 @@ void	Cgi::start_script()
 	{
 		close(pip[1]);
 		wait(&status);
-		char buff[10];
+		char buff[11];
+		buff[10] = '\0';
 		int size;
 		std::cout << "i read that :" << std::endl;
 		while((size = read(pip[0], buff, 10)) > 0)
 		{
 			write(1, buff, size);
+			for (int i = size; i < 10; i++)
+				buff[i] = '\0';
+			rep += buff;
 		}
 		std::cout << "waiting for php " << std::endl;
 		wait(&status);
 	}
 	free_table(argtmp);
 	free_table(envtmp);
+	return rep;
 }
 
 void Cgi::run_api(webServ& web, confData& conf)
@@ -62,7 +68,8 @@ void Cgi::run_api(webServ& web, confData& conf)
 	{
 		std::cout << env[i] << std::endl;
 	}
-	web.getCgi().start_script();
+	web.getRes().setBody(web.getCgi().start_script());
+	web.getRes().setContentType();
 }
 
 Cgi::Cgi()
@@ -141,15 +148,14 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "PATH_TRANSLATED=" + web.getReq().getUrl();
 	env.push_back(tmp);
-	tmp = "QUERY_STRING=lastname=lol"; 
-	//+ web.getReq().getUrl().substr(web.getReq().getUrl().rfind('?') + 1, web.getReq().getUrl().size());
+	tmp = "QUERY_STRING=" + web.getReq().getUrl().substr(web.getReq().getUrl().rfind('?') + 1, web.getReq().getUrl().size());
 	env.push_back(tmp);
 	tmp = "REMOTEaddr=" + conf.getAdress();
 	env.push_back(tmp);
-//	tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization: ");
-//	env.push_back(tmp);
-//	tmp = "REMOTE_USER=" + search_value_vect(header, "Authorization: ");
-//	env.push_back(tmp);
+	tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization: ");
+	env.push_back(tmp);
+	tmp = "REMOTE_USER=" + search_value_vect(header, "Authorization: ");
+	env.push_back(tmp);
 	tmp = "REQUEST_URI=" + web.getReq().getUrl();
 	env.push_back(tmp);
 	tmp = "SERVER_NAME=";

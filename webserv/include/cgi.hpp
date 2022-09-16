@@ -18,7 +18,7 @@ class Cgi{
 		char**	getArgv();
 		char**	getEnvp();
 		void	setFullpath(webServ& web, confData& conf);
-		void	start_script();
+		std::string	start_script();
 		void	setEnv(webServ& web, confData& conf);
 
 	private:
