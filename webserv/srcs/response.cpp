@@ -432,6 +432,7 @@ void	Response::seterrorpage()
 	else
 	{
 		body = "";
+		setContentLenght();
 	}
 	setContentLenght();
 }
