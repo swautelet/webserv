@@ -16,8 +16,7 @@ std::string	Cgi::start_script()
 	{
 		std::cout << envtmp[i] << std::endl;
 	}*/
-	std::string test = "ceci est un test ";
-	write(fileno(infile),test.c_str(), test.size());
+	write(fileno(infile), body.c_str(), body.size());
 	lseek(fileno(infile), 0, SEEK_SET);
 	// pipe(pip);
 	id = fork();
@@ -32,17 +31,17 @@ std::string	Cgi::start_script()
 		dup2(fileno(outfile), STDOUT_FILENO);
 		dup2(fileno(infile), STDIN_FILENO);
 		// std::cout << "Hello from php script process" << std::endl;
-		std::string tmp = getPath() + " " + scripath;
+		/*std::string tmp = getPath() + " " + scripath;
 		std::system(tmp.c_str());
-		exit (10);
-		/*if (execve(getPath().c_str(), argtmp, envtmp) < 0)
+		exit (10);*/
+		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
 		{
 			std::cout << "Script couldn't be loaded with this->scripath : |" << getFullpath() << "|" << std::endl;
 			std::cout << "ex this->scripath :" << getPath() << std::endl;
 			std::cout << "errno : " << errno << std::endl;
 			perror("execve error ");
 			exit(10);
-		}*/
+		}
 	}
 	else
 	{
@@ -75,6 +74,7 @@ void Cgi::run_api(webServ& web, confData& conf)
 {
 	web.getCgi().setFullpath(web, conf);
 	web.getCgi().setEnv(web, conf);
+	body = web.getReq().getHeader();
 	std::cout << "----------------------debug env------------------" << std::endl;
 	for (unsigned long i = 0; i < env.size(); i++)
 	{
