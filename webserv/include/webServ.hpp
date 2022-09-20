@@ -24,6 +24,7 @@ class webServ
         webServ(webServ & other);
         webServ &operator=(webServ const & other);
         Conf &getConf();
+        char** getEnv();
         Request & getReq();
         Response & getRes();
 		Cgi&	getCgi();
@@ -31,8 +32,10 @@ class webServ
         Autodex & getAutodex();
 		void	setServ_Root(char **env);
 		const std::string&	getServ_Root() const;
-		char** env;
+        void    setEnv(char** envp);
+
     private:
+		char** env;
         Conf* conf;
         Request* req;
         Response* res;

@@ -58,6 +58,11 @@ webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Reque
     
 }
 
+char** webServ::getEnv()
+{
+	return env;
+}
+
 Conf & webServ::getConf() 
 {
     return *conf;
@@ -105,4 +110,9 @@ const std::string&	webServ::getServ_Root() const
 Cgi& webServ::getCgi()
 {
 	return *_cgi;
+}
+
+void    webServ::setEnv(char** envp)
+{
+	env = envp;
 }

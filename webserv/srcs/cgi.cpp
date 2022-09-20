@@ -74,7 +74,6 @@ void Cgi::run_api(webServ& web, confData& conf)
 
 Cgi::Cgi()
 {
-	pathmap["php"] = "/opt/homebrew/bin/php";
 //	this->this->scripath = new std::vector<std::string>;
 }
 
@@ -87,6 +86,35 @@ std::string& Cgi::getPath()
 {
 	std::string ext = this->scripath.substr(this->scripath.rfind('.') + 1, this->scripath.size());
 	return pathmap[ext];
+}
+
+void	Cgi::set_transla_path(char** envp)
+{
+	std::vector<std::string> paths;
+	std::string searched = "PATH=";
+	for (int i = 0; envp[i]; i++)
+	{
+		std::string tmp(envp[i]);
+		if (!tmp.substr(0, searched.size()).compare(searched))
+		{
+			splitstring(tmp.substr(5, tmp.size()), paths, ':');
+			break;
+		}
+	}
+	find_transla_path("php", paths);
+}
+
+void	Cgi::find_transla_path(std::string scri, std::vector<std::string> paths)
+{
+	for (unsigned long i = 0; i < paths.size(); i++)
+	{
+		std::string tmp = paths[i] + "/" + scri;
+		if (!access(tmp.c_str(), X_OK))
+		{
+			pathmap[scri] = tmp;
+			break ;
+		}
+	}
 }
 
 char**	Cgi::getArgv()

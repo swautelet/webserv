@@ -90,7 +90,8 @@ int main(int argc, char **argv, char **envp)
     webServ web(argv[1]);
 //    int i = -1;
 	web.setServ_Root(envp);
-	web.env = envp;
+	web.setEnv(envp);
+    web.getCgi().set_transla_path(web.getEnv());
     int connection = 0;
     int addrlen = 0;
     int backlog = 10;

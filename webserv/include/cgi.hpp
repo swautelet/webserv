@@ -19,6 +19,8 @@ class Cgi{
 		char**	getEnvp();
 		void	setFullpath(webServ& web, confData& conf);
 		std::string	start_script();
+		void	set_transla_path(char** envp);
+		void	find_transla_path(std::string scri, std::vector<std::string> paths);
 		void	setEnv(webServ& web, confData& conf);
 
 	private:
