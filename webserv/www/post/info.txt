@@ -1,2 +1,2 @@
-login=qefqwef
-password=ewfewf
+login=awda
+password=adwawdäþ

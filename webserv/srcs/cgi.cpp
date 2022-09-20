@@ -5,8 +5,10 @@ std::string	Cgi::start_script()
 {
 	std::string rep;
 	int id;
-	// int status;
-	int pip[2];
+	std::FILE *infile = tmpfile();
+	std::FILE *outfile = tmpfile();
+	int status;
+	// int pip[2];
 	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
 /*	std::cout << "compared with real table ---------------------------" << std::endl;
@@ -14,7 +16,10 @@ std::string	Cgi::start_script()
 	{
 		std::cout << envtmp[i] << std::endl;
 	}*/
-	pipe(pip);
+	std::string test = "ceci est un test ";
+	write(fileno(infile),test.c_str(), test.size());
+	lseek(fileno(infile), 0, SEEK_SET);
+	// pipe(pip);
 	id = fork();
 	if (id == -1)
 	{
@@ -23,38 +28,44 @@ std::string	Cgi::start_script()
 	}
 	if (id == 0)
 	{
-		close (pip[0]);
-		dup2(pip[1], STDOUT_FILENO);
-		dup2(pip[1], STDIN_FILENO);
+		// close (pip[0]);
+		dup2(fileno(outfile), STDOUT_FILENO);
+		dup2(fileno(infile), STDIN_FILENO);
 		// std::cout << "Hello from php script process" << std::endl;
-		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
+		std::string tmp = getPath() + " " + scripath;
+		std::system(tmp.c_str());
+		exit (10);
+		/*if (execve(getPath().c_str(), argtmp, envtmp) < 0)
 		{
 			std::cout << "Script couldn't be loaded with this->scripath : |" << getFullpath() << "|" << std::endl;
 			std::cout << "ex this->scripath :" << getPath() << std::endl;
 			std::cout << "errno : " << errno << std::endl;
 			perror("execve error ");
 			exit(10);
-		}
+		}*/
 	}
 	else
 	{
-		close(pip[1]);
-		// waitpid(id, &status, 0);
+		// close(pip[1]);
+		waitpid(id, &status, 0);
 		// std::cout << "php script finished with :" << status << std::endl;
+		lseek(fileno(outfile), 0, SEEK_SET);
 		char buff[11];
 		buff[10] = '\0';
 		int size;
 		std::cout << "i read that :" << std::endl;
-		while((size = read(pip[0], buff, 10)) > 0)
+		while((size = read(fileno(outfile), buff, 10)) > 0)
 		{
 			write(1, buff, size);
 			for (int i = size; i < 10; i++)
 				buff[i] = '\0';
 			rep += buff;
 		}
-		std::cout << "waiting for php " << std::endl;
+		// std::cout << "waiting for php " << std::endl;
 		// wait(&status);
 	}
+	fclose(infile);
+	fclose(outfile);
 	free_table(argtmp);
 	free_table(envtmp);
 	return rep;
@@ -75,11 +86,13 @@ void Cgi::run_api(webServ& web, confData& conf)
 
 Cgi::Cgi()
 {
+	// infile = tmpfile();
 //	this->this->scripath = new std::vector<std::string>;
 }
 
 Cgi::~Cgi()
 {
+	// fclose(infile);
 //	delete this->scripath;
 }
 
