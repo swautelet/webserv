@@ -5,7 +5,7 @@ std::string	Cgi::start_script()
 {
 	std::string rep;
 	int id;
-	int status;
+	// int status;
 	int pip[2];
 	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
@@ -26,7 +26,7 @@ std::string	Cgi::start_script()
 		close (pip[0]);
 		dup2(pip[1], STDOUT_FILENO);
 		dup2(pip[1], STDIN_FILENO);
-		std::cout << "Hello from php script" << std::endl;
+		// std::cout << "Hello from php script process" << std::endl;
 		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
 		{
 			std::cout << "Script couldn't be loaded with this->scripath : |" << getFullpath() << "|" << std::endl;
@@ -39,7 +39,8 @@ std::string	Cgi::start_script()
 	else
 	{
 		close(pip[1]);
-		wait(&status);
+		// waitpid(id, &status, 0);
+		// std::cout << "php script finished with :" << status << std::endl;
 		char buff[11];
 		buff[10] = '\0';
 		int size;
@@ -52,7 +53,7 @@ std::string	Cgi::start_script()
 			rep += buff;
 		}
 		std::cout << "waiting for php " << std::endl;
-		wait(&status);
+		// wait(&status);
 	}
 	free_table(argtmp);
 	free_table(envtmp);
