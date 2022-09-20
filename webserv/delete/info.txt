@@ -1,0 +1,2 @@
+login=awdaw
+password=wadawþ

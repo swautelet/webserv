@@ -1,2 +1,2 @@
-login=awd
-password=awd
+login=qefqwef
+password=ewfewf
