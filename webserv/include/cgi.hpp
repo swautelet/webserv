@@ -27,6 +27,7 @@ class Cgi{
 		std::map<std::string, std::string> pathmap;
 		std::vector<std::string> env;
 		std::string	scripath;
+		std::string src;
 		std::string body;
 };
 

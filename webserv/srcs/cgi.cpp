@@ -5,7 +5,7 @@ std::string	Cgi::start_script()
 {
 	std::string rep;
 	int id;
-	std::FILE *infile = tmpfile();
+	std::FILE *infile = fopen(scripath.c_str(), "r");
 	std::FILE *outfile = tmpfile();
 	int status;
 	// int pip[2];
@@ -30,7 +30,7 @@ std::string	Cgi::start_script()
 		// close (pip[0]);
 		dup2(fileno(outfile), STDOUT_FILENO);
 		dup2(fileno(infile), STDIN_FILENO);
-		// std::cout << "Hello from php script process" << std::endl;
+	//	std::cout << "Hello from php script process" << std::endl;
 		/*std::string tmp = getPath() + " " + scripath;
 		std::system(tmp.c_str());
 		exit (10);*/
@@ -47,7 +47,7 @@ std::string	Cgi::start_script()
 	{
 		// close(pip[1]);
 		waitpid(id, &status, 0);
-		// std::cout << "php script finished with :" << status << std::endl;
+		 std::cout << "php script finished with :" << status << std::endl;
 		lseek(fileno(outfile), 0, SEEK_SET);
 		char buff[11];
 		buff[10] = '\0';
@@ -75,17 +75,18 @@ void Cgi::run_api(webServ& web, confData& conf)
 	web.getCgi().setFullpath(web, conf);
 	web.getCgi().setEnv(web, conf);
 	body = web.getReq().getHeader();
-	std::cout << "----------------------debug env------------------" << std::endl;
+/*	std::cout << "----------------------debug env------------------" << std::endl;
 	for (unsigned long i = 0; i < env.size(); i++)
 	{
 		std::cout << env[i] << std::endl;
-	}
+	}*/
 	web.getRes().setBody(web.getCgi().start_script());
 	web.getRes().setContentType();
 }
 
 Cgi::Cgi()
 {
+	src = "www/post/name.txt";
 	// infile = tmpfile();
 //	this->this->scripath = new std::vector<std::string>;
 }
@@ -134,13 +135,13 @@ void	Cgi::find_transla_path(std::string scri, std::vector<std::string> paths)
 char**	Cgi::getArgv()
 {
 	char **res = new char*[2];
-	res[0] = new char[this->scripath.size() + 1];
+	res[0] = new char[this->src.size() + 1];
 	res[1] = NULL;
-	for (unsigned long i = 0; i < this->scripath.size(); i++)
+	for (unsigned long i = 0; i < this->src.size(); i++)
 	{
-		res[0][i] = this->scripath[i];
+		res[0][i] = this->src[i];
 	}
-	res[0][this->scripath.size()] = '\0';
+	res[0][this->src.size()] = '\0';
 	return res;
 }
 
