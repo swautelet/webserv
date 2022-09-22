@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html>
+  
 <body>
-<h2>HTML Forms</h2>
-
-<form action="/post/info.txt" method="POST">
-	<input type="file" id="myFile" name="filename">
-	<input type="submit" value="Submit">
-</form>
-
-<p>If you click the "Submit" button, the form-data will be sent to a page called "/post/info.txt".</p>
+    <h1>Show File-select Fields</h1>
+  
+    <h3>
+        Show a file-select field which allows
+        only one file to be chosen:
+    </h3>
+  
+    <form action="/action_page.php" 
+        enctype="multipart/form-data">
+          
+        <label for="myfile">Select a file:</label>
+        <input type="file" id="myfile" name="myfile" />
+        <br /><br />
+        <input type="submit" />
+    </form>
 </body>
+  
 </html>

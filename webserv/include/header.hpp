@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/16 04:57:08 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/22 09:23:44 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ char	*test1(std::string str , std::string c);
 char	**server_split(std::string str, std::string strset);
 void print_tab(char **tab);
 std::pair<std::string, std::string> find_base_location(confData & conf, std::string url);
-void print(std::string str);
 char *strnstr(const char *s, const char *find, size_t slen);
 void remove_spaces(std::string &str);
 std::string BaseLocationExist(confData conf);
@@ -75,6 +74,8 @@ void  free_table(char** table);
 std::string	search_value_vect(std::vector<std::string> vect, std::string searched);
 void	start_script(Cgi& cgi);
 int how_many(std::string str);
+void print(std::string str);
+int str_isspace(std::string str);
 
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/14 18:31:23 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/22 11:15:42 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -378,7 +378,7 @@ void confData::scrapData()
             setIndex(tmp);
         else if (tmp.find("client_max_body_size")!= std::string::npos)
             setBodySize(tmp);
-        else if (tmp.find("return")!= std::string::npos)
+        else if (tmp.find("return") != std::string::npos)
             setRedir(tmp);
         else
             printerr("Something is wrong with your config file ...");
@@ -390,14 +390,36 @@ void confData::scrapData()
     loc.reserve(nbr_loc);
 	std::cout << loc.size() << std::endl << std::endl;
     loc.resize(nbr_loc, location());
-	// while(loc.size() < nbr_loc)
-	// {
-	// 	location next;
-	// 	loc.push_back(next);
-	// }
+    for(unsigned long x = 0; x < nbr_loc; x++)
+        complete_loc(x);
     for (unsigned long x = 0; x < nbr_loc; x++)
     {
         index = (loc)[x].scrapData(location_str(cpy_data), index);
         cpy_data = cpy_data.substr(cpy_data.find("location") + 1, cpy_data.size());
     }
+}
+
+void confData::complete_loc(int i)
+{
+    std::vector<std::string> vec;
+    if (loc[i].getPath().empty())
+        loc[i].edit_info("path", getPath(), vec);
+        
+    if (loc[i].getMethod().empty())
+        loc[i].edit_info("method", getMethod(), vec);
+
+    if (loc[i].getErrorPage().empty())
+        loc[i].edit_info("error_page", getErrorPage(), vec); 
+        
+    if (loc[i].getAutoIndex() != getAutoIndex())
+        loc[i].edit_info("autoindex", itoa(getAutoIndex()), vec); 
+        
+    if (loc[i].getIndex().empty())
+            loc[i].edit_info("index", "", getIndex());
+    
+    if (loc[i].getBodySize().empty())
+        loc[i].edit_info("body_size", getBodySize(), vec);
+
+    if (loc[i].getRedir().empty())
+        loc[i].edit_info("redir", "", getRedir());
 }

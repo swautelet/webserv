@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 18:43:26 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/16 03:32:24 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/20 19:25:58 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ webServ::webServ()
 	_cgi = new Cgi;
 	max_body_size = 0;
 }
-
 
 webServ::webServ(std::string argv)
 {
@@ -39,6 +38,7 @@ webServ::webServ(std::string argv)
 	{
 		Socket* next = new Socket;
 		sock.push_back(*next);
+		delete next;
 	}
 }
 

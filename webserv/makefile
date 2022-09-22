@@ -1,14 +1,14 @@
 NAME		= Webserv
 SRC			= main.cpp srcs/utils.cpp srcs/socket.cpp srcs/response.cpp srcs/request.cpp srcs/conf.cpp srcs/confData.cpp srcs/location.cpp srcs/autoindex.cpp srcs/webServ.cpp srcs/cgi.cpp
 OBJS	= $(SRC:.cpp=.o)
-CXX			= c++ 
+CPP			= c++ 
 RM			= rm -f
 CPPFLAGS	= -Wall -Wextra -Werror -Iinclude -fsanitize=address -g3 -std=c++98 -I   .
 
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-			$(CXX) $(CPPFLAGS) -o $(NAME) $(OBJS)
+			$(CPP) $(CPPFLAGS) -o $(NAME) $(OBJS)
 
 clean:
 			@$(RM) $(OBJS)

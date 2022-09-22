@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/16 03:48:15 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/22 10:53:52 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,8 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     
     
 	loc = location_exe(conf, req_file);
+	print(loc);
+	print(conf.LocationFinder(loc).getLocation_name());
 	if (!loc.empty() && !conf.LocationFinder(loc).getLocation_name().empty())
 	{
         if (!conf.getGoodLocation(loc).getRedir().empty())
@@ -160,7 +162,10 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
             if (!conf.getGoodLocation(loc).getAutoIndex() && conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = PATH_ERROR;
             if (conf.getGoodLocation(loc).getAutoIndex())
-                return web.getAutodex().create_dex(web, conf, url);            
+			{
+				closedir(dir);
+                return web.getAutodex().create_dex(web, conf, url, conf.getGoodLocation(loc));  
+			}          
             if (!conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = index_path;
             
@@ -177,12 +182,14 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 				{
 					web.getRes().setStatus(201);
 					web.setMax_body_size(atoi(conf.getBodySize().c_str()));
-                    return web.getAutodex().create_dex(web, conf, url);
+					closedir(dir);
+                    return web.getAutodex().create_dex(web, conf, url, conf.getGoodLocation(loc));
 				}
                 else if (!conf.getIndex().empty())
                     fullpath = index_path;
             }
         }
+		closedir(dir);
     }
     else
     {
@@ -207,7 +214,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     if (!fd.is_open())
     {
         if (fd.good())
-            printerr("Error with file opening ... (ReadHTML)");
+            printerr(" opening ... (ReadHTML)");
     }
     buff << fd.rdbuf();
 	web.getRes().setContentType(fullpath);
@@ -436,12 +443,6 @@ void print_tab(char **tab)
     }
 }
 
-void print(std::string str)
-{
-    std::cout << str <<std::endl;
-}
-
-
 char *strnstr(const char *s, const char *find, size_t slen)
 {
 	char c, sc;
@@ -511,7 +512,6 @@ void	splitstring(std::string str, std::vector<std::string>& vect, char c)
 int post_element_nbr(std::string str)
 {
     int count = 0;
-    //std::cout << str << std::endl;
     while (!str.empty())
     {
         count++;
@@ -578,9 +578,8 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
                 out << "\n";
         }
         out.close();
+		closedir(dir);
     }
-    else
-        printerr("Error: Outpout file is a directory ...");
 }
 
 char** vectstring_tochartable(const std::vector<std::string> vect)
@@ -629,4 +628,22 @@ void run_api(webServ& web, confData& conf)
 	web.getCgi().setEnv(web, conf);
 	std::cout << "second test "<< std::endl;
 	start_script(web.getCgi());
+}
+
+
+void print(std::string str)
+{
+	std::cout << "print - " << str << std::endl;
+}
+
+int str_isspace(std::string str)
+{
+	if (str.empty())
+		return 1;
+	for(int i = 0; str[i]; i++)
+	{
+		if (!isspace(str[i]))
+			return 0;
+	}
+	return 1;
 }

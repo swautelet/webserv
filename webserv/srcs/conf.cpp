@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/13 21:29:05 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/22 09:18:56 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,6 @@ void Conf::parsing(std::string path)
     if (!(nbr_serv = (confList)[0].parsing(path)))
         printerr("Error with parsing, 0 server found ...");
     confList.resize(nbr_serv, confData());
-	// while (confList.size() < nbr_serv)
-	// {
-	// 	confData next;
-	// 	confList.push_back(next);
-	// }
     for (unsigned long i = 0; i < nbr_serv; i++)
         (confList)[i].scrapData();
     std::cout << "nbr_serv == " <<nbr_serv << std::endl;

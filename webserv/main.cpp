@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/16 05:04:04 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/21 20:05:10 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,10 @@ void engine(webServ & web, int connection, int addrlen)
             web.getReq().getInfo(connection);
             std::cout << "Info done ..." << std::endl;
             web.getRes().find_method(web, i);
-            web.getRes().concat_response(web);     
-            write(connection, web.getRes().getResponse().c_str(), atoi(web.getRes().getContentLenght().c_str()));
+            web.getRes().concat_response(web);
+            std::cout << "IS - " << web.getRes().getResponse().c_str() <<std::endl;
+            std::cout << web.getRes().getResponse().size() << " & " << web.getRes().getContentLenght().c_str() << std::endl;
+            write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
             close(connection);
         }
     }

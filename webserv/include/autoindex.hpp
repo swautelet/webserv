@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   autoindex.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:15 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/13 18:27:06 by swautele         ###   ########.fr       */
+/*   Updated: 2022/09/21 21:23:46 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Autodex
         Autodex(const Autodex & other);
 		Autodex& operator=(const Autodex& other);
         Autodex(std::string path, confData & conf);
-        std::string create_dex(webServ & web, confData & conf, std::string url);
+        std::string create_dex(webServ & web, confData & conf, std::string url, const location & loc);
         std::string getIndexStr() const;
     private:
         std::string index_str;

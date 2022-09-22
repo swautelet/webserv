@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:45:59 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/14 15:47:54 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/22 08:58:47 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class confData
         void setBodySize(std::string str);
         void setAutoIndex(std::string str);
         void setRedir(std::string str);
+        void complete_loc(int i);
     private:
         std::string address;
         std::string port;

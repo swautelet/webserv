@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:39 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/14 16:11:33 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/22 10:09:29 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class location
         void setRedir(std::string str);
         int scrapData(std::string str, int i);
         void print_info() const;
+        void edit_info(std::string str, std::string info, std::vector<std::string> vec);
     private:
         std::string path;
         std::string method;

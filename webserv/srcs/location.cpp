@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/14 18:31:29 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/22 11:24:24 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 
 location::location()
 {
-    location_name = "";
-    path = "";
-    method = "";
     autoindex = 0;
 }
 
@@ -85,7 +82,7 @@ const std::vector<std::string> & location::getRedir() const
 void location::setLocation_name(std::string& str)
 {
     remove_spaces(str);
-    location_name = str.substr(str.find("location") + strlen("location "), str.size());
+    location_name = str.substr(str.find("location ") + strlen("location "), str.size());
 }
 
 void location::setPath(std::string str)
@@ -110,6 +107,8 @@ void location::setMethod(std::string str)
 
 void location::setIndex(std::string str)
 {
+    if (!index.empty())
+        index.clear();
     std::string tmp;
     remove_spaces(str);
     str = str.substr(str.find(" ") + 1, str.size());
@@ -155,6 +154,8 @@ void location::setAutoIndex(std::string str)
 
 void location::setRedir(std::string str)
 {
+    if (!redir.empty())
+        redir.clear();
     std::string tmp;
     remove_spaces(str);
     str = str.substr(str.find(" ") + 1, str.size());
@@ -181,6 +182,25 @@ void location::setRedir(std::string str)
     if (redir.back().empty())
         return;
 }
+
+void location::edit_info(std::string str, std::string info, std::vector<std::string> vec)
+{
+    if (!str.compare("path"))
+        path = info;
+    if (!str.compare("method"))
+        method = info;
+    if (!str.compare("error_page"))
+        error_page = info;
+    if (!str.compare("autoindex"))
+        autoindex = atoi(info.c_str());
+    if (!str.compare("index"))
+        index = vec;
+    if (!str.compare("body_size"))
+        body_size = info;
+    if (!str.compare("redir"))
+        redir = vec;
+}
+
 void location::print_info() const
 {
 //    int i = -1;
@@ -221,17 +241,19 @@ int location::scrapData(std::string data, int i)
     (void)i;
     std::string tmp;
     tmp = data.substr(0, data.find("\n"));
+    std::cout << tmp << std::endl;
     setLocation_name(tmp);
-    autoindex = 0;
     while (!data.empty())
     {
         tmp = data.substr(0, data.find("\n"));
         data = data.substr(data.find("\n") + 1, data.size());
+        if (str_isspace(tmp))
+            continue;
         if (tmp.find("{") != std::string::npos || tmp.find("location")!= std::string::npos)
             continue;
         if (tmp.find("}") != std::string::npos)
             break;
-        else if (tmp.size() >= 1 && tmp[tmp.size() - 1] != ';')
+        if (tmp.size() >= 1 && tmp[tmp.size() - 1] != ';')
             printerr("Error with conf file syntax ...");
         else if (tmp.find("root")!= std::string::npos)
             setPath(tmp);

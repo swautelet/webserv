@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/16 05:04:48 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/21 04:39:45 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -350,10 +350,17 @@ void Response::MethodPost(webServ & web, confData & conf)
     //std::cout << "POST\n";
     int nbr = post_element_nbr(web.getReq().getBody());
     if (!nbr)
-        printerr("Error: Body doesnt have arguement ...");        
-    std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
-    post_exe(web, post, conf);
-    MethodGet(web, conf);
+	{
+		setStatus(100);
+		concat_response(web);
+	}
+	else
+	{
+		std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
+		post_exe(web, post, conf);
+		MethodGet(web, conf);
+		
+	}
 }
 
 void Response::delMethod(webServ&  web, confData& conf)
@@ -391,8 +398,8 @@ void Response::concat_response(webServ & web)
         full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Location : " + web.getbool_redir().second;
     else
 	    full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
-	std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
-    std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
+	//std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
+    //std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
     web.del_redir();
 }
 
@@ -460,7 +467,11 @@ void	Response::seterrorpage()
 
 void  Response::setContentLenght()
 {
-	content_lenght = itoa(how_many(body));
+	if (getContentType().find("image") != std::string::npos)
+		content_lenght = itoa(body.size());
+	else
+		content_lenght = itoa(how_many(body));
+	
 }
 
 void Response::setBody(std::string str)
