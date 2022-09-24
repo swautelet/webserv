@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 08:27:34 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/24 16:47:00 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Conf::Conf()
 
 Conf::~Conf()
 {
-        
+    confList.clear();
 }
 
 Conf::Conf(const Conf & other)

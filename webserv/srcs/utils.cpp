@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 14:48:10 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/24 16:42:29 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int file_exist(std::string file)
     return 1;
 }
 
-std::string readHTML(webServ & web, confData & conf, std::string req_file) // Need to be change, actually disgusting
+std::string readHTML(webServ & web, confData & conf, std::string req_file)
 {
 //  int autodex = 0;
 //  struct stat info;
@@ -161,11 +161,14 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 	index_path = index_exe(conf, url, loc);
 	if (index_path.empty())
         std::cout << "idk" << std::endl;
-    std::cout << "!full = " << fullpath << std::endl;
     if (file_exist(url) == 0)
     {
         if (conf.LocationExist(loc))
         {
+            std::cout << "loc = " << loc <<std::endl;
+            std::cout << "eh" << conf.getGoodLocation(loc).getLocation_name() << std::endl;
+            std::cout << "wtf !!!!!!!!!!!!!!!! "<< conf.getGoodLocation(loc).getErrorPage() << std::endl;
+            std::cout << "wtf-2 "<< conf.getGoodLocation(loc).getBodySize() << std::endl;
             if (!conf.getGoodLocation(loc).getErrorPage().empty())
                 fullpath = conf.getGoodLocation(loc).getErrorPage();
             else
@@ -225,7 +228,12 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     {
         std::cout << "Not dir" << std::endl;
 		if (fullpath.empty())
-			fullpath = url;
+        {
+			if (conf.getGoodLocation(loc).getPath().compare(req_file))
+				fullpath = conf.getGoodLocation(loc).getPath() + req_file;
+			else
+				fullpath = conf.getGoodLocation(loc).getPath();
+        }
     }
     // std::cout << "req_file = " << req_file << std::endl;
     // std::cout << "fullpath = " << fullpath << std::endl;

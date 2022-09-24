@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 12:00:53 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/24 16:55:04 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ confData::confData()
 
 confData::~confData()
 {
-
+    index.clear();
+    loc.clear();
+    redir.clear();
 }
 
 confData::confData(const confData & other):address(other.getAdress()), port(other.getPort()), path(other.getPath()), serv_name(other.getServName()), method(other.getMethod()), index(other.getIndex()), error_page(other.getErrorPage()), body_size(other.getBodySize()), autoindex(other.getAutoIndex()), nbr_loc(other.getLocationNbr()), loc(nbr_loc)
@@ -113,7 +115,9 @@ const location & confData::getGoodLocation(std::string str) const
 {
     for (unsigned long i = 0; i < nbr_loc; i++)
         if (!(loc)[i].getLocation_name().compare(str))
+        {
             return (loc)[i];
+        }
     return (loc)[0];
 }
 
@@ -402,7 +406,8 @@ void confData::scrapData(int pos)
     std::cout << "Nbr of location : " << nbr_loc << std::endl;
     loc.reserve(nbr_loc);
 	std::cout << loc.size() << std::endl << std::endl;
-    loc.resize(nbr_loc, location());
+    std::cout << "Thinkge qasjyhtrgeythgrhtygfrhygtfrde" << std::endl;
+    loc.resize(nbr_loc);
     for(unsigned long x = 0; x < nbr_loc; x++)
         complete_loc(x);
     for (unsigned long x = 0; x < nbr_loc; x++)
