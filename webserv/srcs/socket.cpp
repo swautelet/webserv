@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/20 18:35:55 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/24 09:01:12 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ void Socket::setup(int backlog, confData & conf)
     create_socket(conf);
     create_bind();
     listen_socket(backlog);
-std::cout << conf.getAdress() << std::endl;	
+    std::cout << conf.getAdress() << std::endl;
     set_ip(conf.getAdress());
-std::cout << "soket initialized" << std::endl;
+    std::cout << "soket initialized" << std::endl;
     set_port(conf.getPort());
 }
 

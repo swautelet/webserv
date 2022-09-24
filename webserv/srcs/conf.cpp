@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conf.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/22 09:18:56 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/24 08:27:34 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,10 @@ Conf& Conf::operator=(const Conf& other)
 void Conf::print_info()
 {
     for(unsigned long i = 0; i < nbr_serv; i++)
+    {
+        std::cout << std::endl <<"[SERVER " << i + 1 << "]" << std::endl << std::endl; 
         (confList)[i].print_info();
+    }
 }
 
 std::string Conf::getAddress(int index) const
@@ -91,8 +94,8 @@ void Conf::parsing(std::string path)
         printerr("Error with parsing, 0 server found ...");
     confList.resize(nbr_serv, confData());
     for (unsigned long i = 0; i < nbr_serv; i++)
-        (confList)[i].scrapData();
-    std::cout << "nbr_serv == " <<nbr_serv << std::endl;
+        (confList)[i].scrapData(i);
+    std::cout << "nbr_serv == " << nbr_serv << std::endl;
     print_info();
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/22 11:24:24 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/24 11:57:38 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,6 @@ void location::edit_info(std::string str, std::string info, std::vector<std::str
 
 void location::print_info() const
 {
-//    int i = -1;
     if (!location_name.empty())
         std::cout << "[location " << location_name << "]" << std::endl;
     if (!path.empty())
@@ -237,16 +236,17 @@ void location::print_info() const
 
 int location::scrapData(std::string data, int i)
 {
-   // (void)data;
     (void)i;
     std::string tmp;
     tmp = data.substr(0, data.find("\n"));
-    std::cout << tmp << std::endl;
     setLocation_name(tmp);
     while (!data.empty())
     {
         tmp = data.substr(0, data.find("\n"));
+        // std::cout << "tmp in loc == " << tmp << std::endl;
         data = data.substr(data.find("\n") + 1, data.size());
+        if (tmp.find("server {") != std::string::npos)
+            break;
         if (str_isspace(tmp))
             continue;
         if (tmp.find("{") != std::string::npos || tmp.find("location")!= std::string::npos)
@@ -272,6 +272,8 @@ int location::scrapData(std::string data, int i)
         else
             printerr("Something is wrong with your config file ...");
     }
+    if (data.find("server") != std::string::npos)
+        data = data.substr(data.find("server"), data.size());
     if (path.empty())
         path = "./";
     return 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:45:59 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/22 08:58:47 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/24 10:16:21 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class confData
         const location & getLocation(int index) const;
         const location & getGoodLocation(std::string str) const;
         void print_info();
-        void scrapData();
+        void scrapData(int pos);
         void setAddress(std::string str);
         void setPath(std::string str);
         void setServName(std::string str);
@@ -51,6 +51,7 @@ class confData
         void setAutoIndex(std::string str);
         void setRedir(std::string str);
         void complete_loc(int i);
+        int LocationExist(std::string str);
     private:
         std::string address;
         std::string port;

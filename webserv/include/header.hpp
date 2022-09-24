@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/22 09:23:44 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/24 11:51:21 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@
 #include <sys/wait.h>
 #include <cstring>
 
-#define PATH_ERROR "www/error/403.html"
+#define ERROR_403 "www/error/403.html"
+#define ERROR_404 "www/error/404.html"
 
 int printerr(const char *str);
 char **ft_split(char *str, char charset);
@@ -76,6 +77,7 @@ void	start_script(Cgi& cgi);
 int how_many(std::string str);
 void print(std::string str);
 int str_isspace(std::string str);
+int check_location_nbr(std::string str, std::string to_find);
 
 
 #endif

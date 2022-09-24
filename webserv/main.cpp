@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/21 20:05:10 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/24 09:14:15 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void setup(webServ & web, char **argv, int backlog)
     for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
+        
         FD_SET(web.getSock()[i].getFd(), &fdset);
     }
 }
@@ -78,7 +79,7 @@ void engine(webServ & web, int connection, int addrlen)
         }
     }
 }
-void ctr_c(int sig)
+void ctrl_c(int sig)
 {
 	(void)sig;
     std::cout << "\nBye bye" << std::endl;
@@ -105,7 +106,7 @@ int main(int argc, char **argv, char **envp)
     error_handling(web);
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
     memcpy(&copyset, &fdset, sizeof(fdset));
-    signal(SIGINT, &ctr_c);
+    signal(SIGINT, &ctrl_c);
     while(1)
     {
 		//

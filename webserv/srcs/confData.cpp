@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/22 11:15:42 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/24 12:00:53 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,16 @@ const location& confData::LocationFinder(std::string str) const
 		}
 	}
     return (loc)[0];
+}
+
+int confData::LocationExist(std::string str)
+{
+    for (unsigned long i = 0; i < nbr_loc; i++)
+	{
+		if (!loc[i].getLocation_name().compare(str))
+            return 1;
+	}
+    return 0;
 }
 
 void confData::setAddress(std::string str)
@@ -320,7 +330,6 @@ void confData::print_info()
     for (unsigned long x = 0; x < nbr_loc; x++)
     {
         (loc)[x].print_info();
-//        j++;
     }
     std::cout << "--------------------------------------" << std::endl;
 }
@@ -344,23 +353,25 @@ std::string location_str(std::string str)
     return tmp;
 }
 
-void confData::scrapData()
+void confData::scrapData(int pos)
 {
-  //  int j;
-  //  static int i = 0;
+    (void)pos;
     int index = -1;
     std::string tmp;
     std::string cpy_data(data);
+    tmp = data.substr(0, data.find("\n"));
+    if (!tmp.find("server"))
+        data = data.substr(data.find("\n") + 1, data.size());
     while (!data.empty())
     {   
         tmp = data.substr(0, data.find("\n"));
-        std::cout << " -- =" << tmp << std::endl;
         data = data.substr(data.find("\n") + 1, data.size());
+        // std::cout << "TMP ? = " << tmp << std::endl;
+        if (!tmp.find("server") || tmp.find("{") != std::string::npos)
+            break;
         if (tmp.find("location") != std::string::npos)
             break;
-        if (!tmp.find("server"))
-                continue;
-        else if (tmp.size() >= 1 && tmp[tmp.size() - 1] != ';')
+        if (tmp.size() >= 1 && tmp[tmp.size() - 1] != ';')
             printerr("Error with conf file syntax ...");
         else if (tmp.find("listen")!= std::string::npos)
             setAddress(tmp);
@@ -383,9 +394,11 @@ void confData::scrapData()
         else
             printerr("Something is wrong with your config file ...");
     }
+    if (data.find("server") != std::string::npos)
+        data = data.substr(data.find("server"), data.size());
     if (path.empty())
         path = "./";
-    nbr_loc = check_server_nbr(cpy_data, "location ");
+    nbr_loc = check_location_nbr(cpy_data, "location ");
     std::cout << "Nbr of location : " << nbr_loc << std::endl;
     loc.reserve(nbr_loc);
 	std::cout << loc.size() << std::endl << std::endl;
