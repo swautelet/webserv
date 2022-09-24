@@ -6,13 +6,14 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 14:50:31 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/24 15:38:12 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/header.hpp"
 
 fd_set fdset, copyset;
+std::vector<std::string> ip_vec;
 
 void setup(webServ & web, char **argv, int backlog)
 {
@@ -21,10 +22,19 @@ void setup(webServ & web, char **argv, int backlog)
     
     for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
-        std::cout << web.getConf().getConflist(i).getServName() << std::endl;
-        web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
-        FD_SET(web.getSock()[i].getFd(), &fdset);
+        int no = 0;
+        for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
+            if (!it->compare(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort()))
+                no = 1;
+        if (!no)
+        {
+            web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
+            FD_SET(web.getSock()[i].getFd(), &fdset);
+            ip_vec.push_back(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort());  
+        }
     }
+    for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
+        std::cout << "Unique ip:" << *it << std::endl;
 }
 
 void error_handling(webServ & web)
