@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 09:14:15 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/24 14:50:31 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void setup(webServ & web, char **argv, int backlog)
     
     for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
+        std::cout << web.getConf().getConflist(i).getServName() << std::endl;
         web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
-        
         FD_SET(web.getSock()[i].getFd(), &fdset);
     }
 }
@@ -60,11 +60,12 @@ void engine(webServ & web, int connection, int addrlen)
 {
     for(unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
-        if (FD_ISSET(web.getSock()[i].getFd(), &fdset))
+        if (FD_ISSET(web.getSock()[i].getFd(), &copyset))
         {
             struct sockaddr client_address;
             addrlen = sizeof((socklen_t *)&client_address);
-            std::cout << "Accept ... " << std::endl; 
+            std::cout << web.getSock()[i].getPort() << std::endl;
+            std::cout << "Accept ... " << std::endl;
             if ((connection = accept(web.getSock()[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
                 printerr("cannot connect ...");
             std::cout << "Accept done ..." << std::endl;
@@ -76,6 +77,8 @@ void engine(webServ & web, int connection, int addrlen)
             std::cout << web.getRes().getResponse().size() << " & " << web.getRes().getContentLenght().c_str() << std::endl;
             write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
             close(connection);
+            memcpy(&copyset, &fdset, sizeof(fdset));
+            break;
         }
     }
 }
@@ -109,7 +112,6 @@ int main(int argc, char **argv, char **envp)
     signal(SIGINT, &ctrl_c);
     while(1)
     {
-		//
         if ((retval = select(FD_SETSIZE, &copyset, NULL, NULL, 0)) == -1)
             printerr("Error with select ...");
         else if (retval == 0)

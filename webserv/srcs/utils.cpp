@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 12:03:41 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/24 14:48:10 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ std::string location_exe(confData & conf, std::string req_file)
 		req_file = req_file.substr(0, req_file.size() - 1);
 	while (!req_file.empty() && req_file.find("/") != std::string::npos)
 	{
-		std::cout << "Actual req_file : " << req_file << std::endl;
 		if (conf.LocationExist(req_file))
         {
             std::cout << conf.LocationFinder(req_file).getLocation_name() << std::endl;
@@ -39,6 +38,8 @@ std::string location_exe(confData & conf, std::string req_file)
 		if (!req_file.rfind('/') && conf.LocationExist(req_file))
 			return "/";
 		req_file = req_file.substr(0, req_file.rfind('/'));
+		if (req_file.empty() && conf.LocationExist("/"))
+            return "/";
 	}
 	return "";
 }
@@ -131,7 +132,10 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
                 url = conf.getGoodLocation(loc).getPath() + conf.getGoodLocation(loc).getLocation_name() + req_file;
         }       
 		else if (!conf.getGoodLocation(loc).getPath().compare("./"))
-			url = "." + conf.getGoodLocation(loc).getLocation_name() + req_file;
+        {
+            print("oof");
+			url = "." + req_file;
+        }
 		else
         {
             
@@ -157,6 +161,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 	index_path = index_exe(conf, url, loc);
 	if (index_path.empty())
         std::cout << "idk" << std::endl;
+    std::cout << "!full = " << fullpath << std::endl;
     if (file_exist(url) == 0)
     {
         if (conf.LocationExist(loc))
@@ -204,6 +209,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
                     fullpath = ERROR_403;
                 else if (conf.getAutoIndex())
 				{
+                    std::cout << "HERE" << std::endl;
 					web.getRes().setStatus(201);
 					web.setMax_body_size(atoi(conf.getBodySize().c_str()));
 					closedir(dir);
@@ -211,7 +217,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
 				}
                 else if (!conf.getIndex().empty())
                     fullpath = index_path;
-            }
+            } 
         }
 		closedir(dir);
     }
@@ -219,12 +225,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     {
         std::cout << "Not dir" << std::endl;
 		if (fullpath.empty())
-		{
-			if (conf.getGoodLocation(loc).getPath().compare(req_file))
-				fullpath = conf.getGoodLocation(loc).getPath() + req_file;
-			else
-				fullpath = conf.getGoodLocation(loc).getPath();
-		}
+			fullpath = url;
     }
     // std::cout << "req_file = " << req_file << std::endl;
     // std::cout << "fullpath = " << fullpath << std::endl;
@@ -579,8 +580,9 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
     
     std::string fullpath(url);
     std::string loc = location_exe(conf, url);
+    std::cout << "loc == "<< loc << std::endl; 
     if (loc.empty())
-        url = conf.getPath() + url.substr(1, url.size());
+        url = conf.getPath() + "/" + url.substr(1, url.size());
     else
     {
         fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(loc.size(), url.size());
@@ -603,7 +605,6 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
                 out << "\n";
         }
         out.close();
-		closedir(dir);
     }
 }
 

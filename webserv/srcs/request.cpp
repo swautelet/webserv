@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/13 18:22:11 by swautele         ###   ########.fr       */
+/*   Updated: 2022/09/24 12:29:35 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,9 @@ void Request::getInfo(int connection)
     char buff[10000];
     if ((ret = recv(connection, buff, sizeof(buff), 0)) < 0)
         printerr("Error with recv ...");
-//	if (ret == 0)
-//        printerr("Error with recv : Connection close ...");
+    std::cout << "oof" << std::endl;
+	if (ret == 0)
+       printerr("Error with recv : Connection close ...");
     std::cout << "---------------------------\n" << buff << "\n-------------------------\n";
  //   req = ft_split(buff, '\n');
  //   req2 = ft_split(req[0], ' ');

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 18:43:26 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/20 19:25:58 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/24 12:24:24 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,4 +139,3 @@ void webServ::del_redir()
     bool_redir.first = "";
     bool_redir.second = "";
 }
-

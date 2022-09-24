@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 09:01:12 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/24 12:27:13 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ void Socket::setup(int backlog, confData & conf)
     create_socket(conf);
     create_bind();
     listen_socket(backlog);
-    std::cout << conf.getAdress() << std::endl;
     set_ip(conf.getAdress());
-    std::cout << "soket initialized" << std::endl;
+    std::cout << getIp() << std::endl;
     set_port(conf.getPort());
+    std::cout << getPort() << std::endl;
 }
 
 int Socket::create_socket(confData & conf)
