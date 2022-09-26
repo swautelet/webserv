@@ -38,7 +38,7 @@ std::string	Cgi::start_script()
 		/*std::string tmp = getPath() + " " + scripath;
 		std::system(tmp.c_str());
 		exit (10);*/
-		std::cout << "trying execve with :" << scripath << std::endl;
+		// std::cout << "trying execve with :" << scripath << std::endl;
 		if (execve(scripath.c_str(), NULL, envtmp) < 0)
 		{
 			// std::cout << "Script couldn't be loaded with this->scripath : |" << argtmp[0] << "|" << std::endl;
