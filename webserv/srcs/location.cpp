@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/24 16:59:02 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 14:58:36 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,11 @@ location::~location()
 
 location::location(const location & other):path(other.getPath()), method(other.getMethod()), error_page(other.getErrorPage()), index(other.getIndex()), location_name(other.getLocation_name()), body_size(other.getBodySize()), autoindex(other.getAutoIndex())
 {
-    std::cout << "NOIOOOOO" << std::endl;
+    
 }
 
 location& location::operator=(const location& other)
 {
-    std::cout << "NOIOOOOO" << std::endl;
 	path = other.getPath();
 	method = other.getMethod();
 	error_page = other.getErrorPage();
@@ -64,7 +63,7 @@ std::string location::getLocation_name() const
 
 std::string location::getErrorPage() const
 {
-    return location_name;   
+    return error_page;   
 }
 
 std::string location::getBodySize() const
