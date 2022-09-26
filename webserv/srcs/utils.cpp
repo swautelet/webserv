@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/08 14:40:38 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/09/26 15:36:53 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,24 @@ std::pair<std::string, std::string> find_base_location(confData & conf, std::str
 
 std::string location_exe(confData & conf, std::string req_file)
 {
-	if (!req_file.compare("/"))
-		return req_file;
+    
+    std::cout << "SERVER = " << conf.getServName() << std::endl;
+    if (!req_file.compare("/") && conf.LocationExist("/"))
+        return "/";
 	if (req_file.size() >= 1 && req_file[req_file.size() - 1] == '/')
 		req_file = req_file.substr(0, req_file.size() - 1);
 	while (!req_file.empty() && req_file.find("/") != std::string::npos)
 	{
-		std::cout << "Actual req_file : " << req_file << std::endl;
-		if (!conf.LocationFinder(req_file).getLocation_name().empty())
+		if (conf.LocationExist(req_file))
+        {
+            std::cout << conf.LocationFinder(req_file).getLocation_name() << std::endl;
 			return conf.LocationFinder(req_file).getLocation_name();
-		if (!req_file.rfind('/') && !conf.LocationFinder("/").getLocation_name().empty())
+        }
+		if (!req_file.rfind('/') && conf.LocationExist(req_file))
 			return "/";
 		req_file = req_file.substr(0, req_file.rfind('/'));
+		if (req_file.empty() && conf.LocationExist("/"))
+            return "/";
 	}
 	return "";
 }
@@ -79,23 +85,23 @@ std::string index_exe(confData & conf, std::string url, std::string loc)
 
 int file_exist(std::string file)
 {
-    std::ifstream infile(file);
+    std::ifstream infile(file.c_str());
 
     if (!infile.good())
         return 0;
     return 1;
 }
 
-std::string readHTML(webServ & web, confData & conf, std::string req_file) // Need to be change, actually disgusting
+std::string readHTML(webServ & web, confData & conf, std::string req_file)
 {
-//    int autodex = 0;
-//    struct stat info;
+//  int autodex = 0;
+//  struct stat info;
+//  struct dirent *ent;
 	std::stringstream buff;
     std::string error_path;
     std::ifstream fd;
     std::string tmp;
     DIR *dir;
-//    struct dirent *ent;
     std::string fullpath;
 	std::string url;
     std::string tmp_path;
@@ -104,42 +110,78 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     
     
 	loc = location_exe(conf, req_file);
-	if (!loc.empty() && !conf.LocationFinder(loc).getLocation_name().empty())
+    
+	if (!loc.empty() && conf.LocationExist(loc))
 	{
+	    web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().c_str()));
+        if (!conf.getGoodLocation(loc).getRedir().empty())
+        {
+            web.setbool_redir(conf.getGoodLocation(loc).getRedir());
+			web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().c_str()));
+            return "";
+        }  
 		std::cout << "Final location is " << loc <<std::endl;
         std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
         {
             req_file = req_file.substr(conf.getGoodLocation(loc).getLocation_name().size(), req_file.size());
-            std::cout << "Found it = " << req_file <<std::endl;
-            url = conf.getGoodLocation(loc).getPath() + req_file;
+            std::cout << "Found it = " << req_file << std::endl;
+            if (!conf.getGoodLocation(loc).getPath().compare("./"))
+                url = "." + conf.getGoodLocation(loc).getLocation_name() + req_file;
+            else
+                url = conf.getGoodLocation(loc).getPath() + conf.getGoodLocation(loc).getLocation_name() + req_file;
         }       
 		else if (!conf.getGoodLocation(loc).getPath().compare("./"))
+        {
+            print("oof");
 			url = "." + req_file;
+        }
 		else
         {
-            std::cout << "dupe" << std::endl;
+            
+            std::cout << "location / ?" << std::endl;
 			url = conf.getGoodLocation(loc).getPath() + req_file;
         }
 	}
 	else
 	{
+        web.setMax_body_size(atoi(conf.getBodySize().c_str()));
+        if (!conf.getRedir().empty())
+        {
+            web.setbool_redir(conf.getRedir());
+            return "";
+        }
 		std::cout << "No similar location found : base location will be used" <<std::endl;
-		if (!conf.getGoodLocation(loc).getPath().compare("./"))
+		if (!conf.getPath().compare("./"))
 			url = "." + req_file;
 		else
-			url = conf.getGoodLocation(loc).getPath() + req_file;
+			url = conf.getPath() + req_file;
 	}
     std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, url, loc);
 	if (index_path.empty())
-		// std::cout << "No index found" << std::endl;
-    // std::cout << "req_file = " << req_file << std::endl;
-    // std::cout << "fullpath = " << fullpath << std::endl;
-	// std::cout << "url = " << url << std::endl;
-	// std::cout << "index_path = " << index_path << std::endl;
+        std::cout << "idk" << std::endl;
     if (file_exist(url) == 0)
-        fullpath = PATH_ERROR;
+    {
+        if (conf.LocationExist(loc))
+        {
+            std::cout << "loc = " << loc <<std::endl;
+            std::cout << "eh" << conf.getGoodLocation(loc).getLocation_name() << std::endl;
+            std::cout << "wtf !!!!!!!!!!!!!!!! "<< conf.getGoodLocation(loc).getErrorPage() << std::endl;
+            std::cout << "wtf-2 "<< conf.getGoodLocation(loc).getBodySize() << std::endl;
+            if (!conf.getGoodLocation(loc).getErrorPage().empty())
+                fullpath = conf.getGoodLocation(loc).getErrorPage();
+            else
+                fullpath = ERROR_404;
+        }
+        else
+        {
+            if (!conf.getErrorPage().empty())
+                fullpath = conf.getErrorPage();
+            else
+                fullpath = ERROR_404;
+        }
+    }
     if ((dir = opendir(url.c_str())) != NULL)
     {
         std::cout << "-------------------------- "<< std::endl;
@@ -147,42 +189,51 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
         std::cout << "tmp path = " << tmp_path << std::endl;
         std::cout << "req_file = " << req_file << std::endl;
         std::cout << "fullpath = " << fullpath << std::endl;
-        if (!conf.LocationFinder(loc).getLocation_name().empty())
+        if (conf.LocationExist(loc))
         {
             if (!conf.getGoodLocation(loc).getAutoIndex() && conf.getGoodLocation(loc).getIndex().empty())
-                fullpath = PATH_ERROR;
+                fullpath = ERROR_403;
             if (conf.getGoodLocation(loc).getAutoIndex())
-                return web.getAutodex().create_dex(web, conf, url);            
+			{
+				closedir(dir);
+                return web.getAutodex().create_dex(web, conf, url, conf.getGoodLocation(loc));  
+			}          
             if (!conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = index_path;
             
         }
         else
         {
-            // std::cout << "didnt found location" << std::endl;
+			web.setMax_body_size(atoi(conf.getBodySize().c_str()));
+            std::cout << "didnt found location" << std::endl;
             if (BaseLocationExist(conf).empty())
             {
                 if (!conf.getAutoIndex() && conf.getIndex().empty())
-                    fullpath = PATH_ERROR;
+                    fullpath = ERROR_403;
                 else if (conf.getAutoIndex())
 				{
+                    std::cout << "HERE" << std::endl;
 					web.getRes().setStatus(201);
-                    return web.getAutodex().create_dex(web, conf, url);
+					web.setMax_body_size(atoi(conf.getBodySize().c_str()));
+					closedir(dir);
+                    return web.getAutodex().create_dex(web, conf, url, conf.getGoodLocation(loc));
 				}
                 else if (!conf.getIndex().empty())
                     fullpath = index_path;
-            }
+            } 
         }
+		closedir(dir);
     }
     else
     {
+        std::cout << "Not dir" << std::endl;
 		if (fullpath.empty())
-		{
+        {
 			if (conf.getGoodLocation(loc).getPath().compare(req_file))
 				fullpath = conf.getGoodLocation(loc).getPath() + req_file;
 			else
 				fullpath = conf.getGoodLocation(loc).getPath();
-		}
+        }
     }
     // std::cout << "req_file = " << req_file << std::endl;
     // std::cout << "fullpath = " << fullpath << std::endl;
@@ -190,14 +241,14 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file) // Ne
     if (file_exist(url) == 0)
     {
         web.getRes().setContentType(".html");
-        fullpath = PATH_ERROR;
+        fullpath = ERROR_404;
     }
     
     fd.open(fullpath.c_str());
     if (!fd.is_open())
     {
         if (fd.good())
-            printerr("Error with file opening ... (ReadHTML)");
+            printerr(" opening ... (ReadHTML)");
     }
     buff << fd.rdbuf();
 	web.getRes().setContentType(fullpath);
@@ -428,12 +479,6 @@ void print_tab(char **tab)
     }
 }
 
-void print(std::string str)
-{
-    std::cout << str <<std::endl;
-}
-
-
 char *strnstr(const char *s, const char *find, size_t slen)
 {
 	char c, sc;
@@ -465,7 +510,7 @@ void remove_spaces(std::string &str)
         while(isspace(str[j]))
             j--;
         if (i != 0 || j != str.size() - 1)
-            str = str.substr(i, j);
+            str = str.substr(i, j + 1);
         break;
     }
 }
@@ -503,7 +548,6 @@ void	splitstring(std::string str, std::vector<std::string>& vect, char c)
 int post_element_nbr(std::string str)
 {
     int count = 0;
-    //std::cout << str << std::endl;
     while (!str.empty())
     {
         count++;
@@ -546,8 +590,9 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
     
     std::string fullpath(url);
     std::string loc = location_exe(conf, url);
+    std::cout << "loc == "<< loc << std::endl; 
     if (loc.empty())
-        url = conf.getPath() + url.substr(1, url.size());
+        url = conf.getPath() + "/" + url.substr(1, url.size());
     else
     {
         fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(loc.size(), url.size());
@@ -571,8 +616,6 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
         }
         out.close();
     }
-    else
-        printerr("Error: Outpout file is a directory ...");
 }
 
 char** vectstring_tochartable(const std::vector<std::string> vect)
@@ -614,3 +657,85 @@ std::string search_value_vect(std::vector<std::string> vect, std::string searche
 	return ret;
 }
 
+// void run_api(webServ& web, confData& conf)
+// {
+// 	web.getCgi().setFullpath(web, conf);
+// 	std::cout << "test" << std::endl;
+// 	web.getCgi().setEnv(web, conf);
+// 	std::cout << "second test "<< std::endl;
+// 	start_script(web.getCgi());
+// }
+
+
+void print(std::string str)
+{
+	std::cout << "print - " << str << std::endl;
+}
+
+int str_isspace(std::string str)
+{
+	if (str.empty())
+		return 1;
+	for(int i = 0; str[i]; i++)
+	{
+		if (!isspace(str[i]))
+			return 0;
+	}
+	return 1;
+}
+
+int check_location_nbr(std::string str, std::string to_find)
+{
+    std::string cut;
+    int i = 0;
+    if (to_find.empty() || str.empty())
+        return 0;
+    str = str.substr(str.find("\n") + 1, str.size());
+    while (!str.empty())
+    {
+        cut = str.substr(0, str.find("\n"));
+        str = str.substr(str.find("\n") + 1, str.size());
+        if (!cut.find("server"))
+            return i; 
+        if (cut.find(to_find) != std::string::npos)
+            i++;
+    }
+    return i;
+}
+
+std::string error_parse(int code)
+{
+    DIR * dir;
+    
+    struct dirent *ent;
+    std::ifstream fd;
+    std::stringstream buff;
+    struct stat info;
+    std::string str;
+    (void)code;
+    (void)ent;
+    (void)info;
+
+    str = itoa(code) + ".html"; 
+    if ((dir = opendir("www/error/")) != NULL)
+    {
+        print("is a file");
+        std::cout << "Parsing good error page ... " << std::endl;
+        while ((ent = readdir(dir)) != NULL)
+        {
+            if (!strcmp(ent->d_name, str.c_str()))
+            {
+                std::string file(ent->d_name);
+                fd.open("www/error/" + file);
+                if (!fd.is_open())
+                {
+                    if (fd.good())
+                        printerr("Opening ...");
+                }
+                buff << fd.rdbuf();
+                return buff.str();
+            }
+        }
+    }
+    return "";
+}

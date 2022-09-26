@@ -81,8 +81,9 @@ std::string	Cgi::start_script()
 void Cgi::run_api(webServ& web, confData& conf)
 {
 	web.getCgi().setFullpath(web, conf);
-	web.getCgi().setEnv(web, conf);
-	body = web.getReq().getBody().substr(web.getReq().getBody().find("\n\n"), web.getReq().getBody().size());
+	web.getCgi().setEnv(web, conf);	
+	body = web.getReq().getBody();
+	print("test");
 	std::cout << "----------------------debug env------------------" << std::endl;
 	for (unsigned long i = 0; i < env.size(); i++)
 	{
@@ -181,7 +182,7 @@ void	Cgi::setFullpath(webServ& web,confData& conf)
 void	Cgi::setEnv(webServ& web, confData& conf)
 {
 	std::vector<std::string> header;
-	splitstring(web.getReq().getBody(), header, '\n');
+	splitstring(web.getReq().getHeader(), header, '\n');
 
 	env.clear();
 //	std::cout << "body req is :" << std::endl << web.getReq().getBody() << std::endl;

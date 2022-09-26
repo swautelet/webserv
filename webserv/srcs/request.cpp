@@ -6,11 +6,11 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/23 14:56:24 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/24 16:48:50 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/header.hpp"
+#include "request.hpp"
 
 Request::Request()
 {
@@ -19,7 +19,7 @@ Request::Request()
 
 Request::~Request()
 {
-
+    type_data.clear();
 }
 
 Request::Request(const Request & other):method(other.getMethod()), url(other.getUrl()), version(other.getVersion()), header(other.getHeader()), body(other.getBody()), type_data(other.getDataType())
@@ -45,8 +45,9 @@ void Request::getInfo(int connection)
     char buff[10000];
     if ((ret = recv(connection, buff, sizeof(buff), 0)) < 0)
         printerr("Error with recv ...");
-//	if (ret == 0)
-//        printerr("Error with recv : Connection close ...");
+    std::cout << "oof" << std::endl;
+	if (ret == 0)
+       printerr("Error with recv : Connection close ...");
     std::cout << "---------------------------\n" << buff << "\n-------------------------\n";
  //   req = ft_split(buff, '\n');
  //   req2 = ft_split(req[0], ' ');
@@ -103,7 +104,7 @@ std::string Request::getBody() const
     return body;
 }
 
-void	Request::setUrl(std::string newurl)
-{
-	this->url = newurl;
-}
+// void	Request::setUrl(std::string newurl)
+// {
+// 	this->url = newurl;
+// }

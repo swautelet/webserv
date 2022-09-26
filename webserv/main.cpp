@@ -6,13 +6,14 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/29 17:04:13 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/09/24 16:43:45 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/header.hpp"
 
 fd_set fdset, copyset;
+std::vector<std::string> ip_vec;
 
 void setup(webServ & web, char **argv, int backlog)
 {
@@ -21,9 +22,19 @@ void setup(webServ & web, char **argv, int backlog)
     
     for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
-        web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
-        FD_SET(web.getSock()[i].getFd(), &fdset);
+        int no = 0;
+        for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
+            if (!it->compare(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort()))
+                no = 1;
+        if (!no)
+        {
+            web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
+            FD_SET(web.getSock()[i].getFd(), &fdset);
+            ip_vec.push_back(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort());  
+        }
     }
+    for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
+        std::cout << "Unique ip:" << *it << std::endl;
 }
 
 void error_handling(webServ & web)
@@ -59,24 +70,30 @@ void engine(webServ & web, int connection, int addrlen)
 {
     for(unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
-        if (FD_ISSET(web.getSock()[i].getFd(), &fdset))
+        if (FD_ISSET(web.getSock()[i].getFd(), &copyset))
         {
             struct sockaddr client_address;
             addrlen = sizeof((socklen_t *)&client_address);
-            std::cout << "Accept ... " << std::endl; 
+            std::cout << web.getSock()[i].getPort() << std::endl;
+            std::cout << "Accept ... " << std::endl;
             if ((connection = accept(web.getSock()[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
                 printerr("cannot connect ...");
             std::cout << "Accept done ..." << std::endl;
             web.getReq().getInfo(connection);
             std::cout << "Info done ..." << std::endl;
             web.getRes().find_method(web, i);
-            web.getRes().concat_response();     
+            web.getRes().concat_response(web);
+            std::cout << "IS - " << web.getRes().getResponse().c_str() <<std::endl;
+            std::cout << web.getRes().getResponse().size() << " & " << web.getRes().getContentLenght().c_str() << std::endl;
             write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
             close(connection);
+            memcpy(&copyset, &fdset, sizeof(fdset));
+            break;
         }
+        
     }
 }
-void ctr_c(int sig)
+void ctrl_c(int sig)
 {
 	(void)sig;
     std::cout << "\nBye bye" << std::endl;
@@ -90,8 +107,7 @@ int main(int argc, char **argv, char **envp)
     webServ web(argv[1]);
 //    int i = -1;
 	web.setServ_Root(envp);
-	web.setEnv(envp);
-    web.getCgi().set_transla_path(web.getEnv());
+	// web.env = envp;
     int connection = 0;
     int addrlen = 0;
     int backlog = 10;
@@ -104,10 +120,9 @@ int main(int argc, char **argv, char **envp)
     error_handling(web);
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
     memcpy(&copyset, &fdset, sizeof(fdset));
-    signal(SIGINT, &ctr_c);
+    signal(SIGINT, &ctrl_c);
     while(1)
     {
-		//
         if ((retval = select(FD_SETSIZE, &copyset, NULL, NULL, 0)) == -1)
             printerr("Error with select ...");
         else if (retval == 0)

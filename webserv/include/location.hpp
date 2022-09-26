@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:39 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/22 11:04:52 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/22 10:09:29 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOCATION_HPP
 #define LOCATION_HPP
+
+#include "header.hpp"
 
 class location
 {
@@ -27,6 +29,7 @@ class location
         std::string getErrorPage() const;
         std::string getBodySize() const;
         int getAutoIndex() const;
+        const std::vector<std::string> & getRedir() const;
         void setLocation_name(std::string& str);
         void setBodySize(std::string str);
         void setPath(std::string str);
@@ -34,8 +37,10 @@ class location
         void setIndex(std::string str);
         void setAutoIndex(std::string str);
         void setErrorPage(std::string str);
+        void setRedir(std::string str);
         int scrapData(std::string str, int i);
         void print_info() const;
+        void edit_info(std::string str, std::string info, std::vector<std::string> vec);
     private:
         std::string path;
         std::string method;
@@ -44,6 +49,7 @@ class location
         std::string location_name;
         std::string body_size;
         int autoindex;
+        std::vector<std::string> redir;
 };
 
 

@@ -29,7 +29,6 @@ class Request
         std::string getHeader() const;
         std::string getBody() const;
 		const std::vector<std::string>& getDataType() const;
-		void	setUrl(std::string newurl);
     private:
         std::string method;
         std::string url;

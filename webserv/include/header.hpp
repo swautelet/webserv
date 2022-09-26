@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/23 14:31:05 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 15:37:04 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,11 @@
 #include <sys/ioctl.h>
 #include <dirent.h>
 #include <utility>
-//#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <fcntl.h>
 
-#define PATH_ERROR "www/error/403.html"
+#include <vector>
+
+#define ERROR_403 "www/error/403.html"
+#define ERROR_404 "www/error/404.html"
 
 int printerr(const char *str);
 char **ft_split(char *str, char charset);
@@ -60,7 +59,6 @@ char	*test1(std::string str , std::string c);
 char	**server_split(std::string str, std::string strset);
 void print_tab(char **tab);
 std::pair<std::string, std::string> find_base_location(confData & conf, std::string url);
-void print(std::string str);
 char *strnstr(const char *s, const char *find, size_t slen);
 void remove_spaces(std::string &str);
 std::string BaseLocationExist(confData conf);
@@ -74,5 +72,11 @@ char** vectstring_tochartable(const std::vector<std::string> vect);
 void  free_table(char** table);
 std::string	search_value_vect(std::vector<std::string> vect, std::string searched);
 //void	start_script(Cgi& cgi);
+int how_many(std::string str);
+void print(std::string str);
+int str_isspace(std::string str);
+int check_location_nbr(std::string str, std::string to_find);
+std::string error_parse(int code);
+
 
 #endif

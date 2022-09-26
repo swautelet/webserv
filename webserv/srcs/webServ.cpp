@@ -6,11 +6,11 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 18:43:26 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/08/18 20:01:13 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/24 12:24:24 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/header.hpp"
+#include "webServ.hpp"
 
 webServ::webServ()
 {
@@ -19,8 +19,8 @@ webServ::webServ()
 	res = new Response;
 	indexing = new Autodex;
 	_cgi = new Cgi;
+	max_body_size = 0;
 }
-
 
 webServ::webServ(std::string argv)
 {
@@ -29,6 +29,7 @@ webServ::webServ(std::string argv)
 	res = new Response;
 	indexing = new Autodex;
 	_cgi = new Cgi;
+	max_body_size = 0;
 
     conf->parsing(argv);
     sock.reserve(conf->getNbrServer());
@@ -37,6 +38,7 @@ webServ::webServ(std::string argv)
 	{
 		Socket* next = new Socket;
 		sock.push_back(*next);
+		delete next;
 	}
 }
 
@@ -50,17 +52,11 @@ webServ::~webServ()
 	delete req;
 	delete res;
 	delete indexing;
-	delete _cgi;
 }
 
 webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Request(other.getReq())), res(new Response(other.getRes())), sock(other.getSock()), indexing(new Autodex(other.getAutodex())), serv_root(other.getServ_Root())
 {
     
-}
-
-char** webServ::getEnv()
-{
-	return env;
 }
 
 Conf & webServ::getConf() 
@@ -112,7 +108,34 @@ Cgi& webServ::getCgi()
 	return *_cgi;
 }
 
-void    webServ::setEnv(char** envp)
+std::pair<std::string, std::string> & webServ::getbool_redir()
 {
-	env = envp;
+    return bool_redir;
+}
+
+int webServ::getMax_body_size()
+{
+	return max_body_size;
+}
+
+void webServ::setbool_redir(std::vector<std::string> vec)
+{
+    std::string str;
+    std::string loc;
+    
+    loc = vec.at(0);
+    str = vec.at(1);
+    bool_redir = std::make_pair(loc, str);
+    std::cout << bool_redir.first << " & " << bool_redir.second << std::endl;
+}
+
+void webServ::setMax_body_size(int i)
+{
+	max_body_size = i;
+}
+
+void webServ::del_redir()
+{
+    bool_redir.first = "";
+    bool_redir.second = "";
 }

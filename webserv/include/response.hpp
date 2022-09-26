@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Response.hpp                                       :+:      :+:    :+:   */
+/*   response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:04 by shyrno            #+#    #+#             */
-/*   Updated: 2022/07/01 00:42:46 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/16 05:01:48 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Response
         void delMethod(webServ& web, confData& conf);
         void MethodPost(webServ & web, confData & conf);
         void init();
-        void concat_response();
+        void concat_response(webServ & serv);
     	void  setStatus(int status);
         void  setStatMsg();
     	int   setContentType(std::string str);
@@ -46,6 +46,7 @@ class Response
         std::string getContentType() const;
         std::string getBody() const;
         std::string getFullResponse() const;
+        size_t getBodySize() const;
 		int getStatus() const;
     private:
         std::string version;

@@ -6,11 +6,11 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/29 16:20:56 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/09/26 15:38:35 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/header.hpp"
+#include "response.hpp"
 
 Response::Response():content_lenght("0")
 {
@@ -40,10 +40,10 @@ Response &Response::operator=(Response const & other)
 
 void Response::find_method(webServ & web, int i)
 {
-//std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
-//std::cout << "Method available = " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod() << std::endl;
-//std::cout << "In location : " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getLocation_name() << std::endl;
-//std::cout << "With URL : " << web.getReq().getUrl() << std::endl;
+    //std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
+    //std::cout << "Method available = " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod() << std::endl;
+    //std::cout << "In location : " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getLocation_name() << std::endl;
+    //std::cout << "With URL : " << web.getReq().getUrl() << std::endl;
 	version = web.getReq().getVersion();
     if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
@@ -53,10 +53,9 @@ void Response::find_method(webServ & web, int i)
         MethodPost(web, web.getConf().getConflist(i));
 	else
 	{
-		std::cout << "Method forbidden" << std::endl;
-		setStatus(405);
-		setContentType();
-		setBody("");
+		setBody(error_parse(405));
+        setStatus(405);
+        setStatMsg();
 	}
 }
 
@@ -276,8 +275,6 @@ int Response::setContentType(std::string fullpath)
 	if (fullpath.rfind('.') != std::string::npos)
 	{
 		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size());
-		if (type.rfind('?') != std::string::npos)
-			type = type.substr(0, type.rfind('?'));
 //std::cout << "looking for type of file with = " << type << std::endl;
 		if (type == "html")
 			content_type = "text/html";
@@ -311,8 +308,11 @@ int how_many(std::string str)
     int count = 0;
     int i = -1;
     while(str[++i])
-        if(isspace(str[i]))
+	{
+        if (isspace(str[i]))
             count++;
+		count++;
+	}
 //std::cout << count << std::endl;
     return count;
 }
@@ -323,34 +323,47 @@ void Response::MethodGet(webServ & web, confData & conf)
 	setStatus(200);
 	if (setContentType(web.getReq().getUrl()) == 0)
 	{
-/*		if (web.getReq().getUrl().rfind('?') != std::string::npos)
-		{
-			web.getReq().setUrl(web.getReq().getUrl().substr(0, web.getReq().getUrl().rfind('?')));	
-		}*/
 		body = readHTML(web, conf, web.getReq().getUrl());
+        if (!web.getbool_redir().first.empty() && !web.getbool_redir().second.empty())
+        {
+            std::cout << web.getReq().getUrl() << std::endl;
+            web.getRes().setStatus(atoi(web.getbool_redir().first.c_str()));
+        }
 		setContentLenght();
+		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(content_lenght.c_str()))
+		{
+			content_lenght = itoa(web.getMax_body_size());
+			std::cout << "tHINLGE" << std::endl;
+		}
+		
 	}
 	else
 	{
 		web.getCgi().run_api(web, conf);
-//		std::cout << "made my way to api" << std::endl;
+		std::cout << "made my way to api" << std::endl;
 	}
 }
 
 void Response::MethodPost(webServ & web, confData & conf)
 {
-//std::cout << "POST\n";
+    //std::cout << "POST\n";
     int nbr = post_element_nbr(web.getReq().getBody());
     if (!nbr)
-        printerr("Error: Body doesnt have arguement ...");        
-    std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
-    post_exe(web, post, conf);
-    MethodGet(web, conf);
+	{
+		setStatus(100);
+		concat_response(web);
+	}
+	else
+	{
+		std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
+		post_exe(web, post, conf);
+		MethodGet(web, conf);
+	}
 }
 
 void Response::delMethod(webServ&  web, confData& conf)
 {
-std::cout << "DELETE Method " << std::endl;
+    std::cout << "DELETE Method " << std::endl;
 	std::string url(web.getReq().getUrl());
     location loc = conf.LocationFinder(url);
     std::string fullpath(loc.getPath() + url.substr(loc.getLocation_name().size(), url.size()));
@@ -362,26 +375,31 @@ std::cout << "DELETE Method " << std::endl;
         fullpath = loc.getPath() + url.substr(loc.getLocation_name().size(), url.size());
         url = url.substr(1, url.size());
     }
-	if(remove(fullpath.c_str()) == 0 )
+	if (remove(fullpath.c_str()) == 0)
 	{
-std::cout << "File " << fullpath << " deleted successfully" << std::endl;
+        std::cout << "File " << fullpath << " deleted successfully" << std::endl;
 		setStatus(200);
 		setContentType();
 		setBody("File " + fullpath + " deleted successfully\n");
 	}
 	else
 	{
-std::cout << "File could'nt be deleted fullpath was : " << fullpath << std::endl;
+        std::cout << "File could'nt be deleted fullpath was : " << fullpath << std::endl;
 		setStatus(404);
 		setBody("");
-		}
+	}
 }
 
-void Response::concat_response()
+void Response::concat_response(webServ & web)
 {
-	 std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
-	full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
-//	std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
+    setStatMsg();
+    if (status == 301 || status == 302)
+        full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Location : " + web.getbool_redir().second;
+    else
+	    full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
+	//std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
+    //std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
+    web.del_redir();
 }
 
 std::string Response::getResponse() const
@@ -394,6 +412,10 @@ std::string Response::getContentLenght() const
     return content_lenght;
 }
 
+size_t Response::getBodySize() const
+{
+    return getBody().size();
+}
 std::string Response::getContentType() const
 {
     return content_type;
@@ -438,14 +460,17 @@ void	Response::seterrorpage()
 	else
 	{
 		body = "";
-		setContentLenght();
 	}
 	setContentLenght();
 }
 
 void  Response::setContentLenght()
 {
-	content_lenght = itoa(body.size());
+	if (getContentType().find("image") != std::string::npos)
+		content_lenght = itoa(body.size());
+	else
+		content_lenght = itoa(how_many(body));
+	
 }
 
 void Response::setBody(std::string str)

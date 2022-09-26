@@ -1,3 +1,4 @@
+#! interpréteur [php]
 <?php
 
 if (isset($_GET['submit'])) {
