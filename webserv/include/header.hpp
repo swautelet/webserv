@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 11:51:21 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 15:37:04 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ int how_many(std::string str);
 void print(std::string str);
 int str_isspace(std::string str);
 int check_location_nbr(std::string str, std::string to_find);
+std::string error_parse(int code);
 
 
 #endif

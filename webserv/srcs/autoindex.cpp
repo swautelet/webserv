@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/24 16:47:26 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 15:22:32 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url,
     DIR *dir;
     
     struct dirent *ent;
-    struct stat info;
     std::ofstream out;
     std::string path;
     std::string tmp;
@@ -61,8 +60,6 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url,
         url = url.substr(0, url.size() - 1);
     if (url[0] == '.' && url[1] == '/')
         url.erase(0, 2);
-    if (stat(path.c_str(), &info) != 0)
-        // std::cout << "AH\n";
     while(++i < conf.getLocationNbr())
     {
         if (!conf.getLocation(i).getLocation_name().compare(path))

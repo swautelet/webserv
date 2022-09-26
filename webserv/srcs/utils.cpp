@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 16:42:29 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 15:36:53 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -699,4 +699,41 @@ int check_location_nbr(std::string str, std::string to_find)
             i++;
     }
     return i;
+}
+
+std::string error_parse(int code)
+{
+    DIR * dir;
+    
+    struct dirent *ent;
+    std::ifstream fd;
+    std::stringstream buff;
+    struct stat info;
+    std::string str;
+    (void)code;
+    (void)ent;
+    (void)info;
+
+    str = itoa(code) + ".html"; 
+    if ((dir = opendir("www/error/")) != NULL)
+    {
+        print("is a file");
+        std::cout << "Parsing good error page ... " << std::endl;
+        while ((ent = readdir(dir)) != NULL)
+        {
+            if (!strcmp(ent->d_name, str.c_str()))
+            {
+                std::string file(ent->d_name);
+                fd.open("www/error/" + file);
+                if (!fd.is_open())
+                {
+                    if (fd.good())
+                        printerr("Opening ...");
+                }
+                buff << fd.rdbuf();
+                return buff.str();
+            }
+        }
+    }
+    return "";
 }
