@@ -5,20 +5,23 @@ std::string	Cgi::start_script()
 {
 	std::string rep;
 	int id;
-	std::FILE *infile = fopen(scripath.c_str(), "r");
-	std::FILE *outfile = tmpfile();
+//	std::FILE *infile = tmpfile();
+//	std::FILE *outfile = tmpfile();
 	int status;
-	// int pip[2];
-	char** argtmp = getArgv();
+	int inpip[2];
+	int outpip[2];
+//	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
 /*	std::cout << "compared with real table ---------------------------" << std::endl;
 	for (int i = 0; envtmp[i]; i++)
 	{
 		std::cout << envtmp[i] << std::endl;
 	}*/
-	write(fileno(infile), body.c_str(), body.size());
-	lseek(fileno(infile), 0, SEEK_SET);
-	// pipe(pip);
+	std::cout << " i wrote this : " << body << std::endl;
+	pipe(inpip);
+	pipe(outpip);
+	write(inpip[1], body.c_str(), body.size());
+//	lseek(fileno(infile), 0, SEEK_SET);
 	id = fork();
 	if (id == -1)
 	{
@@ -27,14 +30,15 @@ std::string	Cgi::start_script()
 	}
 	if (id == 0)
 	{
-		// close (pip[0]);
-		dup2(fileno(outfile), STDOUT_FILENO);
-		dup2(fileno(infile), STDIN_FILENO);
+		close (inpip[1]);
+		close (outpip[0]);
+		dup2(outpip[1], STDOUT_FILENO);
+		dup2(inpip[0], STDIN_FILENO);
 	//	std::cout << "Hello from php script process" << std::endl;
 		/*std::string tmp = getPath() + " " + scripath;
 		std::system(tmp.c_str());
 		exit (10);*/
-		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
+		if (execve(getPath().c_str(), NULL, envtmp) < 0)
 		{
 			std::cout << "Script couldn't be loaded with this->scripath : |" << getFullpath() << "|" << std::endl;
 			std::cout << "ex this->scripath :" << getPath() << std::endl;
@@ -45,27 +49,31 @@ std::string	Cgi::start_script()
 	}
 	else
 	{
-		// close(pip[1]);
+		std::cout << "waiting for script" << std::endl;
 		waitpid(id, &status, 0);
+		close(inpip[1]);
+		close(inpip[0]);
+		close(outpip[1]);
 		 std::cout << "php script finished with :" << status << std::endl;
-		lseek(fileno(outfile), 0, SEEK_SET);
+//		lseek(fileno(outfile), 0, SEEK_SET);
 		char buff[11];
 		buff[10] = '\0';
 		int size;
 		std::cout << "i read that :" << std::endl;
-		while((size = read(fileno(outfile), buff, 10)) > 0)
+		while((size = read(outpip[0], buff, 10)) > 0)
 		{
 			write(1, buff, size);
-			for (int i = size; i < 10; i++)
+			for (int i = size; i < 11; i++)
 				buff[i] = '\0';
 			rep += buff;
 		}
 		// std::cout << "waiting for php " << std::endl;
 		// wait(&status);
 	}
-	fclose(infile);
-	fclose(outfile);
-	free_table(argtmp);
+	close(outpip[0]);
+//	fclose(infile);
+//	fclose(outfile);
+//	free_table(argtmp);
 	free_table(envtmp);
 	return rep;
 }
@@ -74,12 +82,12 @@ void Cgi::run_api(webServ& web, confData& conf)
 {
 	web.getCgi().setFullpath(web, conf);
 	web.getCgi().setEnv(web, conf);
-	body = web.getReq().getHeader();
-/*	std::cout << "----------------------debug env------------------" << std::endl;
+	body = web.getReq().getBody().substr(web.getReq().getBody().find("\n\n"), web.getReq().getBody().size());
+	std::cout << "----------------------debug env------------------" << std::endl;
 	for (unsigned long i = 0; i < env.size(); i++)
 	{
 		std::cout << env[i] << std::endl;
-	}*/
+	}
 	web.getRes().setBody(web.getCgi().start_script());
 	web.getRes().setContentType();
 }
@@ -158,6 +166,10 @@ const std::string& Cgi::getFullpath() const
 void	Cgi::setFullpath(webServ& web,confData& conf)
 {
 	std::string temp (web.getReq().getUrl());
+	if (temp.rfind('?') != std::string::npos)
+	{
+		temp = temp.substr(0, temp.rfind('?'));
+	}
 	location loc = conf.LocationFinder(temp);
 	std::string locroot (loc.getPath());
 	if (locroot.size() >= 1 && locroot[0] == '.')
@@ -191,15 +203,18 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "PATH_TRANSLATED=" + web.getReq().getUrl();
 	env.push_back(tmp);
-	tmp = "QUERY_STRING=" + web.getReq().getUrl().substr(web.getReq().getUrl().rfind('?') + 1, web.getReq().getUrl().size());
-	env.push_back(tmp);
+	if (web.getReq().getUrl().rfind('?') != std::string::npos)
+	{
+		tmp = "QUERY_STRING=" + web.getReq().getUrl().substr(web.getReq().getUrl().rfind('?') + 1, web.getReq().getUrl().size());
+		env.push_back(tmp);
+	}
 	tmp = "REMOTEaddr=" + conf.getAdress();
 	env.push_back(tmp);
 	tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization: ");
 	env.push_back(tmp);
 	tmp = "REMOTE_USER=" + search_value_vect(header, "Authorization: ");
 	env.push_back(tmp);
-	tmp = "REQUEST_URI=" + web.getReq().getUrl();
+	tmp = "REQUEST_URI=" + web.getReq().getUrl().substr(0, web.getReq().getUrl().rfind('?'));
 	env.push_back(tmp);
 	tmp = "SERVER_NAME=";
 	if(search_value_vect(header, "Host: ").size())

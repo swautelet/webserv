@@ -102,3 +102,8 @@ std::string Request::getBody() const
 {
     return body;
 }
+
+void	Request::setUrl(std::string newurl)
+{
+	this->url = newurl;
+}

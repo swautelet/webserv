@@ -276,6 +276,8 @@ int Response::setContentType(std::string fullpath)
 	if (fullpath.rfind('.') != std::string::npos)
 	{
 		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size());
+		if (type.rfind('?') != std::string::npos)
+			type = type.substr(0, type.rfind('?'));
 //std::cout << "looking for type of file with = " << type << std::endl;
 		if (type == "html")
 			content_type = "text/html";
@@ -321,6 +323,10 @@ void Response::MethodGet(webServ & web, confData & conf)
 	setStatus(200);
 	if (setContentType(web.getReq().getUrl()) == 0)
 	{
+/*		if (web.getReq().getUrl().rfind('?') != std::string::npos)
+		{
+			web.getReq().setUrl(web.getReq().getUrl().substr(0, web.getReq().getUrl().rfind('?')));	
+		}*/
 		body = readHTML(web, conf, web.getReq().getUrl());
 		setContentLenght();
 	}
