@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 15:36:53 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 16:54:08 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,10 +229,7 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file)
         std::cout << "Not dir" << std::endl;
 		if (fullpath.empty())
         {
-			if (conf.getGoodLocation(loc).getPath().compare(req_file))
-				fullpath = conf.getGoodLocation(loc).getPath() + req_file;
-			else
-				fullpath = conf.getGoodLocation(loc).getPath();
+			fullpath = url;
         }
     }
     // std::cout << "req_file = " << req_file << std::endl;
@@ -593,10 +590,10 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
         url = conf.getPath() + "/" + url.substr(1, url.size());
     else
     {
-        fullpath = conf.getGoodLocation(loc).getPath() + "/" +url.substr(loc.size(), url.size());
+        fullpath = conf.getGoodLocation(loc).getPath() + conf.getGoodLocation(loc).getLocation_name() + url.substr(loc.size(), url.size());
         url = url.substr(1, url.size());
     }
-    std::cout << "Url = " << url << std::endl;
+    std::cout << "Post fullpath = " << fullpath << std::endl;
     if (!(dir = opendir(fullpath.c_str())))
     {
         if (fullpath[0] == '.' && fullpath[1] == '/')
