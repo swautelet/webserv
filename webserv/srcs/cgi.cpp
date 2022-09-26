@@ -10,7 +10,7 @@ std::string	Cgi::start_script()
 	int status;
 	int inpip[2];
 	int outpip[2];
-//	char** argtmp = getArgv();
+	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
 /*	std::cout << "compared with real table ---------------------------" << std::endl;
 	for (int i = 0; envtmp[i]; i++)
@@ -38,9 +38,9 @@ std::string	Cgi::start_script()
 		/*std::string tmp = getPath() + " " + scripath;
 		std::system(tmp.c_str());
 		exit (10);*/
-		if (execve(getPath().c_str(), NULL, envtmp) < 0)
+		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
 		{
-			std::cout << "Script couldn't be loaded with this->scripath : |" << getFullpath() << "|" << std::endl;
+			std::cout << "Script couldn't be loaded with this->scripath : |" << argtmp[0] << "|" << std::endl;
 			std::cout << "ex this->scripath :" << getPath() << std::endl;
 			std::cout << "errno : " << errno << std::endl;
 			perror("execve error ");
@@ -73,7 +73,7 @@ std::string	Cgi::start_script()
 	close(outpip[0]);
 //	fclose(infile);
 //	fclose(outfile);
-//	free_table(argtmp);
+	free_table(argtmp);
 	free_table(envtmp);
 	return rep;
 }
@@ -83,7 +83,6 @@ void Cgi::run_api(webServ& web, confData& conf)
 	web.getCgi().setFullpath(web, conf);
 	web.getCgi().setEnv(web, conf);	
 	body = web.getReq().getBody();
-	print("test");
 	std::cout << "----------------------debug env------------------" << std::endl;
 	for (unsigned long i = 0; i < env.size(); i++)
 	{
@@ -144,13 +143,13 @@ void	Cgi::find_transla_path(std::string scri, std::vector<std::string> paths)
 char**	Cgi::getArgv()
 {
 	char **res = new char*[2];
-	res[0] = new char[this->src.size() + 1];
+	res[0] = new char[this->scripath.size() + 1];
 	res[1] = NULL;
-	for (unsigned long i = 0; i < this->src.size(); i++)
+	for (unsigned long i = 0; i < this->scripath.size(); i++)
 	{
-		res[0][i] = this->src[i];
+		res[0][i] = this->scripath[i];
 	}
-	res[0][this->src.size()] = '\0';
+	res[0][this->scripath.size()] = '\0';
 	return res;
 }
 
@@ -171,12 +170,19 @@ void	Cgi::setFullpath(webServ& web,confData& conf)
 	{
 		temp = temp.substr(0, temp.rfind('?'));
 	}
-	location loc = conf.LocationFinder(temp);
-	std::string locroot (loc.getPath());
-	if (locroot.size() >= 1 && locroot[0] == '.')
+	std::string locname = location_exe(conf, temp);
+	std::string locroot;
+	if (!locname.empty())
+	{
+		locroot = conf.getGoodLocation(locname).getPath();
+	}
+	else
+	{
+		locroot = conf.getPath();
+	}
+	if (locroot.size() > 0 && locroot[0] == '.')
 		locroot = locroot.substr(1, locroot.size());
-	temp = temp.substr(loc.getLocation_name().size(), temp.size());
-	this->scripath = web.getServ_Root() + locroot + "/" + temp;
+	this->scripath = web.getServ_Root() + locroot + temp;
 }
 
 void	Cgi::setEnv(webServ& web, confData& conf)

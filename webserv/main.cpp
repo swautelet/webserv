@@ -108,6 +108,7 @@ int main(int argc, char **argv, char **envp)
 //    int i = -1;
 	web.setServ_Root(envp);
 	// web.env = envp;
+    web.getCgi().set_transla_path(envp);
     int connection = 0;
     int addrlen = 0;
     int backlog = 10;
