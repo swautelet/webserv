@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 16:48:50 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 16:39:39 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ Request& Request::operator=(const Request& other)
 	body = other.getBody();
 	type_data = other.getDataType();
 	return *this;
-
 }
 
 void Request::getInfo(int connection)

@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 15:38:35 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 17:05:54 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,16 +365,13 @@ void Response::delMethod(webServ&  web, confData& conf)
 {
     std::cout << "DELETE Method " << std::endl;
 	std::string url(web.getReq().getUrl());
-    location loc = conf.LocationFinder(url);
-    std::string fullpath(loc.getPath() + url.substr(loc.getLocation_name().size(), url.size()));
-	std::cout << "url = " << url << std::endl << "loc = " << loc.getLocation_name() << std::endl << "fullpath = " << fullpath << std::endl;
-	if (loc.getLocation_name().empty())
-        url = conf.getPath() + url.substr(1, url.size());
-    else
+    std::string fullpath;
+    std::string loc = location_exe(conf, url);
+    if (conf.LocationExist(loc))
     {
-        fullpath = loc.getPath() + url.substr(loc.getLocation_name().size(), url.size());
-        url = url.substr(1, url.size());
+        fullpath = conf.getGoodLocation(loc).getPath() + url;
     }
+	std::cout << "url = " << url << std::endl << "fullpath = " << fullpath << std::endl;
 	if (remove(fullpath.c_str()) == 0)
 	{
         std::cout << "File " << fullpath << " deleted successfully" << std::endl;
