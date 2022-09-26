@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 17:05:54 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 19:06:43 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ void Response::find_method(webServ & web, int i)
         MethodPost(web, web.getConf().getConflist(i));
 	else
 	{
-		setBody(error_parse(405));
-        setStatus(405);
-        setStatMsg();
+		// setBody(error_parse(405));
+        // setStatus(405);
+        // setStatMsg();
 	}
 }
 

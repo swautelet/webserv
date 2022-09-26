@@ -1,2 +1,1 @@
-login=oui
-password=non
+login=password=
