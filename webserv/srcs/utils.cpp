@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 18:24:24 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 20:06:46 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -603,12 +603,16 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
         {
             std::cout << errno << std::endl;
         }
+        unsigned int done = 0;
         for(unsigned long i = 0; i < post.size(); i++)
         {
             out << post[i].first + "=" + post[i].second;
             if (i + 1 < post.size())
-                out << "\0";
-            
+                out << "\n";
+            done += post[i].first.size() + post[i].second.size() + 1;
+            std::cout << done << " & " << post.size() << std::endl;
+            if (post[i + 1].first.size() + post[i + 1].second.size() + done >= post.size())
+                break;
         }
         out << "\0";;
         out.close();

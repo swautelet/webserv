@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 18:34:52 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 19:47:57 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,17 @@ Request& Request::operator=(const Request& other)
 
 void Request::getInfo(int connection)
 {
+    header = "";
+    url = "";
+    body = "";
+    version = "";
+    std::cout << "THIS IS GET INFO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
     std::vector<std::string> req, req2;
     int ret;
     char buff[10000];
+    std::cout << "oof" << std::endl;
     if ((ret = recv(connection, buff, sizeof(buff), 0)) < 0)
         printerr("Error with recv ...");
-    std::cout << "oof" << std::endl;
 	if (ret == 0)
        printerr("Error with recv : Connection close ...");
     std::cout << "---------------------------\n" << buff << "\n-------------------------\n";
@@ -69,6 +74,7 @@ void Request::getInfo(int connection)
             break ;
         }
     }
+    content_lenght = search_value_vect(req, "Content-Length:");
     int index;
     std::string string = buff;
     std::string tmp = string;
@@ -86,8 +92,9 @@ void Request::getInfo(int connection)
         tmp = tmp.substr(index + 1, tmp.size());
     }
     body = tmp;
-    std::cout << "Header is : " << header << std::endl;
-    std::cout << "Body is : " << body << std::endl;    
+    std::cout << "Header is  -------------------- : " << header << std::endl;
+    std::cout << "Body is  ------------------: " << body << std::endl;
+    std::cout << "Content-Lenght is : " << content_lenght << std::endl;
     return;
 }
 
