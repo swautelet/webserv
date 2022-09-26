@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 16:39:39 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/26 18:34:52 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,25 @@ void Request::getInfo(int connection)
             break ;
         }
     }
-    body = buff;
+    int index;
+    std::string string = buff;
+    std::string tmp = string;
+    while(tmp.find("\n") != std::string::npos)
+    {
+        std::string tmp_2;
+        index = tmp.find("\n");
+        tmp_2 = tmp.substr(0, index);
+        if (tmp_2.empty())
+        {
+            print("Body , or not has been found");
+            break;
+        }
+        header += tmp_2 + "\n";
+        tmp = tmp.substr(index + 1, tmp.size());
+    }
+    body = tmp;
+    std::cout << "Header is : " << header << std::endl;
+    std::cout << "Body is : " << body << std::endl;    
     return;
 }
 
@@ -103,7 +121,7 @@ std::string Request::getBody() const
     return body;
 }
 
-// void	Request::setUrl(std::string newurl)
-// {
-// 	this->url = newurl;
-// }
+std::string Request::getContentLenght() const
+{
+    return content_lenght;
+}

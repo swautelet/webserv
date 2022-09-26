@@ -1,4 +1,4 @@
-<?php
+#!interpreter <?php
 declare (strict_type = 1);
 include ‘class-autoload.inc.php’;
 

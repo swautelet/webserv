@@ -10,7 +10,7 @@ std::string	Cgi::start_script()
 	int status;
 	int inpip[2];
 	int outpip[2];
-	char** argtmp = getArgv();
+	// char** argtmp = getArgv();
 	char** envtmp = getEnvp();
 /*	std::cout << "compared with real table ---------------------------" << std::endl;
 	for (int i = 0; envtmp[i]; i++)
@@ -38,9 +38,9 @@ std::string	Cgi::start_script()
 		/*std::string tmp = getPath() + " " + scripath;
 		std::system(tmp.c_str());
 		exit (10);*/
-		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
+		if (execve(scripath.c_str(), NULL, envtmp) < 0)
 		{
-			std::cout << "Script couldn't be loaded with this->scripath : |" << argtmp[0] << "|" << std::endl;
+			// std::cout << "Script couldn't be loaded with this->scripath : |" << argtmp[0] << "|" << std::endl;
 			std::cout << "ex this->scripath :" << getPath() << std::endl;
 			std::cout << "errno : " << errno << std::endl;
 			perror("execve error ");
@@ -73,7 +73,7 @@ std::string	Cgi::start_script()
 	close(outpip[0]);
 //	fclose(infile);
 //	fclose(outfile);
-	free_table(argtmp);
+	// free_table(argtmp);
 	free_table(envtmp);
 	return rep;
 }
@@ -202,7 +202,7 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "REQUEST_METHOD=" + web.getReq().getMethod();
 	env.push_back(tmp);
-	tmp = "CONTENT_LENGTH=" + itoa(web.getReq().getHeader().size());
+	tmp = "CONTENT_LENGTH=" + itoa(web.getReq().getBody().size());
 	env.push_back(tmp);
 	tmp = "CONTENT_TYPE=" + search_value_vect(header, "Accept:");
 	env.push_back(tmp);
@@ -217,9 +217,9 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	}
 	tmp = "REMOTEaddr=" + conf.getAdress();
 	env.push_back(tmp);
-	tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization: ");
+	tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization:");
 	env.push_back(tmp);
-	tmp = "REMOTE_USER=" + search_value_vect(header, "Authorization: ");
+	tmp = "REMOTE_USER=" + search_value_vect(header, "Authorization:");
 	env.push_back(tmp);
 	tmp = "REQUEST_URI=" + web.getReq().getUrl().substr(0, web.getReq().getUrl().rfind('?'));
 	env.push_back(tmp);

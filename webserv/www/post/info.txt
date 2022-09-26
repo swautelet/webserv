@@ -1,2 +1,1 @@
-login=cHARLIIII
-password=YAAAAA`KĔ�
+login=password=
