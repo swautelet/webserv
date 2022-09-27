@@ -215,11 +215,16 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "PATH_TRANSLATED=" + web.getReq().getUrl();
 	env.push_back(tmp);
-	// if (web.getReq().getUrl().rfind('?') != std::string::npos)
-	// {
+	if (!web.getReq().getQuery_string().empty())
+	{
 		tmp = "QUERY_STRING=" + web.getReq().getBody();
 		env.push_back(tmp);
-	// }+ web.getReq().getUrl() + "?" 
+	}
+	else
+	{
+		tmp = "QUERY_STRING=" + web.getReq().getQuery_string();
+		env.push_back(tmp);
+	}
 	tmp = "REMOTEaddr=" + conf.getAdress();
 	env.push_back(tmp);
 	tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization:");
