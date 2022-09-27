@@ -1,2 +1,2 @@
-login=OUINONJOUR
-password=NONC%27ESTNON
+login=oui
+password=non

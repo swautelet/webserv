@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 16:47:00 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 16:59:23 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 Conf::Conf()
 {
-    std::cout << "Conf constructor" << std::endl;
     nbr_serv = 0;
 }
 
@@ -27,11 +26,6 @@ Conf::Conf(const Conf & other)
 {
 	nbr_serv = other.getNbrServer();
 	confList.resize(nbr_serv, confData());
-	// while (confList.size() < nbr_serv)
-	// {
-	// 	confData next;
-	// 	confList.push_back(next);
-	// }
 	confList = other.getVectorConflist();
 }
 
@@ -94,8 +88,7 @@ void Conf::parsing(std::string path)
         printerr("Error with parsing, 0 server found ...");
     confList.resize(nbr_serv, confData());
     for (unsigned long i = 0; i < nbr_serv; i++)
-        (confList)[i].scrapData(i);
-    std::cout << "nbr_serv == " << nbr_serv << std::endl;
+        (confList)[i].scrapData();
     print_info();
 }
 

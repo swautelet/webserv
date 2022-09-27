@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:10:21 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 12:24:06 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 16:51:36 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,33 +24,34 @@ class webServ
     public:
         webServ();
         ~webServ();
-        webServ(std::string argv);
         webServ(webServ & other);
+        webServ(std::string argv);
         webServ &operator=(webServ const & other);
-        Conf &getConf();
+		Cgi & getCgi();
+        Conf & getConf();
         Request & getReq();
         Response & getRes();
-		Cgi&	getCgi();
-        std::vector<Socket> &getSock();
         Autodex & getAutodex();
         int getMax_body_size();
-        std::pair<std::string, std::string> &getbool_redir();
-		void	setServ_Root(char **env);
-        void setMax_body_size(int i);
-        void setbool_redir(std::vector<std::string> vec);
-        void del_redir();
+        std::vector<Socket> &getSock();
 		const std::string&	getServ_Root() const;
+        std::pair<std::string, std::string> &getbool_redir();
+        void del_redir();
+        void cleave_info();
+        void setMax_body_size(int i);
+		void setServ_Root(char **env);
+        void setbool_redir(std::vector<std::string> vec);
 		char** env;
     private:
+		Cgi* _cgi;
         Conf* conf;
         Request* req;
         Response* res;
-        std::vector<Socket> sock;
         Autodex* indexing;
-		std::string	serv_root;
-        std::pair<std::string, std::string> bool_redir;
         int max_body_size;
-		Cgi* _cgi;
+		std::string	serv_root;
+        std::vector<Socket> sock;
+        std::pair<std::string, std::string> bool_redir;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 15:57:10 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 18:20:56 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,13 @@
 #define ERROR_404 "www/error/404.html"
 
 int printerr(const char *str);
-char **ft_split(char *str, char charset);
 std::string itoa(int a);
-std::string readHTML(webServ & web, confData & conf, std::string file);
+std::string readfile(webServ & web, confData & conf, std::string file);
 int check_quote(std::string str);
 int check_server_nbr(std::string str, std::string to_find);
 int	test(std::string str, std::string c);
 char	*test1(std::string str , std::string c);
-char	**server_split(std::string str, std::string strset);
 void print_tab(char **tab);
-std::pair<std::string, std::string> find_base_location(confData & conf, std::string url);
-char *strnstr(const char *s, const char *find, size_t slen);
 void remove_spaces(std::string &str);
 std::string BaseLocationExist(confData conf);
 std::string location_exe(confData & conf, std::string req_file);

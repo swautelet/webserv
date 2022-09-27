@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 16:25:35 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 18:03:44 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,9 @@
 fd_set fdset, copyset;
 std::vector<std::string> ip_vec;
 
-void setup(webServ & web, char **argv, int backlog)
+void setup(webServ & web, int backlog)
 {
-	(void)argv;
     FD_ZERO(&fdset);
-    
     for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         int no = 0;
@@ -74,16 +72,18 @@ void engine(webServ & web, int connection, int addrlen)
         {
             struct sockaddr client_address;
             addrlen = sizeof((socklen_t *)&client_address);
-            std::cout << web.getSock()[i].getPort() << std::endl;
             std::cout << "Accept ... " << std::endl;
             if ((connection = accept(web.getSock()[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
                 printerr("cannot connect ...");
             std::cout << "Accept done ..." << std::endl;
-            web.getReq().getInfo(connection);
+            if (web.getReq().getInfo(connection) == 0)
+            {
+                std::cout << "Recv connection close ... Retry ..." << std::endl;
+                break;
+            }
             std::cout << "Info done ..." << std::endl;
             web.getRes().find_method(web, i);
             web.getRes().concat_response(web);
-            std::cout << "IS - " << web.getRes().getResponse().c_str() <<std::endl;
             std::cout << web.getRes().getResponse().size() << " & " << web.getRes().getContentLenght().c_str() << std::endl;
             write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
             close(connection);
@@ -103,20 +103,19 @@ void ctrl_c(int sig)
 
 int main(int argc, char **argv, char **envp)
 {
-//    struct timeval tv;
-    webServ web(argv[1]);
-//    int i = -1;
-	web.setServ_Root(envp);
+    // struct timeval tv;
+    // tv.tv_sec = 60;
+    // tv.tv_usec = 0;
 	// web.env = envp;
+    webServ web(argv[1]);
+	web.setServ_Root(envp);
     int connection = 0;
     int addrlen = 0;
     int backlog = 10;
     int retval = 0;
-//    tv.tv_sec = 60;
-//    tv.tv_usec = 0;
     if (argc != 2)
         printerr("Usage : ./Webserv [conf file]");
-    setup(web, argv, backlog);
+    setup(web, backlog);
     error_handling(web);
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
     memcpy(&copyset, &fdset, sizeof(fdset));

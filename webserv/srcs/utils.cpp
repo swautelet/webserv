@@ -6,19 +6,11 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 16:03:16 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 18:22:33 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/header.hpp"
-
-std::pair<std::string, std::string> find_base_location(confData & conf, std::string url)
-{
-	for(int x = 0; x < conf.getLocationNbr(); x++)
-		if (!conf.getLocation(x).getLocation_name().compare("/"))
-			return std::make_pair(url.substr(1, url.size()), conf.getLocation(x).getPath());	
-	return std::make_pair(url.substr(1, url.size()), conf.getPath());
-}
 
 std::string location_exe(confData & conf, std::string req_file)
 {
@@ -31,10 +23,7 @@ std::string location_exe(confData & conf, std::string req_file)
 	while (!req_file.empty() && req_file.find("/") != std::string::npos)
 	{
 		if (conf.LocationExist(req_file))
-        {
-            std::cout << conf.LocationFinder(req_file).getLocation_name() << std::endl;
 			return conf.LocationFinder(req_file).getLocation_name();
-        }
 		if (!req_file.rfind('/') && conf.LocationExist(req_file))
 			return "/";
 		req_file = req_file.substr(0, req_file.rfind('/'));
@@ -44,11 +33,11 @@ std::string location_exe(confData & conf, std::string req_file)
 	return "";
 }
 
-std::string index_exe(confData & conf, std::string url, std::string loc)
+std::string index_exe(confData & conf, std::string loc)
 {
-	(void)url;
 	std::string index = "";
 	struct stat info;
+    
 	if (!loc.empty())
 	{
 		for (unsigned long i = 0; i < conf.getGoodLocation(loc).getIndex().size(); i++)
@@ -56,11 +45,10 @@ std::string index_exe(confData & conf, std::string url, std::string loc)
 			index = conf.getGoodLocation(loc).getPath() + "/" + conf.getGoodLocation(loc).getIndex()[i];
 			std::cout << "Index location == " << index << std::endl;
 			if (stat(index.c_str(), &info) < 0)
-			{
-				std::cout << errno << std::endl;
+            {
 				if (errno == ENOENT)
 					return "";
-			}
+            }
 			else
 				return index;
 		}
@@ -70,7 +58,6 @@ std::string index_exe(confData & conf, std::string url, std::string loc)
 		for (unsigned long i = 0; i < conf.getIndex().size(); i++)
 		{
 			index = conf.getPath() + "/" + conf.getIndex()[i];
-			std::cout << "Index == " << index << std::endl;
 			if (stat(index.c_str(), &info) < 0)
             {
 				if (errno == ENOENT)
@@ -92,25 +79,18 @@ int file_exist(std::string file)
     return 1;
 }
 
-std::string readHTML(webServ & web, confData & conf, std::string req_file)
+std::string readfile(webServ & web, confData & conf, std::string req_file)
 {
-//  int autodex = 0;
-//  struct stat info;
-//  struct dirent *ent;
 	std::stringstream buff;
     std::string error_path;
     std::ifstream fd;
-    std::string tmp;
     DIR *dir;
     std::string fullpath;
 	std::string url;
-    std::string tmp_path;
     std::string loc;
 	std::string index_path;
     
-    
 	loc = location_exe(conf, req_file);
-    
 	if (!loc.empty() && conf.LocationExist(loc))
 	{
 	    web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().c_str()));
@@ -132,16 +112,9 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file)
                 url = conf.getGoodLocation(loc).getPath() + conf.getGoodLocation(loc).getLocation_name() + req_file;
         }       
 		else if (!conf.getGoodLocation(loc).getPath().compare("./"))
-        {
-            print("oof");
 			url = "." + req_file;
-        }
 		else
-        {
-            
-            std::cout << "location / ?" << std::endl;
 			url = conf.getGoodLocation(loc).getPath() + req_file;
-        }
 	}
 	else
 	{
@@ -158,16 +131,11 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file)
 			url = conf.getPath() + req_file;
 	}
     std::cout << "!url = " << url << std::endl;
-	index_path = index_exe(conf, url, loc);
-	if (index_path.empty())
-        std::cout << "idk" << std::endl;
+	index_path = index_exe(conf, loc);
     if (file_exist(url) == 0)
     {
         if (conf.LocationExist(loc))
         {
-            std::cout << "loc = " << loc <<std::endl;
-            std::cout << "eh" << conf.getGoodLocation(loc).getLocation_name() << std::endl;
-            std::cout << "wtf !!!!!!!!!!!!!!!! "<< conf.getGoodLocation(loc).getErrorPage() << std::endl;
             std::cout << "wtf-2 "<< conf.getGoodLocation(loc).getBodySize() << std::endl;
             if (!conf.getGoodLocation(loc).getErrorPage().empty())
                 fullpath = conf.getGoodLocation(loc).getErrorPage();
@@ -186,7 +154,6 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file)
     {
         std::cout << "-------------------------- "<< std::endl;
         std::cout << "[DIR] "<< std::endl;
-        std::cout << "tmp path = " << tmp_path << std::endl;
         std::cout << "req_file = " << req_file << std::endl;
         std::cout << "fullpath = " << fullpath << std::endl;
         if (conf.LocationExist(loc))
@@ -200,7 +167,6 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file)
 			}          
             if (!conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = index_path;
-            
         }
         else
         {
@@ -212,7 +178,6 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file)
                     fullpath = ERROR_403;
                 else if (conf.getAutoIndex())
 				{
-                    std::cout << "HERE" << std::endl;
 					web.getRes().setStatus(201);
 					web.setMax_body_size(atoi(conf.getBodySize().c_str()));
 					closedir(dir);
@@ -228,25 +193,18 @@ std::string readHTML(webServ & web, confData & conf, std::string req_file)
     {
         std::cout << "Not dir" << std::endl;
 		if (fullpath.empty())
-        {
 			fullpath = url;
-        }
     }
-    // std::cout << "req_file = " << req_file << std::endl;
-    // std::cout << "fullpath = " << fullpath << std::endl;
     std::cout << "Final fullpath = " << fullpath << std::endl;
     if (file_exist(url) == 0)
     {
         web.getRes().setContentType(".html");
         fullpath = ERROR_404;
     }
-    
     fd.open(fullpath.c_str());
     if (!fd.is_open())
-    {
         if (fd.good())
             printerr(" opening ... (ReadHTML)");
-    }
     buff << fd.rdbuf();
 	web.getRes().setContentType(fullpath);
     return buff.str();
@@ -272,79 +230,6 @@ int printerr(const char *str)
     exit(1);
 }
 
-static char	**malloc_free(char **str)
-{
-	int	i;
-
-	i = -1;
-	while (str[++i])
-		free(str[i]);
-	free(str);
-	return (NULL);
-}
-
-static int	count_words(char *str, char c)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		while (str[i] && (str[i] == c))
-			i++;
-		if (str[i++] && str[i] != c)
-			while (str[i] && str[i] != c)
-				i++;
-	}
-	return (i);
-}
-
-static char	*malloc_word(char *str, char c)
-{
-	char	*word;
-	int		i;
-
-	i = 0;
-	while (str[i] && str[i] != c)
-		i++;
-	word = (char*)malloc(sizeof(char) * (i + 1));
-	if (!word)
-		return (NULL);
-	i = -1;
-	while (str[++i] && str[i] != c)
-		word[i] = str[i];
-	word[i] = '\0';
-	return (word);
-}
-
-char	**ft_split(char *str, char charset)
-{
-	int		i;
-	char	**tab;
-
-	i = 0;
-	if (!str)
-		return (NULL);
-	tab = (char**)malloc(sizeof(char *) * (count_words(str, charset) + 1));
-	if (!tab)
-		return (NULL);
-	while (*str)
-	{
-		while (*str && (*str == charset))
-			str++;
-		if (*str && *str != charset)
-		{
-			tab[i++] = malloc_word(str, charset);
-			if (!tab)
-				return (malloc_free(tab));
-			while (*str && *str != charset)
-				str++;
-		}
-	}
-	tab[i] = NULL;
-	return (tab);
-}
-
 int check_quote(std::string str) 
 {
 	int i = -1;
@@ -364,7 +249,6 @@ int check_quote(std::string str)
 
 int check_server_nbr(std::string str, std::string to_find)
 {
-//	int count = 0;
 	int find = 0;
 	if (str.empty() || to_find.empty())
 		return 0;
@@ -379,119 +263,6 @@ int check_server_nbr(std::string str, std::string to_find)
             break;
 	}
 	return find;
-}
-
-int	words(std::string c, std::string str)
-{
-	int	i = 0, j = 0, nb = 0;
-	
-	while (str[i])
-	{
-		if(str[i] && str[i] == c[j])
-		{
-			while(str[i] && str[i] == c[j])
-			{
-				i++;
-				j++;
-			}
-			if (c[j] == '\0')
-				nb++;
-			j = 0;
-		}
-		i++;
-	}
-	return (nb);
-}
-
-char	*next_string(std::string str , std::string c)
-{
-	char	*word;
-	int		i;
-	int	j = 0;
-	int stock = 0;
-
-	i = -1;
-	while(str[++i])
-	{
-		if(str[i] && str[i] == c[j] && i > 0)
-		{
-			while(str[i] && str[i] == c[j])
-			{
-				i++;
-				j++;
-			}
-			if (c[j] == '\0')
-			{
-				stock = i - strlen(c.c_str());
-				i -= j;
-				break;
-			}
-			j = 0;
-		}
-		stock = i + 1;
-	}
-	word = (char*)malloc(sizeof(char) * (i + 1));
-	if (!word)
-		return (NULL);
-	i = -1;
-	while (str[++i] && i < stock)
-		word[i] = str[i];
-	word[i] = '\0';
-	return (word);
-}
-
-char	**server_split(std::string str, std::string strset)
-{
-	int		i;
-//	int j  = 0;
-	char	**tab;
-
-	i = 0;
-	int nbword = words(strset, str);
-	tab = (char**)malloc(sizeof(char *) * nbword + 1);
-	if (!tab)
-		return (NULL);
-	while (i < nbword)
-	{
-		if (i > 0)	
-			str = str.substr(strlen(tab[i - 1]));
-		tab[i] = next_string(str, strset);
-		if (!tab)
-			return (malloc_free(tab));
-		i++;
-	}
-	tab[i] = NULL;
-	return (tab);
-}
-
-void print_tab(char **tab)
-{
-    int i = 0;
-    while(tab[i])
-    {
-        std::cout << "[i]-> " << i <<  tab[i] << std::endl;
-        i++;
-    }
-}
-
-char *strnstr(const char *s, const char *find, size_t slen)
-{
-	char c, sc;
-	size_t len;
-
-	if ((c = *find++) != '\0') {
-		len = strlen(find);
-		do {
-			do {
-				if (slen-- < 1 || (sc = *s++) == '\0')
-					return (NULL);
-			} while (sc != c);
-			if (len > slen)
-				return (NULL);
-		} while (strncmp(s, find, len) != 0);
-		s--;
-	}
-	return ((char *)s);
 }
 
 void remove_spaces(std::string &str)
@@ -580,7 +351,6 @@ std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int 
 void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > post, confData & conf, int nbr)
 {
     DIR *dir;
-//    struct dirent *ent;
     std::string url(web.getReq().getUrl());
     
     std::string fullpath(url);
@@ -624,9 +394,7 @@ char** vectstring_tochartable(const std::vector<std::string> vect)
 	{
 		table[i] = (char*)malloc(sizeof(char) * (vect[i].size() + 1));
 		for (unsigned long j = 0; j < vect[i].size(); j++)
-		{
 			table[i][j] = vect[i][j];
-		}
 		table[i][vect[i].size()] = '\0';
 	}
 	return table;
@@ -635,9 +403,7 @@ char** vectstring_tochartable(const std::vector<std::string> vect)
 void	free_table(char** table)
 {
 	for (int i = 0; table[i]; i++)
-	{
 		delete (table[i]);
-	}
 	delete (table);
 }
 
@@ -658,9 +424,7 @@ std::string search_value_vect(std::vector<std::string> vect, std::string searche
 void run_api(webServ& web, confData& conf)
 {
 	web.getCgi().setFullpath(web, conf);
-	std::cout << "test" << std::endl;
 	web.getCgi().setEnv(web, conf);
-	std::cout << "second test "<< std::endl;
 	start_script(web.getCgi());
 }
 
@@ -675,10 +439,8 @@ int str_isspace(std::string str)
 	if (str.empty())
 		return 1;
 	for(int i = 0; str[i]; i++)
-	{
 		if (!isspace(str[i]))
 			return 0;
-	}
 	return 1;
 }
 
@@ -708,11 +470,7 @@ std::string error_parse(int code)
     struct dirent *ent;
     std::ifstream fd;
     std::stringstream buff;
-    struct stat info;
     std::string str;
-    (void)code;
-    (void)ent;
-    (void)info;
 
     str = itoa(code) + ".html"; 
     if ((dir = opendir("www/error/")) != NULL)

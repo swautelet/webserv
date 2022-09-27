@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 16:04:13 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 18:19:22 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,22 +40,18 @@ Response &Response::operator=(Response const & other)
 
 void Response::find_method(webServ & web, int i)
 {
-    //std::cout << "find_method = " << web.getReq().getMethod() << std::endl;
-    //std::cout << "Method available = " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod() << std::endl;
-    //std::cout << "In location : " << web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getLocation_name() << std::endl;
-    //std::cout << "With URL : " << web.getReq().getUrl() << std::endl;
 	version = web.getReq().getVersion();
     if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
     else if (web.getReq().getMethod() == "DELETE" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("DELETE") != std::string::npos)
-        delMethod(web, web.getConf().getConflist(i));
+        MethodDel(web, web.getConf().getConflist(i));
     else if (web.getReq().getMethod() == "POST" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("POST") != std::string::npos)
         MethodPost(web, web.getConf().getConflist(i));
 	else
 	{
-		// setBody(error_parse(405));
-        // setStatus(405);
-        // setStatMsg();
+		setBody(error_parse(405));
+        setStatus(405);
+        setStatMsg();
 	}
 }
 
@@ -271,11 +267,9 @@ void Response::setContentType()
 
 int Response::setContentType(std::string fullpath)
 {
-//std:: cout << "i received fullpath =========== " << fullpath << std::endl;
 	if (fullpath.rfind('.') != std::string::npos)
 	{
 		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size());
-//std::cout << "looking for type of file with = " << type << std::endl;
 		if (type == "html")
 			content_type = "text/html";
         else if (type == "gif")
@@ -300,7 +294,6 @@ int Response::setContentType(std::string fullpath)
 	else
 		content_type = "text/plain";
 	return 0;
-//std::cout << "content_type = " << content_type << std::endl;
 }
 
 int how_many(std::string str)
@@ -313,7 +306,6 @@ int how_many(std::string str)
             count++;
 		count++;
 	}
-//std::cout << count << std::endl;
     return count;
 }
  
@@ -323,7 +315,7 @@ void Response::MethodGet(webServ & web, confData & conf)
 	setStatus(200);
 	if (setContentType(web.getReq().getUrl()) == 0)
 	{
-		body = readHTML(web, conf, web.getReq().getUrl());
+		body = readfile(web, conf, web.getReq().getUrl());
         if (!web.getbool_redir().first.empty() && !web.getbool_redir().second.empty())
         {
             std::cout << web.getReq().getUrl() << std::endl;
@@ -331,11 +323,7 @@ void Response::MethodGet(webServ & web, confData & conf)
         }
 		setContentLenght();
 		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(content_lenght.c_str()))
-		{
 			content_lenght = itoa(web.getMax_body_size());
-			std::cout << "tHINLGE" << std::endl;
-		}
-		
 	}
 	else
 	{
@@ -346,7 +334,6 @@ void Response::MethodGet(webServ & web, confData & conf)
 
 void Response::MethodPost(webServ & web, confData & conf)
 {
-    //std::cout << "POST\n";
     int nbr = atoi(web.getReq().getContentLenght().c_str());
     if (!nbr)
 	{
@@ -357,13 +344,11 @@ void Response::MethodPost(webServ & web, confData & conf)
 	{
 		std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
 		post_exe(web, post, conf, nbr);
-		//MethodGet(web, conf);
 	}
 }
 
-void Response::delMethod(webServ&  web, confData& conf)
+void Response::MethodDel(webServ&  web, confData& conf)
 {
-    std::cout << "DELETE Method " << std::endl;
 	std::string url(web.getReq().getUrl());
     std::string fullpath;
     std::string loc = location_exe(conf, url);
@@ -371,17 +356,14 @@ void Response::delMethod(webServ&  web, confData& conf)
     {
         fullpath = conf.getGoodLocation(loc).getPath() + url;
     }
-	std::cout << "url = " << url << std::endl << "fullpath = " << fullpath << std::endl;
 	if (remove(fullpath.c_str()) == 0)
 	{
-        std::cout << "File " << fullpath << " deleted successfully" << std::endl;
 		setStatus(200);
 		setContentType();
 		setBody("File " + fullpath + " deleted successfully\n");
 	}
 	else
 	{
-        std::cout << "File could'nt be deleted fullpath was : " << fullpath << std::endl;
 		setStatus(404);
 		setBody("");
 	}
@@ -394,8 +376,6 @@ void Response::concat_response(webServ & web)
         full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Location : " + web.getbool_redir().second;
     else
 	    full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
-	//std::cout << "header response  ========" << std::endl << std::endl <<  version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n" << std::endl;
-    //std::cout << "full_response ---------------------------" << std::endl << std::endl << full_response << std::endl << std::endl;
     web.del_redir();
 }
 
@@ -433,31 +413,21 @@ std::string Response::getVersion() const
 	return version;
 }
 
-void Response::init()
-{
-    
-}
-
 void	Response::seterrorpage()
 {
 	std::ifstream errorpage;
 	std::string tmp;
 	std::string path("www/error/" + itoa(status) + ".html");
-	std::cout << "Try to set errorpage : " << path << std::endl;
 	errorpage.open(path.c_str());
 	if (errorpage.is_open())
 	{
 		body.clear();
 		while(getline(errorpage, tmp))
-		{
 			body += tmp;
-		}
 		errorpage.close();
 	}
 	else
-	{
 		body = "";
-	}
 	setContentLenght();
 }
 
@@ -479,4 +449,15 @@ void Response::setBody(std::string str)
 int Response::getStatus() const
 {
 	return status;
+}
+
+void Response::clear_info()
+{
+    version = "";
+    status = 0;
+    stat_msg = "";
+    content_type = "";
+    content_lenght = "";
+    body = "";
+    full_response = "";
 }

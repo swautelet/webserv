@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:47 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 18:34:01 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 17:47:15 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,20 @@ class Request
     public:
         Request();
         ~Request();
+        void clear_info();
         Request(const Request & other);
 		Request& operator=(const Request& other);
-        void getInfo(int connection);
+        void _search_info(std::vector<std::string> req, std::string buff);
+
+        int getInfo(int connection);
         std::string getUrl() const;
-        std::string getMethod() const;
-        std::string getVersion() const;
-        std::string getHeader() const;
         std::string getBody() const;
+        std::string getMethod() const;
+        std::string getHeader() const;
+        std::string getVersion() const;
         std::string getContentLenght() const;
 		const std::vector<std::string>& getDataType() const;
+        
     private:
         std::string method;
         std::string url;

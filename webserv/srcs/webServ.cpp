@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 18:43:26 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/24 12:24:24 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 17:10:57 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ webServ::webServ(std::string argv)
 
     conf->parsing(argv);
     sock.reserve(conf->getNbrServer());
-	std::cout << "nombre de server = " << conf->getNbrServer() << std::endl;
+	std::cout << "Nombre de server = " << conf->getNbrServer() << std::endl;
 	for (unsigned long i = 0; i < conf->getNbrServer(); i++)
 	{
 		Socket* next = new Socket;
@@ -54,7 +54,7 @@ webServ::~webServ()
 	delete indexing;
 }
 
-webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Request(other.getReq())), res(new Response(other.getRes())), sock(other.getSock()), indexing(new Autodex(other.getAutodex())), serv_root(other.getServ_Root())
+webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Request(other.getReq())), res(new Response(other.getRes())), indexing(new Autodex(other.getAutodex())), serv_root(other.getServ_Root()), sock(other.getSock())
 {
     
 }
@@ -92,7 +92,6 @@ void	webServ::setServ_Root(char **env)
 		if (!tmp.substr(0, searched.size()).compare(searched))
 		{
 			serv_root = tmp.substr(searched.size(), tmp.size());
-			std::cout << "serv_root = " << serv_root << std::endl;
 			return;
 		}
 	}
@@ -126,7 +125,6 @@ void webServ::setbool_redir(std::vector<std::string> vec)
     loc = vec.at(0);
     str = vec.at(1);
     bool_redir = std::make_pair(loc, str);
-    std::cout << bool_redir.first << " & " << bool_redir.second << std::endl;
 }
 
 void webServ::setMax_body_size(int i)
@@ -138,4 +136,10 @@ void webServ::del_redir()
 {
     bool_redir.first = "";
     bool_redir.second = "";
+}
+
+void webServ::cleave_info()
+{
+    max_body_size = 0;
+    req->clear_info();
 }

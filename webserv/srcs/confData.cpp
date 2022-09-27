@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 16:55:04 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 17:08:49 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,43 +17,38 @@ std::string data;
 
 confData::confData()
 {
-    autoindex = 0;
     nbr_loc = 0;
+    autoindex = 0;
 }
 
 confData::~confData()
 {
-    index.clear();
     loc.clear();
+    index.clear();
     redir.clear();
 }
 
-confData::confData(const confData & other):address(other.getAdress()), port(other.getPort()), path(other.getPath()), serv_name(other.getServName()), method(other.getMethod()), index(other.getIndex()), error_page(other.getErrorPage()), body_size(other.getBodySize()), autoindex(other.getAutoIndex()), nbr_loc(other.getLocationNbr()), loc(nbr_loc)
+confData::confData(const confData & other): autoindex(other.getAutoIndex()), port(other.getPort()), path(other.getPath()), method(other.getMethod()), address(other.getAdress()) , serv_name(other.getServName()) , body_size(other.getBodySize()),  nbr_loc(other.getLocationNbr()), error_page(other.getErrorPage()), loc(nbr_loc), index(other.getIndex())
 {
-//	loc = new std::vector<location>(nbr_loc);
 	for (unsigned long i = 0; i < nbr_loc; i++)
-	{
 		(loc)[i] = other.getLocation(i);
-	}
 }
 
 confData& confData::operator=(const confData& other)
 {
-	address = other.getAdress();
 	port = other.getPort();
 	path = other.getPath();
-	serv_name = other.getServName();
-	method = other.getMethod();
 	index = other.getIndex();
-	error_page = other.getErrorPage();
+	method = other.getMethod();
+	address = other.getAdress();
+	serv_name = other.getServName();
 	body_size = other.getBodySize();
 	autoindex = other.getAutoIndex();
 	nbr_loc = other.getLocationNbr();
+	error_page = other.getErrorPage();
 	loc.clear();
 	for (unsigned long i = 0; i < nbr_loc; i++)
-	{
 		loc.push_back(other.getLocation(i));
-	}
 	return *this;
 }
 
@@ -115,9 +110,7 @@ const location & confData::getGoodLocation(std::string str) const
 {
     for (unsigned long i = 0; i < nbr_loc; i++)
         if (!(loc)[i].getLocation_name().compare(str))
-        {
             return (loc)[i];
-        }
     return (loc)[0];
 }
 
@@ -128,17 +121,11 @@ const std::vector<std::string> & confData::getRedir() const
 
 const location& confData::LocationFinder(std::string str) const
 {
-//	std::string name = str.substr(0, str.find('/', 1));
-//std::cout << "I look for the location with name : " << name << std::endl;
     for (unsigned long i = 1; i < nbr_loc; i++)
-	{
-//std::cout << "I compare  with location : " << (*loc)[i].getLocation_name() << std::endl;
+    {
 		std::string name = str.substr(0, loc[i].getLocation_name().size());
         if (!(loc)[i].getLocation_name().compare(name))
-		{
-//std::cout << "I return a location " << std::endl;
             return (loc)[i];
-		}
 	}
     return (loc)[0];
 }
@@ -146,10 +133,8 @@ const location& confData::LocationFinder(std::string str) const
 int confData::LocationExist(std::string str)
 {
     for (unsigned long i = 0; i < nbr_loc; i++)
-	{
 		if (!loc[i].getLocation_name().compare(str))
             return 1;
-	}
     return 0;
 }
 
@@ -160,13 +145,10 @@ void confData::setAddress(std::string str)
     address = str.substr(strlen("listen "), str.size());
     if (address.empty() || address.find(":") == std::string::npos)
         return;
-//	address.resize(address.size() - 1);
-//    tmp = ft_split((char*)address.c_str(), ':');
 	splitstring(address, tmp, ':');
     address = tmp[0];
     port = tmp[1];
 	port = port.substr(0, port.size() - 1);
-//    free(tmp);
 }
 
 void confData::setPath(std::string str)
@@ -222,13 +204,8 @@ void confData::setIndex(std::string str)
     }
 	str = str.substr(0, str.size() - 1);
     index.push_back(str);
-	for (unsigned long i = 0; i < index.size(); i++)
-	{
-		std::cout << "Index is |" << index[i] << "|" << std::endl;
-	}
     if (index.back().empty())
         return;
-//    index.resize(index.size() - 1);
 }
 
 void confData::setAutoIndex(std::string str)
@@ -260,13 +237,10 @@ void confData::setRedir(std::string str)
         if (tmp.find("^") != std::string::npos)
         {
             if (!tmp.compare("^"))
-                std::cout << "kekw" << std::endl;
-            if (!tmp.compare("^"))
                 tmp = "/";
             else
                 tmp.erase(0, 1);
         }
-        std::cout << "tmp.. " << tmp << std::endl;
         redir.push_back(tmp);
         if (str.empty())
             return;
@@ -288,17 +262,11 @@ int confData::parsing(std::string path)
     buff << fd.rdbuf();
     data = buff.str();
     check_quote(data);
-    //data_split = server_split(data, "server ");
-    
-    std::cout << "mh\n";
     return check_server_nbr(data, "server ");
 }
 
 void confData::print_info()
 {
-//    int x = -1;
-//    int i = -1;
-//    int j = 0;
     std::cout << "[Default]" << std::endl;
     if (!address.empty())
         std::cout << "Address->         " << "[" << address << "]" << std::endl;
@@ -332,9 +300,7 @@ void confData::print_info()
         std::cout << "Body->            " << "[" << body_size << "]" << std::endl;
     std::cout << "Autoindex->       " << "[" << autoindex << "]" << std::endl;
     for (unsigned long x = 0; x < nbr_loc; x++)
-    {
         (loc)[x].print_info();
-    }
     std::cout << "--------------------------------------" << std::endl;
 }
 
@@ -357,10 +323,8 @@ std::string location_str(std::string str)
     return tmp;
 }
 
-void confData::scrapData(int pos)
+void confData::scrapData()
 {
-    (void)pos;
-    int index = -1;
     std::string tmp;
     std::string cpy_data(data);
     tmp = data.substr(0, data.find("\n"));
@@ -370,10 +334,7 @@ void confData::scrapData(int pos)
     {   
         tmp = data.substr(0, data.find("\n"));
         data = data.substr(data.find("\n") + 1, data.size());
-        // std::cout << "TMP ? = " << tmp << std::endl;
-        if (!tmp.find("server") || tmp.find("{") != std::string::npos)
-            break;
-        if (tmp.find("location") != std::string::npos)
+        if (!tmp.find("server") || tmp.find("{") != std::string::npos || tmp.find("location") != std::string::npos)
             break;
         if (tmp.size() >= 1 && tmp[tmp.size() - 1] != ';')
             printerr("Error with conf file syntax ...");
@@ -398,6 +359,14 @@ void confData::scrapData(int pos)
         else
             printerr("Something is wrong with your config file ...");
     }
+    scrapLocation();    
+}
+
+void confData::scrapLocation()
+{
+    int index = -1;
+    std::string cpy_data(data);
+    
     if (data.find("server") != std::string::npos)
         data = data.substr(data.find("server"), data.size());
     if (path.empty())
@@ -405,8 +374,6 @@ void confData::scrapData(int pos)
     nbr_loc = check_location_nbr(cpy_data, "location ");
     std::cout << "Nbr of location : " << nbr_loc << std::endl;
     loc.reserve(nbr_loc);
-	std::cout << loc.size() << std::endl << std::endl;
-    std::cout << "Thinkge qasjyhtrgeythgrhtygfrhygtfrde" << std::endl;
     loc.resize(nbr_loc);
     for(unsigned long x = 0; x < nbr_loc; x++)
         complete_loc(x);
@@ -440,4 +407,9 @@ void confData::complete_loc(int i)
 
     if (loc[i].getRedir().empty())
         loc[i].edit_info("redir", "", getRedir());
+}
+
+void clear_info()
+{
+    
 }

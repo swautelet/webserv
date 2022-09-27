@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 19:47:57 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 17:52:34 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@ Request::~Request()
 
 Request::Request(const Request & other):method(other.getMethod()), url(other.getUrl()), version(other.getVersion()), header(other.getHeader()), body(other.getBody()), type_data(other.getDataType())
 {
+    
 }
-            
+   
 Request& Request::operator=(const Request& other)
 {
 	method = other.getMethod();
@@ -37,24 +38,18 @@ Request& Request::operator=(const Request& other)
 	return *this;
 }
 
-void Request::getInfo(int connection)
+int Request::getInfo(int connection)
 {
-    header = "";
-    url = "";
-    body = "";
-    version = "";
-    std::cout << "THIS IS GET INFO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
     std::vector<std::string> req, req2;
+    std::string string;
     int ret;
     char buff[10000];
-    std::cout << "oof" << std::endl;
+    
     if ((ret = recv(connection, buff, sizeof(buff), 0)) < 0)
         printerr("Error with recv ...");
 	if (ret == 0)
-       printerr("Error with recv : Connection close ...");
-    std::cout << "---------------------------\n" << buff << "\n-------------------------\n";
- //   req = ft_split(buff, '\n');
- //   req2 = ft_split(req[0], ' ');
+       return 0;
+    string = buff;
  	splitstring(buff, req, '\n');
 	splitstring(req[0], req2, ' ');
     if (!req2[0].compare("GET") || !req2[0].compare("POST") || !req2[0].compare("DELETE"))
@@ -63,7 +58,13 @@ void Request::getInfo(int connection)
     version = req2[2];
     version.resize(strlen(version.c_str()) - 1);
 	type_data.clear();
-	std::string str;
+    _search_info(req, string);
+    return 1;
+}
+
+void Request::_search_info(std::vector<std::string> req, std::string buff)
+{
+    std::string str;
     std::string searched = "Accept: ";
     for (unsigned long i = 0; i < req.size(); i++)
     {
@@ -76,26 +77,20 @@ void Request::getInfo(int connection)
     }
     content_lenght = search_value_vect(req, "Content-Length:");
     int index;
-    std::string string = buff;
-    std::string tmp = string;
-    while(tmp.find("\n") != std::string::npos)
+    while(buff.find("\n") != std::string::npos)
     {
         std::string tmp_2;
-        index = tmp.find("\n");
-        tmp_2 = tmp.substr(0, index);
+        index = buff.find("\n");
+        tmp_2 = buff.substr(0, index);
         if (tmp_2.empty())
         {
             print("Body , or not has been found");
             break;
         }
         header += tmp_2 + "\n";
-        tmp = tmp.substr(index + 1, tmp.size());
+        buff = buff.substr(index + 1, buff.size());
     }
-    body = tmp;
-    std::cout << "Header is  -------------------- : " << header << std::endl;
-    std::cout << "Body is  ------------------: " << body << std::endl;
-    std::cout << "Content-Lenght is : " << content_lenght << std::endl;
-    return;
+    body = buff;
 }
 
 std::string Request::getUrl() const
@@ -131,4 +126,12 @@ std::string Request::getBody() const
 std::string Request::getContentLenght() const
 {
     return content_lenght;
+}
+
+void Request::clear_info()
+{
+    header = "";
+    url = "";
+    body = "";
+    version = "";
 }

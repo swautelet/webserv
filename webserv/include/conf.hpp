@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:12 by shyrno            #+#    #+#             */
-/*   Updated: 2022/08/18 18:51:40 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 16:56:06 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,22 @@ class Conf
         ~Conf();
         Conf(const Conf & other);
 		Conf& operator=(const Conf& other);
-        std::string getAddress(int index) const;
-        std::string getPort(int index) const;
-        std::string getPath(int index) const;
-        std::string getServName(int index) const;
-        std::string getMethod(int index) const;
-		const std::vector <confData> getVectorConflist() const;
-        std::vector<std::string> getIndex(int index) const;
+        void print_info();
+        void parsing(std::string path);
+        
         confData& getConflist(int index);
         unsigned long getNbrServer() const;
-        void parsing(std::string path);
-        void print_info();
+        std::string getPort(int index) const;
+        std::string getPath(int index) const;
+        std::string getMethod(int index) const;
+        std::string getAddress(int index) const;
+        std::string getServName(int index) const;
+        std::vector<std::string> getIndex(int index) const;
+		const std::vector <confData> getVectorConflist() const;
+        
     private:
-        std::vector<confData> confList;
         unsigned long nbr_serv;
+        std::vector<confData> confList;
 };
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:04 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/16 05:01:48 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/09/27 17:55:38 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,27 +27,29 @@ class Response
         ~Response();
         Response(const Response & other);
         Response &operator=(const Response & other);
-        void find_method(webServ & web, int i);
-        void MethodGet(webServ & web, confData & conf);
-        void delMethod(webServ& web, confData& conf);
-        void MethodPost(webServ & web, confData & conf);
-        void init();
+        void clear_info();
         void concat_response(webServ & serv);
-    	void  setStatus(int status);
+        void find_method(webServ & web, int i);
+        void MethodDel(webServ& web, confData& conf);
+        void MethodPost(webServ & web, confData & conf);
+        void MethodGet(webServ & web, confData & conf);
+        
         void  setStatMsg();
-    	int   setContentType(std::string str);
-		void  setContentType();
 		void  seterrorpage();
-		void  setBody(std::string str);
+		void  setContentType();
 		void  setContentLenght();
+    	void  setStatus(int status);
+		void  setBody(std::string str);
+    	int   setContentType(std::string str);
+        
+		int getStatus() const;
+        size_t getBodySize() const;
+        std::string getBody() const;
 		std::string getVersion() const;
         std::string getResponse() const;
-        std::string getContentLenght() const;
         std::string getContentType() const;
-        std::string getBody() const;
         std::string getFullResponse() const;
-        size_t getBodySize() const;
-		int getStatus() const;
+        std::string getContentLenght() const;
     private:
         std::string version;
         int status;
