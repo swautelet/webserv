@@ -1,4 +1,3 @@
-#!/usr/bin/php 
 <?php
 spl_autoload_register('myAutoLoader');
 

@@ -1,5 +1,4 @@
 #include "cgi.hpp"
-#define BUFF_SIZE 50
 
 std::string	Cgi::start_script()
 {
@@ -10,14 +9,14 @@ std::string	Cgi::start_script()
 	int status;
 	int inpip[2];
 	int outpip[2];
-	// char** argtmp = getArgv();
+	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
 /*	std::cout << "compared with real table ---------------------------" << std::endl;
 	for (int i = 0; envtmp[i]; i++)
 	{
 		std::cout << envtmp[i] << std::endl;
 	}*/
-	std::cout << " i wrote this : " << body << std::endl;
+	std::cout << " i wrote this :---------------------------------------------------------------- " << std::endl << body << std::endl;
 	pipe(inpip);
 	pipe(outpip);
 	write(inpip[1], body.c_str(), body.size());
@@ -39,7 +38,7 @@ std::string	Cgi::start_script()
 		std::system(tmp.c_str());
 		exit (10);*/
 		// std::cout << "trying execve with :" << scripath << std::endl;
-		if (execve(scripath.c_str(), NULL, envtmp) < 0)
+		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
 		{
 			// std::cout << "Script couldn't be loaded with this->scripath : |" << argtmp[0] << "|" << std::endl;
 			std::cout << "ex this->scripath :" << getPath() << std::endl;
@@ -60,10 +59,8 @@ std::string	Cgi::start_script()
 		char buff[11];
 		buff[10] = '\0';
 		int size;
-		std::cout << "i read that :" << std::endl;
 		while((size = read(outpip[0], buff, 10)) > 0)
 		{
-			write(1, buff, size);
 			for (int i = size; i < 11; i++)
 				buff[i] = '\0';
 			rep += buff;
@@ -74,7 +71,7 @@ std::string	Cgi::start_script()
 	close(outpip[0]);
 //	fclose(infile);
 //	fclose(outfile);
-	// free_table(argtmp);
+	free_table(argtmp);
 	free_table(envtmp);
 	return rep;
 }
@@ -143,14 +140,21 @@ void	Cgi::find_transla_path(std::string scri, std::vector<std::string> paths)
 
 char**	Cgi::getArgv()
 {
-	char **res = new char*[2];
-	res[0] = new char[this->scripath.size() + 1];
-	res[1] = NULL;
+	char **res = new char*[3];
+	res[0] = new char[this->getPath().size() + 1];
+	res[1] = new char[this->scripath.size() + 1];
+	res[2] = NULL;
+	std::string name = this->getPath().substr(getPath().rfind('/') + 1, getPath().size());
+	for (unsigned long i = 0; i < name.size(); i++)
+	{
+		res[0][i] = name[i];
+	}
+	res[0][name.size()] = '\0';
 	for (unsigned long i = 0; i < this->scripath.size(); i++)
 	{
-		res[0][i] = this->scripath[i];
+		res[1][i] = this->scripath[i];
 	}
-	res[0][this->scripath.size()] = '\0';
+	res[1][this->scripath.size()] = '\0';
 	return res;
 }
 
