@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/26 19:49:16 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 16:04:13 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,8 +356,8 @@ void Response::MethodPost(webServ & web, confData & conf)
 	else
 	{
 		std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
-		post_exe(web, post, conf);
-		MethodGet(web, conf);
+		post_exe(web, post, conf, nbr);
+		//MethodGet(web, conf);
 	}
 }
 
