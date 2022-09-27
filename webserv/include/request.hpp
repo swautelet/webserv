@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:47 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 18:54:33 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:18:45 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Request
         std::string getVersion() const;
         std::string getContentLenght() const;
 		const std::vector<std::string>& getDataType() const;
+        std::string getQuery_string();
         
     private:
         std::string method;

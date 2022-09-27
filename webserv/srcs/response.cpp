@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:09:41 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:41:03 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,11 +293,12 @@ int Response::setContentType(std::string fullpath)
 		else if (type == "ico")
 			content_type = "image/png";
 		else if (type == "php")
+        {
+            content_type = "text/html";
 			return 1;
+        }
 		else if (type == "ico")
 			content_type = "image/png";
-		else if (type == "php")
-			return 1;
 		else
 			content_type = "text/plain";
 	}
@@ -345,6 +346,9 @@ void Response::MethodGet(webServ & web, confData & conf)
 void Response::MethodPost(webServ & web, confData & conf)
 {
     int nbr = atoi(web.getReq().getContentLenght().c_str());
+    std::cout << " body is ----------------------------" << body << std::endl;
+    if (setContentType(web.getReq().getUrl()) == 1)
+        web.getCgi().run_api(web, conf);
     if (!nbr)
 	{
 		setStatus(100);

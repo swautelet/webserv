@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:01:51 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:47:51 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ int main(int argc, char **argv, char **envp)
 	// web.env = envp;
     webServ web(argv[1]);
 	web.setServ_Root(envp);
+    web.getCgi().set_transla_path(envp);
     int connection = 0;
     int addrlen = 0;
     int backlog = 10;
