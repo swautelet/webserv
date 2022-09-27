@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 17:52:34 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 18:48:25 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,19 @@ int Request::getInfo(int connection)
     version.resize(strlen(version.c_str()) - 1);
 	type_data.clear();
     _search_info(req, string);
+    if (url.find("?") != std::string::npos)
+    {
+        query_s = url.substr(url.find("?") + 1, url.size());
+        url = url.substr(0 ,url.find("?"));
+        std::cout << " BUT " << query_s << std::endl;
+    }
+    std::cout << "Header is : " << header << std::endl;
     return 1;
 }
 
 void Request::_search_info(std::vector<std::string> req, std::string buff)
 {
+    
     std::string str;
     std::string searched = "Accept: ";
     for (unsigned long i = 0; i < req.size(); i++)
@@ -91,6 +99,7 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
         buff = buff.substr(index + 1, buff.size());
     }
     body = buff;
+    
 }
 
 std::string Request::getUrl() const

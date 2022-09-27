@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:47 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 17:47:15 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 18:23:57 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Request
         std::string body;
         std::string content_lenght;
 		std::vector<std::string> type_data;
+        std::string query_s;
 };
 
 #endif
