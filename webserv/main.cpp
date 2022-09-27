@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 18:03:44 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:01:51 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void setup(webServ & web, int backlog)
 
 void error_handling(webServ & web)
 {
-  //  int i = -1;
+  ////  int i = -1;
     int j;
     if (!web.getConf().getNbrServer())
         printerr("Error : No server configured ...");
@@ -95,6 +95,7 @@ void engine(webServ & web, int connection, int addrlen)
 }
 void ctrl_c(int sig)
 {
+	(void)sig;
 	(void)sig;
     std::cout << "\nBye bye" << std::endl;
     exit(0);

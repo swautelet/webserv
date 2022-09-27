@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/26 14:58:36 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:07:28 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,37 +41,37 @@ location& location::operator=(const location& other)
 	return *this;
 }
 
-std::string location::getPath() const
+std::string location::getPath() const 
 {
     return path;
 }
 
-std::vector<std::string> location::getIndex() const
+std::vector<std::string> location::getIndex() const 
 {
     return index;
 }
 
-std::string location::getMethod() const
+std::string location::getMethod() const 
 {
     return method;   
 }
 
-std::string location::getLocation_name() const
+std::string location::getLocation_name() const 
 {
     return location_name;   
 }
 
-std::string location::getErrorPage() const
+std::string location::getErrorPage() const 
 {
     return error_page;   
 }
 
-std::string location::getBodySize() const
+std::string location::getBodySize() const 
 {
     return body_size;   
 }
 
-int location::getAutoIndex() const
+int location::getAutoIndex() const 
 {
     return autoindex;
 }
@@ -237,6 +237,7 @@ void location::print_info() const
     std::cout << "AutoIndex->       " << "[" << autoindex << "]" << std::endl << std::endl;
 }
 
+
 int location::scrapData(std::string data, int i)
 {
     (void)i;
@@ -281,3 +282,4 @@ int location::scrapData(std::string data, int i)
         path = "./";
     return 0;
 }
+

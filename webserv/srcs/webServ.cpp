@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 18:43:26 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/27 17:10:57 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:08:55 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Reque
     
 }
 
-Conf & webServ::getConf() 
+Conf & webServ::getConf()  
 {
     return *conf;
 }
@@ -69,17 +69,17 @@ std::vector<Socket> & webServ::getSock()
     return sock;
 }
 
-Request & webServ::getReq() 
+Request & webServ::getReq()  
 {
     return *req;
 }
 
-Response & webServ::getRes() 
+Response & webServ::getRes()  
 {
     return *res;
 }
 
-Autodex & webServ::getAutodex() 
+Autodex & webServ::getAutodex()  
 {
     return *indexing;
 }

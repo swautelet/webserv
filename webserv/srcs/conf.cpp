@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 05:49:14 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 16:59:23 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:04:54 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,29 +45,29 @@ void Conf::print_info()
     }
 }
 
-std::string Conf::getAddress(int index) const
+std::string Conf::getAddress(int index) const 
 {
     return (confList)[index].getAdress();
 }
 
-std::string Conf::getPort(int index) const
+std::string Conf::getPort(int index) const 
 {
     return (confList)[index].getPort();
 }
 
-std::string Conf::getPath(int index) const
+std::string Conf::getPath(int index) const 
 {
     return (confList)[index].getPath();
 }
-std::string Conf::getServName(int index) const
+std::string Conf::getServName(int index) const 
 {
     return (confList)[index].getServName();  
 }
-std::string Conf::getMethod(int index) const
+std::string Conf::getMethod(int index) const 
 {
     return (confList)[index].getMethod();     
 }
-std::vector<std::string> Conf::getIndex(int index) const
+std::vector<std::string> Conf::getIndex(int index) const 
 {
     return (confList)[index].getIndex();
 }
@@ -77,7 +77,7 @@ unsigned long Conf::getNbrServer() const
     return nbr_serv;
 }
 
-confData & Conf::getConflist(int index) 
+confData & Conf::getConflist(int index)  
 {
     return (confList)[index];
 }

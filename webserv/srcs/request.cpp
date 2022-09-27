@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 18:48:25 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:04:13 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,32 +102,32 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
     
 }
 
-std::string Request::getUrl() const
+std::string Request::getUrl() const 
 {
     return url;
 }
 
-std::string Request::getMethod() const
+std::string Request::getMethod() const 
 {
     return method;
 }
 
-std::string Request::getVersion() const
+std::string Request::getVersion() const 
 {
     return version;
 }
 
-std::string Request::getHeader() const
+std::string Request::getHeader() const 
 {
     return header;
 }
 
- const std::vector<std::string>&	Request::getDataType() const
+const std::vector<std::string>&	Request::getDataType() const
 {
 	return type_data;
 }
 
-std::string Request::getBody() const
+std::string Request::getBody() const 
 {
     return body;
 }

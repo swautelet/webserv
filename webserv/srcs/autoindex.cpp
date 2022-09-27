@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:45:19 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/27 17:26:05 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:08:06 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ std::string Autodex::html_creation(DIR *dir, std::string full_url, std::string l
     return tmp;
 }
 
-std::string Autodex::getIndexStr() const
+std::string Autodex::getIndexStr() const 
 {
     return index_str;
 }

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 18:22:33 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:10:14 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,12 +207,15 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             printerr(" opening ... (ReadHTML)");
     buff << fd.rdbuf();
 	web.getRes().setContentType(fullpath);
+	web.getRes().setContentType(fullpath);
     return buff.str();
 }
 
 std::string itoa(int a)
 {
     std::string ss="";   //create empty string
+	if (a == 0)
+		ss = "0";
     while(a)
     {
         int x=a%10;
@@ -420,14 +423,6 @@ std::string search_value_vect(std::vector<std::string> vect, std::string searche
 	}
 	return ret;
 }
-
-void run_api(webServ& web, confData& conf)
-{
-	web.getCgi().setFullpath(web, conf);
-	web.getCgi().setEnv(web, conf);
-	start_script(web.getCgi());
-}
-
 
 void print(std::string str)
 {

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 18:19:22 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:09:41 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ Response::Response(const Response & other)
 
 Response &Response::operator=(Response const & other)
 {
+	version = other.getVersion();
+	status = other.getStatus();
+	setStatMsg();
+	content_type = other.getContentType();
+	body = other.getBody();
+	full_response = other.getFullResponse();
 	version = other.getVersion();
 	status = other.getStatus();
 	setStatMsg();
@@ -288,6 +294,10 @@ int Response::setContentType(std::string fullpath)
 			content_type = "image/png";
 		else if (type == "php")
 			return 1;
+		else if (type == "ico")
+			content_type = "image/png";
+		else if (type == "php")
+			return 1;
 		else
 			content_type = "text/plain";
 	}
@@ -327,7 +337,7 @@ void Response::MethodGet(webServ & web, confData & conf)
 	}
 	else
 	{
-		run_api(web, conf);
+		web.getCgi().run_api(web, conf);
 		std::cout << "made my way to api" << std::endl;
 	}
 }
@@ -379,12 +389,12 @@ void Response::concat_response(webServ & web)
     web.del_redir();
 }
 
-std::string Response::getResponse() const
+std::string Response::getResponse() const 
 {
     return full_response;
 }
 
-std::string Response::getContentLenght() const
+std::string Response::getContentLenght() const 
 {
     return content_lenght;
 }
@@ -398,12 +408,12 @@ std::string Response::getContentType() const
     return content_type;
 }
 
-std::string Response::getBody() const
+std::string Response::getBody() const 
 {
     return body;
 }
 
-std::string Response::getFullResponse() const
+std::string Response::getFullResponse() const 
 {
     return full_response;
 }

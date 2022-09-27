@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 17:08:49 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:06:03 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,46 +57,46 @@ const std::string& confData::getAdress() const
     return address;
 }
 
-std::string confData::getPort() const
+std::string confData::getPort() const 
 {
     return port;
 }
-std::string confData::getPath() const
+std::string confData::getPath() const 
 {
     return path;
 }
 
-std::string confData::getServName() const
+std::string confData::getServName() const 
 {
     return serv_name;
 }
 
-std::string confData::getMethod() const
+std::string confData::getMethod() const 
 {
     return method;
 }
 
-std::vector<std::string> confData::getIndex() const
+std::vector<std::string> confData::getIndex() const 
 {
     return index;
 }
 
-std::string confData::getErrorPage() const
+std::string confData::getErrorPage() const 
 {
     return error_page;
 }
 
-std::string confData::getBodySize() const
+std::string confData::getBodySize() const 
 {
     return body_size;
 }
 
-int confData::getLocationNbr() const
+int confData::getLocationNbr() const 
 {
     return nbr_loc;
 }
 
-int confData::getAutoIndex() const
+int confData::getAutoIndex() const 
 {
     return autoindex;
 }
@@ -106,7 +106,7 @@ const location & confData::getLocation(int index) const
     return (loc)[index];
 }
 
-const location & confData::getGoodLocation(std::string str) const
+const location & confData::getGoodLocation(std::string str) const 
 {
     for (unsigned long i = 0; i < nbr_loc; i++)
         if (!(loc)[i].getLocation_name().compare(str))
@@ -203,7 +203,12 @@ void confData::setIndex(std::string str)
         str = str.substr(str.find(" ") + 1, str.size());
     }
 	str = str.substr(0, str.size() - 1);
+	str = str.substr(0, str.size() - 1);
     index.push_back(str);
+	for (unsigned long i = 0; i < index.size(); i++)
+	{
+		std::cout << "Index is |" << index[i] << "|" << std::endl;
+	}
     if (index.back().empty())
         return;
 }

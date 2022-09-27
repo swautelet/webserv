@@ -44,7 +44,9 @@ void Socket::setup(int backlog, confData & conf)
     create_socket(conf);
     create_bind();
     listen_socket(backlog);
+std::cout << conf.getAdress() << std::endl;	
     set_ip(conf.getAdress());
+std::cout << "soket initialized" << std::endl;
     set_port(conf.getPort());
 }
 

@@ -6,7 +6,7 @@
 /*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:10:21 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 16:51:36 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:08:33 by chly-huc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,25 @@ class webServ
         webServ(webServ & other);
         webServ(std::string argv);
         webServ &operator=(webServ const & other);
-		Cgi & getCgi();
         Conf & getConf();
+        char** getEnv();
         Request & getReq();
         Response & getRes();
+		Cgi&	getCgi();
         Autodex & getAutodex();
         int getMax_body_size();
         std::vector<Socket> &getSock();
-		const std::string&	getServ_Root() const;
         std::pair<std::string, std::string> &getbool_redir();
         void del_redir();
         void cleave_info();
         void setMax_body_size(int i);
-		void setServ_Root(char **env);
         void setbool_redir(std::vector<std::string> vec);
-		char** env;
+		void	setServ_Root(char **env);
+		const std::string&	getServ_Root() const;
+        void    setEnv(char** envp);
+
     private:
+		char** env;
 		Cgi* _cgi;
         Conf* conf;
         Request* req;
