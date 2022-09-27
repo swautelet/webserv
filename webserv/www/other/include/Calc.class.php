@@ -6,9 +6,9 @@ class Calc{
 	public $num2;
 
 	public function __construct(string $oper, int $num1, int $num2){
-		$this->operator = oper;
-		$this->num1 = num1;
-		$this->num2 = num2;
+		$this->operator = $oper;
+		$this->num1 = $num1;
+		$this->num2 = $num2;
 	}
 
 	public function calculator (){

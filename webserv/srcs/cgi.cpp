@@ -209,17 +209,17 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "CONTENT_LENGTH=" + itoa(web.getReq().getBody().size());
 	env.push_back(tmp);
-	tmp = "CONTENT_TYPE=" + search_value_vect(header, "Accept:");
+	tmp = "CONTENT_TYPE=text/html";
 	env.push_back(tmp);
 	tmp = "PATH_INFO=" + web.getReq().getUrl();
 	env.push_back(tmp);
 	tmp = "PATH_TRANSLATED=" + web.getReq().getUrl();
 	env.push_back(tmp);
-	if (web.getReq().getUrl().rfind('?') != std::string::npos)
-	{
-		tmp = "QUERY_STRING=" + web.getReq().getUrl().substr(web.getReq().getUrl().rfind('?') + 1, web.getReq().getUrl().size());
+	// if (web.getReq().getUrl().rfind('?') != std::string::npos)
+	// {
+		tmp = "QUERY_STRING=" + web.getReq().getBody();
 		env.push_back(tmp);
-	}
+	// }+ web.getReq().getUrl() + "?" 
 	tmp = "REMOTEaddr=" + conf.getAdress();
 	env.push_back(tmp);
 	tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization:");
@@ -244,6 +244,12 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "SERVER_SOFTWARE=Webserv/1.0";
 	env.push_back(tmp);
+	// std::vector<std::string> variables;
+	// splitstring(web.getReq().getBody(), variables, '&');
+	// for (unsigned long i = 0; i < variables.size(); i++)
+	// {
+	// 	env.push_back(variables[i]);
+	// }
 }
 
 char**	Cgi::getEnvp()

@@ -2,17 +2,20 @@
 declare (strict_types = 1);
 include "Calc.class.php";
 
-print_r($_POST);
-echo '</br>';
-$oper = $_POST['oper'];
-$num1 = $_POST['num1'];
-$num2 = $_POST['num2'];
+parse_str($_SERVER["QUERY_STRING"], $variable);
+// echo '</br>';
+// printf($_SERVER["QUERY_STRING"]);
+// echo '</br>';
+// echo $_GET[0];
+// echo $_SERVER["REQUEST_METHOD"];
+// echo $_POST ;
+// echo '</br>';
+// echo $_GET["num1"];
+// echo  '</br>';
+// echo $_GET["num2"];
+// echo '</br>';
 
-echo "$oper</br>";
-echo "$num1</br>";
-echo "$num2</br>";
-
-$calc = new Calc($oper, (int)$num1, (int)$num2);
+$calc = new Calc($variable["oper"], (int)$variable["num1"], (int)$variable["num2"]);
 
 try{
     echo $calc->calculator();
