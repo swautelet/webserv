@@ -349,9 +349,10 @@ void Response::MethodPost(webServ & web, confData & conf)
     std::cout << " body is ----------------------------" << body << std::endl;
     if (setContentType(web.getReq().getUrl()) == 1)
         web.getCgi().run_api(web, conf);
-    if (!nbr)
+    else if (!nbr)
 	{
 		setStatus(100);
+		setContentType(web.getReq().getUrl());
 		concat_response(web);
 	}
 	else

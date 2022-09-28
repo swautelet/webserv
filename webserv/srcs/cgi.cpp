@@ -1,13 +1,12 @@
 #include "cgi.hpp"
 
-std::string	Cgi::start_script()
+std::string	Cgi::start_script(webServ& web)
 {
 	std::string rep;
 	int id;
 //	std::FILE *infile = tmpfile();
 //	std::FILE *outfile = tmpfile();
 	int status;
-	int inpip[2];
 	int outpip[2];
 	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
@@ -17,7 +16,6 @@ std::string	Cgi::start_script()
 		std::cout << envtmp[i] << std::endl;
 	}*/
 	// std::cout << " i wrote this :---------------------------------------------------------------- " << std::endl << body << std::endl;
-	pipe(inpip);
 	pipe(outpip);
 	// write(inpip[1], body.c_str(), body.size());
 //	lseek(fileno(infile), 0, SEEK_SET);
@@ -29,10 +27,9 @@ std::string	Cgi::start_script()
 	}
 	if (id == 0)
 	{
-		close (inpip[1]);
 		close (outpip[0]);
 		dup2(outpip[1], STDOUT_FILENO);
-		dup2(inpip[0], STDIN_FILENO);
+		dup2(web.getReq().getBrutbody_fileno(), STDIN_FILENO);
 	//	std::cout << "Hello from php script process" << std::endl;
 		/*std::string tmp = getPath() + " " + scripath;
 		std::system(tmp.c_str());
@@ -48,12 +45,10 @@ std::string	Cgi::start_script()
 	}
 	else
 	{
-		std::cout << "waiting for script" << std::endl;
+		// std::cout << "waiting for script" << std::endl;
 		waitpid(id, &status, 0);
-		close(inpip[1]);
-		close(inpip[0]);
 		close(outpip[1]);
-		 std::cout << "php script finished with :" << status << std::endl;
+		//  std::cout << "php script finished with :" << status << std::endl;
 //		lseek(fileno(outfile), 0, SEEK_SET);
 		char buff[11];
 		buff[10] = '\0';
@@ -67,6 +62,7 @@ std::string	Cgi::start_script()
 		// std::cout << "waiting for php " << std::endl;
 		// wait(&status);
 	}
+	std::cout << "php script answered with -----------------------------------" << std::endl << rep << std::endl;
 	close(outpip[0]);
 //	fclose(infile);
 //	fclose(outfile);
@@ -85,7 +81,7 @@ void Cgi::run_api(webServ& web, confData& conf)
 	{
 		std::cout << env[i] << std::endl;
 	}
-	web.getRes().setBody(web.getCgi().start_script());
+	web.getRes().setBody(web.getCgi().start_script(web));
 	web.getRes().setContentType();
 }
 
@@ -206,9 +202,10 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "REQUEST_METHOD=" + web.getReq().getMethod();
 	env.push_back(tmp);
-	tmp = "CONTENT_LENGTH=" + itoa(web.getReq().getBody().size());
+	tmp = "CONTENT_LENGTH="+ web.getReq().getContentLenght();
+	//  + itoa(web.getReq().getQuery_string().size());
 	env.push_back(tmp);
-	tmp = "CONTENT_TYPE=text/html";
+	tmp = "CONTENT_TYPE=application/x-www-form-urlencoded";
 	env.push_back(tmp);
 	tmp = "PATH_INFO=" + web.getReq().getUrl();
 	env.push_back(tmp);
@@ -230,7 +227,9 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "REMOTE_USER=" + search_value_vect(header, "Authorization:");
 	env.push_back(tmp);
-	tmp = "REQUEST_URI=" + web.getReq().getUrl().substr(0, web.getReq().getUrl().rfind('?'));
+	tmp = "REQUEST_URI=" + web.getReq().getUrl();
+	if (!web.getReq().getQuery_string().empty())
+		tmp += "?" + web.getReq().getQuery_string();
 	env.push_back(tmp);
 	tmp = "SERVER_NAME=";
 	if(search_value_vect(header, "Host: ").size())
@@ -248,12 +247,8 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "SERVER_SOFTWARE=Webserv/1.0";
 	env.push_back(tmp);
-	// std::vector<std::string> variables;
-	// splitstring(web.getReq().getBody(), variables, '&');
-	// for (unsigned long i = 0; i < variables.size(); i++)
-	// {
-	// 	env.push_back(variables[i]);
-	// }
+	// tmp = "PHPRC=" + web.getServ_Root() + "/www/php/include/php.ini";
+	// env.push_back(tmp);
 }
 
 char**	Cgi::getEnvp()

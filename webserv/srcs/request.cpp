@@ -14,7 +14,7 @@
 
 Request::Request()
 {
-    
+    brutbody = tmpfile();
 }
 
 Request::~Request()
@@ -24,7 +24,7 @@ Request::~Request()
 
 Request::Request(const Request & other):method(other.getMethod()), url(other.getUrl()), version(other.getVersion()), header(other.getHeader()), body(other.getBody()), type_data(other.getDataType())
 {
-    
+    brutbody = tmpfile();
 }
    
 Request& Request::operator=(const Request& other)
@@ -35,6 +35,7 @@ Request& Request::operator=(const Request& other)
 	header = other.getHeader();
 	body = other.getBody();
 	type_data = other.getDataType();
+    brutbody = tmpfile();
 	return *this;
 }
 
@@ -59,6 +60,10 @@ int Request::getInfo(int connection)
     version.resize(strlen(version.c_str()) - 1);
 	type_data.clear();
     _search_info(req, string);
+    lseek(fileno(brutbody), 0, SEEK_SET);
+    char* temp = buff + header.size();
+    write(fileno(brutbody), temp, atoi(content_lenght.c_str()));
+    lseek(fileno(brutbody), 0, SEEK_SET);
     if (url.find("?") != std::string::npos)
     {
         query_s = url.substr(url.find("?") + 1, url.size());
@@ -66,6 +71,8 @@ int Request::getInfo(int connection)
         std::cout << " BUT " << query_s << std::endl;
     }
     std::cout << "Header is : " << header << std::endl;
+    std::cout << "BODY IS :::::::::::::::::::::::: " << body << std::endl;
+    std::cout << "wioehfiwuhegfieruhg" << string << std::endl;
     return 1;
 }
 
@@ -84,6 +91,8 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
         }
     }
     content_lenght = search_value_vect(req, "Content-Length:");
+    if (content_lenght.empty())
+        content_lenght = "0";
     int index;
     while(buff.find("\n") != std::string::npos)
     {
@@ -98,7 +107,8 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
         header += tmp_2 + "\n";
         buff = buff.substr(index + 1, buff.size());
     }
-    body = buff;
+    if (!content_lenght.empty())
+        body = buff;
     
 }
 
@@ -149,4 +159,8 @@ void Request::clear_info()
 std::string Request::getQuery_string()
 {
     return query_s;
+}
+int Request::getBrutbody_fileno()
+{
+    return fileno(brutbody);
 }

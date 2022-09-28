@@ -34,8 +34,10 @@ class Request
         std::string getContentLenght() const;
 		const std::vector<std::string>& getDataType() const;
         std::string getQuery_string();
+        int getBrutbody_fileno();
         
     private:
+        FILE* brutbody;
         std::string method;
         std::string url;
         std::string version;

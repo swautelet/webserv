@@ -1,2 +1,2 @@
-login=awda
-password=adwawd��
+login=123
+password=1231
