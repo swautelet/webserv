@@ -180,4 +180,10 @@ void    Request::clean_header()
     header.resize(header.size() - decal);
     if (header[header.size() - 2] == '\n' && header[header.size() - 1] == '\n')
         header.resize(header.size() - 1);
+    // DEBUG SHOULD NEVER DISPLAY
+    for (unsigned long i = 0; i < header.size(); i++)
+    {
+        if (header[i] == '\r')
+            std::cout << "ERROR WITH HEADER CLEANING " << header.size() - i  << std::endl;
+    }
 }

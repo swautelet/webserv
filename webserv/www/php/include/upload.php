@@ -23,7 +23,10 @@ echo '</br>ENV </br>';
 print_r($_ENV);
 echo'</br>SERVER </br>';
 print_r($_SERVER);
+echo'</br>FILE </br>';
+print_r($_FILES);
 echo '</br> </br>';
+
 $target_dir = "www/uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 echo $target_file;

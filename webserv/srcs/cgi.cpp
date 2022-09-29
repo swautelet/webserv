@@ -62,7 +62,7 @@ std::string	Cgi::start_script(webServ& web)
 		// std::cout << "waiting for php " << std::endl;
 		// wait(&status);
 	}
-	// std::cout << "php script answered with -----------------------------------" << std::endl << rep << std::endl;
+	std::cout << "php script answered with ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << rep << std::endl << "-------------------------------------------------------------------------------------------" << std::endl;
 	close(outpip[0]);
 //	fclose(infile);
 //	fclose(outfile);
@@ -211,7 +211,7 @@ void	Cgi::setEnv(webServ& web, confData& conf)
     }
 	//  + itoa(web.getReq().getQuery_string().size());
 	env.push_back(tmp);
-	tmp = "CONTENT_TYPE=application/x-www-form-urlencoded";
+	tmp = "CONTENT_TYPE=" + search_value_vect(header, "Content-Type:");
 	env.push_back(tmp);
 	tmp = "PATH_INFO=" + web.getReq().getUrl();
 	env.push_back(tmp);
@@ -258,9 +258,8 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "PHPRC=" + web.getServ_Root() + "/www/php/include/php.ini";
 	env.push_back(tmp);
-	tmp = "HTTP_=" + web.getReq().getHeader();
-	// if (tmp[tmp.size() - 1] == '\n' && tmp[tmp.size() - 2] == '\n')
-	env.push_back(tmp);
+	// tmp = "HTTP_=" + web.getReq().getHeader();
+	// env.push_back(tmp);
 }
 
 char**	Cgi::getEnvp()
