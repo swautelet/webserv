@@ -15,7 +15,7 @@
 std::string location_exe(confData & conf, std::string req_file)
 {
     
-    std::cout << "SERVER = " << conf.getServName() << std::endl;
+    // std::cout << "SERVER = " << conf.getServName() << std::endl;
     if (!req_file.compare("/") && conf.LocationExist("/"))
         return "/";
 	if (req_file.size() >= 1 && req_file[req_file.size() - 1] == '/')
@@ -124,13 +124,13 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             web.setbool_redir(conf.getRedir());
             return "";
         }
-		std::cout << "No similar location found : base location will be used" <<std::endl;
+		// std::cout << "No similar location found : base location will be used" <<std::endl;
 		if (!conf.getPath().compare("./"))
 			url = "." + req_file;
 		else
 			url = conf.getPath() + req_file;
 	}
-    std::cout << "!url = " << url << std::endl;
+    // std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, loc);
     if (file_exist(url) == 0)
     {
@@ -191,11 +191,11 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
     }
     else
     {
-        std::cout << "Not dir" << std::endl;
+        // std::cout << "Not dir" << std::endl;
 		if (fullpath.empty())
 			fullpath = url;
     }
-    std::cout << "Final fullpath = " << fullpath << std::endl;
+    // std::cout << "Final fullpath = " << fullpath << std::endl;
     if (file_exist(url) == 0)
     {
         web.getRes().setContentType(".html");

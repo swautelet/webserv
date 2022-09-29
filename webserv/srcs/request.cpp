@@ -41,6 +41,7 @@ Request& Request::operator=(const Request& other)
 
 int Request::getInfo(int connection)
 {
+    clear_info();
     std::vector<std::string> req, req2;
     std::string string;
     int ret;
@@ -50,6 +51,7 @@ int Request::getInfo(int connection)
         printerr("Error with recv ...");
 	if (ret == 0)
        return 0;
+    buff[ret] = '\0';
     string = buff;
  	splitstring(buff, req, '\n');
 	splitstring(req[0], req2, ' ');
@@ -62,7 +64,7 @@ int Request::getInfo(int connection)
     _search_info(req, string);
     lseek(fileno(brutbody), 0, SEEK_SET);
     char* temp = buff + header.size();
-    write(fileno(brutbody), temp, atoi(content_lenght.c_str()));
+    write(fileno(brutbody), temp, atoi(content_length.c_str()));
     lseek(fileno(brutbody), 0, SEEK_SET);
     if (url.find("?") != std::string::npos)
     {
@@ -70,9 +72,9 @@ int Request::getInfo(int connection)
         url = url.substr(0 ,url.find("?"));
         std::cout << " BUT " << query_s << std::endl;
     }
-    std::cout << "Header is : " << header << std::endl;
-    std::cout << "BODY IS :::::::::::::::::::::::: " << body << std::endl;
-    std::cout << "wioehfiwuhegfieruhg" << string << std::endl;
+    clean_header();
+    std::cout << std::endl << "Header is ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << header << std::endl << "-----------------------------------------------------------------------" << std::endl;
+    std::cout << "BODY IS ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << body << std::endl << "--------------------------------------------------------------" << std::endl;
     return 1;
 }
 
@@ -90,9 +92,9 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
             break ;
         }
     }
-    content_lenght = search_value_vect(req, "Content-Length:");
-    if (content_lenght.empty())
-        content_lenght = "0";
+    content_length = search_value_vect(req, "Content-Length:");
+    if (content_length.empty())
+        content_length = "0";
     int index;
     while(buff.find("\n") != std::string::npos)
     {
@@ -107,7 +109,7 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
         header += tmp_2 + "\n";
         buff = buff.substr(index + 1, buff.size());
     }
-    if (!content_lenght.empty())
+    if (!content_length.empty())
         body = buff;
     
 }
@@ -142,9 +144,9 @@ std::string Request::getBody() const
     return body;
 }
 
-std::string Request::getContentLenght() const
+std::string Request::getContentLength() const
 {
-    return content_lenght;
+    return content_length;
 }
 
 void Request::clear_info()
@@ -163,4 +165,19 @@ std::string Request::getQuery_string()
 int Request::getBrutbody_fileno()
 {
     return fileno(brutbody);
+}
+
+void    Request::clean_header()
+{
+    unsigned long decal = 0;
+    for (unsigned long i = 0; i + decal < header.size(); i++)
+    {
+        if (header[i + decal] == '\r')
+            decal++;
+        if (decal)
+            header[i] = header[i + decal];
+    }
+    header.resize(header.size() - decal);
+    while (header[header.size() - 2] == '\n')
+        header.resize(header.size() - 1);
 }

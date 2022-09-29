@@ -12,7 +12,7 @@
 
 #include "response.hpp"
 
-Response::Response():content_lenght("0")
+Response::Response():content_length("0")
 {
     
 }
@@ -39,13 +39,13 @@ Response &Response::operator=(Response const & other)
 	status = other.getStatus();
 	setStatMsg();
 	content_type = other.getContentType();
-	body = other.getBody();
 	full_response = other.getFullResponse();
 	return (*this);
 }
 
 void Response::find_method(webServ & web, int i)
 {
+	clear_info();
 	version = web.getReq().getVersion();
     if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
@@ -332,21 +332,18 @@ void Response::MethodGet(webServ & web, confData & conf)
             std::cout << web.getReq().getUrl() << std::endl;
             web.getRes().setStatus(atoi(web.getbool_redir().first.c_str()));
         }
-		setContentLenght();
-		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(content_lenght.c_str()))
-			content_lenght = itoa(web.getMax_body_size());
+		setContentLength();
+		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(content_length.c_str()))
+			content_length = itoa(web.getMax_body_size());
 	}
 	else
-	{
 		web.getCgi().run_api(web, conf);
-		std::cout << "made my way to api" << std::endl;
-	}
 }
 
 void Response::MethodPost(webServ & web, confData & conf)
 {
-    int nbr = atoi(web.getReq().getContentLenght().c_str());
-    std::cout << " body is ----------------------------" << body << std::endl;
+    int nbr = atoi(web.getReq().getContentLength().c_str());
+    // std::cout << " body is ----------------------------" << body << std::endl;
     if (setContentType(web.getReq().getUrl()) == 1)
         web.getCgi().run_api(web, conf);
     else if (!nbr)
@@ -390,8 +387,9 @@ void Response::concat_response(webServ & web)
     if (status == 301 || status == 302)
         full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Location : " + web.getbool_redir().second;
     else
-	    full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Lenght: " + content_lenght + "\n\n" + body;
+	    full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Length: " + content_length + "\n\n" + body;
     web.del_redir();
+	std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
 }
 
 std::string Response::getResponse() const 
@@ -399,9 +397,9 @@ std::string Response::getResponse() const
     return full_response;
 }
 
-std::string Response::getContentLenght() const 
+std::string Response::getContentLength() const 
 {
-    return content_lenght;
+    return content_length;
 }
 
 size_t Response::getBodySize() const
@@ -442,23 +440,31 @@ void	Response::seterrorpage()
 		errorpage.close();
 	}
 	else
-		body = "";
-	setContentLenght();
+		setBody("");
+	setContentLength();
 }
 
-void  Response::setContentLenght()
+void  Response::setContentLength()
 {
-	if (getContentType().find("image") != std::string::npos)
-		content_lenght = itoa(body.size());
-	else
-		content_lenght = itoa(how_many(body));
+	// if (getContentType().find("image") != std::string::npos)
+	// {
+		body.shrink_to_fit();
+		content_length = itoa(body.capacity());
+		std::cout << "first "  << body.capacity() << std::endl;
+	// }
+		
+	// else
+	// {
+	// 	content_length = itoa(how_many(body));
+	// 	std::cout << "second" << std::endl;
+	// }
 	
 }
 
 void Response::setBody(std::string str)
 {
 	body = str;
-	setContentLenght();
+	setContentLength();
 }
 
 int Response::getStatus() const
@@ -472,7 +478,7 @@ void Response::clear_info()
     status = 0;
     stat_msg = "";
     content_type = "";
-    content_lenght = "";
+    content_length = "";
     body = "";
     full_response = "";
 }

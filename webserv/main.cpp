@@ -72,19 +72,19 @@ void engine(webServ & web, int connection, int addrlen)
         {
             struct sockaddr client_address;
             addrlen = sizeof((socklen_t *)&client_address);
-            std::cout << "Accept ... " << std::endl;
+            // std::cout << "Accept ... " << std::endl;
             if ((connection = accept(web.getSock()[i].getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
                 printerr("cannot connect ...");
-            std::cout << "Accept done ..." << std::endl;
+            // std::cout << "Accept done ..." << std::endl;
             if (web.getReq().getInfo(connection) == 0)
             {
                 std::cout << "Recv connection close ... Retry ..." << std::endl;
                 break;
             }
-            std::cout << "Info done ..." << std::endl;
+            // std::cout << "Info done ..." << std::endl;
             web.getRes().find_method(web, i);
             web.getRes().concat_response(web);
-            std::cout << web.getRes().getResponse().size() << " & " << web.getRes().getContentLenght().c_str() << std::endl;
+            // std::cout << web.getRes().getResponse().size() << " & " << web.getRes().getContentLenght().c_str() << std::endl;
             write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
             close(connection);
             memcpy(&copyset, &fdset, sizeof(fdset));

@@ -37,9 +37,9 @@ std::string	Cgi::start_script(webServ& web)
 		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
 		{
 			// std::cout << "Script couldn't be loaded with this->scripath : |" << argtmp[0] << "|" << std::endl;
-			std::cout << "ex this->scripath :" << getPath() << std::endl;
-			std::cout << "errno : " << errno << std::endl;
-			perror("execve error ");
+			// std::cout << "ex this->scripath :" << getPath() << std::endl;
+			// std::cout << "errno : " << errno << std::endl;
+			perror("EXECVE ERROR :");
 			exit(10);
 		}
 	}
@@ -62,7 +62,7 @@ std::string	Cgi::start_script(webServ& web)
 		// std::cout << "waiting for php " << std::endl;
 		// wait(&status);
 	}
-	std::cout << "php script answered with -----------------------------------" << std::endl << rep << std::endl;
+	// std::cout << "php script answered with -----------------------------------" << std::endl << rep << std::endl;
 	close(outpip[0]);
 //	fclose(infile);
 //	fclose(outfile);
@@ -76,13 +76,15 @@ void Cgi::run_api(webServ& web, confData& conf)
 	web.getCgi().setFullpath(web, conf);
 	web.getCgi().setEnv(web, conf);	
 	body = web.getReq().getBody();
-	std::cout << "----------------------debug env------------------" << std::endl;
-	for (unsigned long i = 0; i < env.size(); i++)
-	{
-		std::cout << env[i] << std::endl;
-	}
+	// std::cout << "----------------------debug env------------------" << std::endl;
+	// for (unsigned long i = 0; i < env.size(); i++)
+	// {
+	// 	std::cout << "|" << env[i] << "|end here|" << std::endl;
+	// }
+	// std::cout << "--------------------------------------- finish --------------------------------" << std::endl;
 	web.getRes().setBody(web.getCgi().start_script(web));
 	web.getRes().setContentType();
+	web.getRes().setStatus(200);
 }
 
 Cgi::Cgi()
@@ -202,7 +204,10 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "REQUEST_METHOD=" + web.getReq().getMethod();
 	env.push_back(tmp);
-	tmp = "CONTENT_LENGTH="+ web.getReq().getContentLenght();
+	tmp = "CONTENT_LENGTH="+ web.getReq().getContentLength();
+	if (!tmp.empty() && !isalnum(tmp.back())) {
+        tmp.resize(tmp.size() - 1);
+    }
 	//  + itoa(web.getReq().getQuery_string().size());
 	env.push_back(tmp);
 	tmp = "CONTENT_TYPE=application/x-www-form-urlencoded";
@@ -240,6 +245,9 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	{
 		tmp += conf.getServName();
 	}
+	if (!tmp.empty() && !isalnum(tmp.back())) {
+        tmp.resize(tmp.size() - 1);
+    }
 	env.push_back(tmp);
 	tmp = "SERVER_PORT=" + conf.getPort();
 	env.push_back(tmp);
@@ -247,8 +255,12 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "SERVER_SOFTWARE=Webserv/1.0";
 	env.push_back(tmp);
-	// tmp = "PHPRC=" + web.getServ_Root() + "/www/php/include/php.ini";
-	// env.push_back(tmp);
+	tmp = "PHPRC=" + web.getServ_Root() + "/www/php/include/php.ini";
+	env.push_back(tmp);
+	tmp = "HTTP_=" + web.getReq().getHeader();
+	// if (tmp[tmp.size() - 1] == '\n' && tmp[tmp.size() - 2] == '\n')
+	tmp.resize(tmp.size() - 2);
+	env.push_back(tmp);
 }
 
 char**	Cgi::getEnvp()
