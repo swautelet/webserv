@@ -119,17 +119,18 @@ void	Cgi::set_transla_path(char** envp)
 			break;
 		}
 	}
-	find_transla_path("php", paths);
+	find_transla_path("php", "php", paths);
+	find_transla_path("python", "py", paths);
 }
 
-void	Cgi::find_transla_path(std::string scri, std::vector<std::string> paths)
+void	Cgi::find_transla_path(std::string scri, std::string ext, std::vector<std::string> paths)
 {
 	for (unsigned long i = 0; i < paths.size(); i++)
 	{
 		std::string tmp = paths[i] + "/" + scri;
 		if (!access(tmp.c_str(), X_OK))
 		{
-			pathmap[scri] = tmp;
+			pathmap[ext] = tmp;
 			break ;
 		}
 	}

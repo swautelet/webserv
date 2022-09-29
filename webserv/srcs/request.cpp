@@ -178,6 +178,6 @@ void    Request::clean_header()
             header[i] = header[i + decal];
     }
     header.resize(header.size() - decal);
-    if (header[header.size() - 2] == '\n')
+    if (header[header.size() - 2] == '\n' && header[header.size() - 1] == '\n')
         header.resize(header.size() - 1);
 }

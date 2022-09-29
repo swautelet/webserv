@@ -100,12 +100,12 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
 			web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().c_str()));
             return "";
         }  
-		std::cout << "Final location is " << loc <<std::endl;
-        std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
+		// std::cout << "Final location is " << loc <<std::endl;
+        // std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
         {
             req_file = req_file.substr(conf.getGoodLocation(loc).getLocation_name().size(), req_file.size());
-            std::cout << "Found it = " << req_file << std::endl;
+            // std::cout << "Found it = " << req_file << std::endl;
             if (!conf.getGoodLocation(loc).getPath().compare("./"))
                 url = "." + conf.getGoodLocation(loc).getLocation_name() + req_file;
             else
@@ -152,10 +152,10 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
     }
     if ((dir = opendir(url.c_str())) != NULL)
     {
-        std::cout << "-------------------------- "<< std::endl;
-        std::cout << "[DIR] "<< std::endl;
-        std::cout << "req_file = " << req_file << std::endl;
-        std::cout << "fullpath = " << fullpath << std::endl;
+        // std::cout << "-------------------------- "<< std::endl;
+        // std::cout << "[DIR] "<< std::endl;
+        // std::cout << "req_file = " << req_file << std::endl;
+        // std::cout << "fullpath = " << fullpath << std::endl;
         if (conf.LocationExist(loc))
         {
             if (!conf.getGoodLocation(loc).getAutoIndex() && conf.getGoodLocation(loc).getIndex().empty())

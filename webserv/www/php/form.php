@@ -12,7 +12,7 @@ if (strcmp($_SERVER["REQUEST_METHOD"], "GET") == 0)
     parse_str($_SERVER["QUERY_STRING"], $_GET);
 }
 if (isset($_GET['firstname'])) {
-    echo '<h3>Form POST Method</h3>';
+    echo '<h3>Form GET Method</h3>';
     $lastname = $_GET['lastname'];
     $firstname = $_GET['firstname'];
     echo 'Your name is '. $lastname . ' ' . $firstname;

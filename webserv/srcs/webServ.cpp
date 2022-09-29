@@ -36,18 +36,13 @@ webServ::webServ(std::string argv)
 	std::cout << "Nombre de server = " << conf->getNbrServer() << std::endl;
 	for (unsigned long i = 0; i < conf->getNbrServer(); i++)
 	{
-		Socket* next = new Socket;
-		sock.push_back(*next);
-		delete next;
+		Socket next;
+		sock.push_back(next);
 	}
 }
 
 webServ::~webServ()
 {
-	for (std::vector<Socket>::iterator iter = sock.begin(); iter != sock.end() - 1; iter++)
-	{
-		delete &(*iter);
-	}
 	delete conf;
 	delete req;
 	delete res;
