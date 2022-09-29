@@ -1,17 +1,29 @@
 <?php
 // phpinfo();
 // var_dump($_POST);
-if (strcmp($_SERVER["REQUEST_METHOD"], "POST") == 0)
+if (strcmp($_ENV["REQUEST_METHOD"], "POST") == 0)
 {
-    parse_str($_SERVER["QUERY_STRING"], $_POST);
+    echo '</br>detected post</br>';
+    parse_str($_ENV["QUERY_STRING"], $_POST);
+    echo '</br>POST </br>';
+    print_r($_POST);
 }
-if (strcmp($_SERVER["REQUEST_METHOD"], "GET") == 0)
+else if (strcmp($_ENV["REQUEST_METHOD"], "GET") == 0)
 {
-    parse_str($_SERVER["QUERY_STRING"], $_GET);
+     echo '</br>detected get</br>';
+    parse_str($_ENV["QUERY_STRING"], $_GET);
+    echo '</br>GET </br>';
+    print_r($_GET);
 }
-print_r($_POST);
-// print_r($_SERVER);
-// print_r($_ENV);
+else
+{
+  echo '</br>detected nothing</br>';
+}
+echo '</br>ENV </br>';
+print_r($_ENV);
+echo'</br>SERVER </br>';
+print_r($_SERVER);
+echo '</br> </br>';
 $target_dir = "www/uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 echo $target_file;
@@ -19,7 +31,7 @@ $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image
 // echo "hello from php upload";
-// print_r($_SERVER);
+// print_r($_ENV);
 
 // print_r($_POST);
 // print_r($_FILES);

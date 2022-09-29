@@ -389,7 +389,7 @@ void Response::concat_response(webServ & web)
     else
 	    full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Length: " + content_length + "\n\n" + body;
     web.del_redir();
-	std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
+	// std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
 }
 
 std::string Response::getResponse() const 
@@ -450,7 +450,6 @@ void  Response::setContentLength()
 	// {
 		body.shrink_to_fit();
 		content_length = itoa(body.capacity());
-		std::cout << "first "  << body.capacity() << std::endl;
 	// }
 		
 	// else

@@ -76,12 +76,12 @@ void Cgi::run_api(webServ& web, confData& conf)
 	web.getCgi().setFullpath(web, conf);
 	web.getCgi().setEnv(web, conf);	
 	body = web.getReq().getBody();
-	// std::cout << "----------------------debug env------------------" << std::endl;
-	// for (unsigned long i = 0; i < env.size(); i++)
-	// {
-	// 	std::cout << "|" << env[i] << "|end here|" << std::endl;
-	// }
-	// std::cout << "--------------------------------------- finish --------------------------------" << std::endl;
+	std::cout << "----------------------debug env------------------" << std::endl;
+	for (unsigned long i = 0; i < env.size(); i++)
+	{
+		std::cout << "|" << env[i] << "|" << std::endl;
+	}
+	std::cout << "--------------------------------------- finish --------------------------------" << std::endl;
 	web.getRes().setBody(web.getCgi().start_script(web));
 	web.getRes().setContentType();
 	web.getRes().setStatus(200);
@@ -259,7 +259,6 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "HTTP_=" + web.getReq().getHeader();
 	// if (tmp[tmp.size() - 1] == '\n' && tmp[tmp.size() - 2] == '\n')
-	tmp.resize(tmp.size() - 2);
 	env.push_back(tmp);
 }
 
