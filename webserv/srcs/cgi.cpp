@@ -36,8 +36,8 @@ std::string	Cgi::start_script(webServ& web)
 		exit (10);*/
 		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
 		{
-			// std::cout << "Script couldn't be loaded with this->scripath : |" << argtmp[0] << "|" << std::endl;
-			// std::cout << "ex this->scripath :" << getPath() << std::endl;
+			std::cout << "Script couldn't be loaded with this->script : |" << argtmp[1] << "|" << std::endl;
+			std::cout << "and this->exe :" << getPath() << std::endl;
 			// std::cout << "errno : " << errno << std::endl;
 			perror("EXECVE ERROR :");
 			exit(10);
@@ -74,7 +74,7 @@ std::string	Cgi::start_script(webServ& web)
 void Cgi::run_api(webServ& web, confData& conf)
 {
 	web.getCgi().setFullpath(web, conf);
-	web.getCgi().setEnv(web, conf);	
+	web.getCgi().setEnv(web, conf);
 	body = web.getReq().getBody();
 	std::cout << "----------------------debug env------------------" << std::endl;
 	for (unsigned long i = 0; i < env.size(); i++)
@@ -120,8 +120,7 @@ void	Cgi::set_transla_path(char** envp)
 		}
 	}
 	find_transla_path("php", "php", paths);
-	find_transla_path("python", "py", paths);
-	// pathmap["php"] = "/Users/swautele/Documents/webserv/webserv/cgi/php-cgi";
+	find_transla_path("python3", "py", paths);
 }
 
 void	Cgi::find_transla_path(std::string scri, std::string ext, std::vector<std::string> paths)
@@ -133,6 +132,7 @@ void	Cgi::find_transla_path(std::string scri, std::string ext, std::vector<std::
 		{
 			std::cout << "i set :" << ext << " with :" << tmp << std::endl << std::endl;
 			pathmap[ext] = tmp;
+			std::cout << "i initialized script :" << ext << " with :" << tmp << std::endl;
 			break ;
 		}
 	}
@@ -188,6 +188,7 @@ void	Cgi::setFullpath(webServ& web,confData& conf)
 	if (locroot.size() > 0 && locroot[0] == '.')
 		locroot = locroot.substr(1, locroot.size());
 	this->scripath = web.getServ_Root() + locroot + temp;
+	std::cout << "i initialized scripath with :" << scripath << std::endl;
 }
 
 void	Cgi::setEnv(webServ& web, confData& conf)
@@ -219,23 +220,23 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	tmp = search_value_vect(header, "Content-Type:");
 	if (tmp.size())
 	{
-		tmp = "CONTENT_TYPE=" + tmp.substr(0, tmp.find(';'));
+		tmp = "CONTENT_TYPE=" + tmp;
 		env.push_back(tmp);
 	}
 	tmp = "PATH_INFO=" + web.getReq().getUrl();
 	env.push_back(tmp);
 	tmp = "PATH_TRANSLATED=" + web.getReq().getUrl();
 	env.push_back(tmp);
-	if (web.getReq().getQuery_string().empty())
-	{
-		tmp = "QUERY_STRING=" + web.getReq().getBody();
-		env.push_back(tmp);
-	}
-	else
+	if (!web.getReq().getQuery_string().empty())
 	{
 		tmp = "QUERY_STRING=" + web.getReq().getQuery_string();
 		env.push_back(tmp);
 	}
+	// else
+	// {
+		// tmp = "QUERY_STRING=" + web.getReq().getBody();
+		// env.push_back(tmp);
+	// }
 	tmp = "REMOTEaddr=" + conf.getAdress();
 	env.push_back(tmp);
 	// tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization:");
@@ -263,8 +264,8 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "SERVER_PROTOCOL=HTTP/1.1";
 	env.push_back(tmp);
-	// tmp = "SERVER_SOFTWARE=Webserv/1.0";
-	// env.push_back(tmp);
+	tmp = "SERVER_SOFTWARE=Webserv/1.0";
+	env.push_back(tmp);
 	// tmp = "PHPRC=" + web.getServ_Root() + "/www/php/include/php.ini";
 	// env.push_back(tmp);
 	// tmp = "HTTP_=" + web.getReq().getHeader();
