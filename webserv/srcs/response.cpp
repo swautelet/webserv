@@ -330,11 +330,15 @@ void Response::MethodGet(webServ & web, confData & conf)
         if (!web.getbool_redir().first.empty() && !web.getbool_redir().second.empty())
         {
             std::cout << web.getReq().getUrl() << std::endl;
-            web.getRes().setStatus(atoi(web.getbool_redir().first.c_str()));
+			char* temp = to_char(web.getbool_redir().first);
+            web.getRes().setStatus(atoi(temp));
+			delete[] temp;
         }
 		setContentLength();
-		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(content_length.c_str()))
+		char* temp = to_char(content_length);
+		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(temp))
 			content_length = itoa(web.getMax_body_size());
+		delete[] temp;
 	}
 	else
 		web.getCgi().run_api(web, conf);
@@ -342,7 +346,9 @@ void Response::MethodGet(webServ & web, confData & conf)
 
 void Response::MethodPost(webServ & web, confData & conf)
 {
-    int nbr = atoi(web.getReq().getContentLength().c_str());
+	char* temp = to_char(web.getReq().getContentLength());
+    int nbr = atoi(temp);
+	delete[] temp;
     // std::cout << " body is ----------------------------" << body << std::endl;
     if (setContentType(web.getReq().getUrl()) == 1)
         web.getCgi().run_api(web, conf);
@@ -368,7 +374,8 @@ void Response::MethodDel(webServ&  web, confData& conf)
     {
         fullpath = conf.getGoodLocation(loc).getPath() + url;
     }
-	if (remove(fullpath.c_str()) == 0)
+	char* temp = to_char(fullpath);
+	if (remove(temp) == 0)
 	{
 		setStatus(200);
 		setContentType();
@@ -379,6 +386,7 @@ void Response::MethodDel(webServ&  web, confData& conf)
 		setStatus(404);
 		setBody("");
 	}
+	delete[] temp;
 }
 
 void Response::concat_response(webServ & web)
@@ -431,7 +439,9 @@ void	Response::seterrorpage()
 	std::ifstream errorpage;
 	std::string tmp;
 	std::string path("www/error/" + itoa(status) + ".html");
-	errorpage.open(path.c_str());
+	char* temp = to_char(path);
+	errorpage.open(temp);
+	delete[] temp;
 	if (errorpage.is_open())
 	{
 		body.clear();

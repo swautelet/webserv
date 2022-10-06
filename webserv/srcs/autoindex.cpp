@@ -58,7 +58,9 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url,
             // std::cout << "---- " << conf.getLocation(i).getLocation_name() << std::endl;
             // std::cout << "---- " << conf.getLocation(i).getAutoIndex() << std::endl;
             path = conf.getGoodLocation(path).getPath();
-            web.setMax_body_size(atoi(conf.getLocation(i).getBodySize().c_str()));
+            char* temp = to_char(conf.getLocation(i).getBodySize());
+            web.setMax_body_size(atoi(temp));
+            delete[] temp;
             break;
         }
     }

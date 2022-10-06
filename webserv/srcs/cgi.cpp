@@ -17,7 +17,6 @@ std::string	Cgi::start_script(webServ& web)
 	}*/
 	// std::cout << " i wrote this :---------------------------------------------------------------- " << std::endl << body << std::endl;
 	pipe(outpip);
-	// write(inpip[1], body.c_str(), body.size());
 //	lseek(fileno(infile), 0, SEEK_SET);
 	id = fork();
 	if (id == -1)
@@ -30,12 +29,10 @@ std::string	Cgi::start_script(webServ& web)
 		close (outpip[0]);
 		dup2(outpip[1], STDOUT_FILENO);
 		dup2(web.getReq().getBrutbody_fileno(), STDIN_FILENO);
-	//	std::cout << "Hello from php script process" << std::endl;
-		/*std::string tmp = getPath() + " " + scripath;
-		std::system(tmp.c_str());
-		exit (10);*/
-		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
+		char* temp = to_char(getPath());
+		if (execve(temp, argtmp, envtmp) < 0)
 		{
+			delete[] temp;
 			std::cout << "Script couldn't be loaded with this->script : |" << argtmp[1] << "|" << std::endl;
 			std::cout << "and this->exe :" << getPath() << std::endl;
 			// std::cout << "errno : " << errno << std::endl;
@@ -128,13 +125,16 @@ void	Cgi::find_transla_path(std::string scri, std::string ext, std::vector<std::
 	for (unsigned long i = 0; i < paths.size(); i++)
 	{
 		std::string tmp = paths[i] + "/" + scri;
-		if (!access(tmp.c_str(), X_OK))
+		char* temp = to_char(tmp);
+		if (!access(temp, X_OK))
 		{
+			delete[] temp;
 			std::cout << "i set :" << ext << " with :" << tmp << std::endl << std::endl;
 			pathmap[ext] = tmp;
 			std::cout << "i initialized script :" << ext << " with :" << tmp << std::endl;
 			break ;
 		}
+		delete[] temp;
 	}
 }
 

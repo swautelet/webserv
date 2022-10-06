@@ -59,12 +59,16 @@ int Request::getInfo(int connection)
         method = req2[0];
     url = req2[1];
     version = req2[2];
-    version.resize(strlen(version.c_str()) - 1);
+    char* temp = to_char(version);
+    version.resize(strlen(temp) - 1);
+    delete[]temp;
 	type_data.clear();
     _search_info(req, string);
     lseek(fileno(brutbody), 0, SEEK_SET);
-    char* temp = buff + header.size();
-    write(fileno(brutbody), temp, atoi(content_length.c_str()));
+    temp = buff + header.size();
+    char* temp2 = to_char(content_length);
+    write(fileno(brutbody), temp, atoi(temp2));
+    delete[] temp2;
     lseek(fileno(brutbody), 0, SEEK_SET);
     if (url.find("?") != std::string::npos)
     {
