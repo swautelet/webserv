@@ -62,9 +62,11 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url,
             break;
         }
     }
-    if ((dir = opendir(url.c_str())) != NULL)
+    char* temp = to_char(url);
+    if ((dir = opendir(temp)) != NULL)
         index_str = html_creation(dir, full_url, loca, url);
     // std::cout << "--------------AUTOINDEX ENDING---------------" << std::endl;
+    delete[] temp;
     web.getRes().setContentType(".html");
     return index_str;
 }

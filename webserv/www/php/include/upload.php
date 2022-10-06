@@ -27,9 +27,18 @@ echo'</br>FILE </br>';
 print_r($_FILES);
 echo '</br> </br>';
 
-$target_dir = "www/uploads/";
-$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+// $file = stream_get_contents(STDIN);
+// if ($file === FALSE) { 
+// echo 'ERROR: stream_get_content';
+// exit (1);
+//  }
+// var_dump($file);
+
+
+$target_dir = "www/upload/";
+$target_file = $target_dir . 'test.png';
 echo $target_file;
+file_put_contents($target_file, STDIN);
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image

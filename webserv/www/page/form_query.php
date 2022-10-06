@@ -11,7 +11,8 @@
 
 <p>If you click the "Submit" button, the form-data will be sent to a page called "/post/info.txt".</p>
 
-<?php parse_str($_SERVER["QUERY_STRING"], $_GET);?>
+<?php
+parse_str($_SERVER["QUERY_STRING"], $_GET);?>
 lastname : <?php echo $_GET["lastname"];?> </br>
 firstname : <?php echo $_GET["firstname"];?> </br>
 </body>

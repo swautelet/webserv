@@ -84,8 +84,10 @@ void engine(webServ & web, int connection, int addrlen)
             // std::cout << "Info done ..." << std::endl;
             web.getRes().find_method(web, i);
             web.getRes().concat_response(web);
-            // std::cout << web.getRes().getResponse().size() << " & " << web.getRes().getContentLenght().c_str() << std::endl;
-            write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
+            // std::cout << web.getRes().getResponse().size() << " & " << web.getRes().getContentLenght() << std::endl;
+            char* buff = to_char(web.getRes().getResponse());
+            write(connection, buff, web.getRes().getResponse().size());
+            delete[] buff;
             close(connection);
             memcpy(&copyset, &fdset, sizeof(fdset));
             break;

@@ -490,3 +490,14 @@ std::string error_parse(int code)
     }
     return "";
 }
+
+char*   to_char(const std::string& str)
+{
+    char* ret = new char[str.size() + 1];
+    for (unsigned long i = 0; i < str.size(); i++)
+    {
+        ret[i] = str[i];
+    }
+    ret[str.size()] = '\0';
+    return ret;
+}
