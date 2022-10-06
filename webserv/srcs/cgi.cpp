@@ -220,6 +220,8 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	tmp = search_value_vect(header, "Content-Type:");
 	if (tmp.size())
 	{
+		if (tmp.find(';') != std::string::npos)
+			tmp = tmp.substr(0, tmp.find(';'));
 		tmp = "CONTENT_TYPE=" + tmp;
 		env.push_back(tmp);
 	}
