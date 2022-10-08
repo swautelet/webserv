@@ -10,12 +10,9 @@ std::string	Cgi::start_script(webServ& web)
 	int outpip[2];
 	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
-/*	std::cout << "compared with real table ---------------------------" << std::endl;
-	for (int i = 0; envtmp[i]; i++)
-	{
-		std::cout << envtmp[i] << std::endl;
-	}*/
-	// std::cout << " i wrote this :---------------------------------------------------------------- " << std::endl << body << std::endl;
+
+	print_tab(argtmp);
+	print_tab(envtmp);
 	pipe(outpip);
 	// write(inpip[1], body.c_str(), body.size());
 //	lseek(fileno(infile), 0, SEEK_SET);
@@ -34,7 +31,7 @@ std::string	Cgi::start_script(webServ& web)
 		/*std::string tmp = getPath() + " " + scripath;
 		std::system(tmp.c_str());
 		exit (10);*/
-		if (execve(getPath().c_str(), argtmp, envtmp) < 0)
+		if (execve("/mnt/c/Users/Shadow/Desktop/webserv/webserv/cgi/php-cgi", argtmp, envtmp) < 0)
 		{
 			// std::cout << "Script couldn't be loaded with this->scripath : |" << argtmp[0] << "|" << std::endl;
 			// std::cout << "ex this->scripath :" << getPath() << std::endl;
@@ -142,7 +139,7 @@ char**	Cgi::getArgv()
 	res[0] = new char[this->getPath().size() + 1];
 	res[1] = new char[this->scripath.size() + 1];
 	res[2] = NULL;
-	std::string name = this->getPath().substr(getPath().rfind('/') + 1, getPath().size());
+	std::string name = "php-cgi";
 	for (unsigned long i = 0; i < name.size(); i++)
 	{
 		res[0][i] = name[i];
@@ -199,12 +196,25 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "GATEWAY_INTERFACE=CGI/1.1";
 	env.push_back(tmp);
-	tmp = "SCRIPT_NAME=" + this->scripath.substr(this->scripath.rfind('/') + 1, this->scripath.size());
-	env.push_back(tmp);
+	// tmp = "SCRIPT_NAME=" + this->scripath.substr(this->scripath.rfind('/') + 1, this->scripath.size());
+	// env.push_back(tmp);
 	tmp = "SCRIPT_FILENAME=" + this->scripath;
 	env.push_back(tmp);
 	tmp = "REQUEST_METHOD=" + web.getReq().getMethod();
 	env.push_back(tmp);
+	std::cout << tmp << std::endl;
+	if (web.getReq().getQuery_string().empty())
+	{
+		std::cout << "POST" << std::endl;
+		tmp = "QUERY_STRING=" + web.getReq().getBody();
+		env.push_back(tmp);
+	}
+	else
+	{
+		std::cout << "GET" << std::endl;
+		tmp = "QUERY_STRING=" + web.getReq().getQuery_string();
+		env.push_back(tmp);
+	}
 	tmp = "CONTENT_LENGTH="+ web.getReq().getContentLength();
 	if (!tmp.empty() && !isalnum(tmp.back())) {
         tmp.resize(tmp.size() - 1);
@@ -215,52 +225,42 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	tmp = "PATH_INFO=" + web.getReq().getUrl();
 	env.push_back(tmp);
-	tmp = "PATH_TRANSLATED=" + web.getReq().getUrl();
-	env.push_back(tmp);
-	if (web.getReq().getQuery_string().empty())
-	{
-		tmp = "QUERY_STRING=" + web.getReq().getBody();
-		env.push_back(tmp);
-	}
-	else
-	{
-		tmp = "QUERY_STRING=" + web.getReq().getQuery_string();
-		env.push_back(tmp);
-	}
-	tmp = "REMOTEaddr=" + conf.getAdress();
-	env.push_back(tmp);
-	tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization:");
-	env.push_back(tmp);
-	tmp = "REMOTE_USER=" + search_value_vect(header, "Authorization:");
-	env.push_back(tmp);
-	tmp = "REQUEST_URI=" + web.getReq().getUrl();
-	if (!web.getReq().getQuery_string().empty())
-		tmp += "?" + web.getReq().getQuery_string();
-	env.push_back(tmp);
-	tmp = "SERVER_NAME=";
-	if(search_value_vect(header, "Host: ").size())
-	{
-		tmp += search_value_vect(header, "Host: ");
-	}
-	else
-	{
-		tmp += conf.getServName();
-	}
-	if (!tmp.empty() && !isalnum(tmp.back())) {
-        tmp.resize(tmp.size() - 1);
-    }
-	env.push_back(tmp);
-	tmp = "SERVER_PORT=" + conf.getPort();
-	env.push_back(tmp);
+	// tmp = "PATH_TRANSLATED=" + web.getReq().getUrl();
+	// env.push_back(tmp);
+	// tmp = "REMOTEaddr=" + conf.getAdress();
+	// env.push_back(tmp);
+	// tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization:");
+	// env.push_back(tmp);
+	// tmp = "REMOTE_USER=" + search_value_vect(header, "Authorization:");
+	// env.push_back(tmp);
+	// tmp = "REQUEST_URI=" + web.getReq().getUrl();
+	// if (!web.getReq().getQuery_string().empty())
+	// 	tmp += "?" + web.getReq().getQuery_string();
+	// env.push_back(tmp);
+	// tmp = "SERVER_NAME=";
+	// if(search_value_vect(header, "Host: ").size())
+	// {
+	// 	tmp += search_value_vect(header, "Host: ");
+	// }
+	// else
+	// {
+	// 	tmp += conf.getServName();
+	// }
+	// if (!tmp.empty() && !isalnum(tmp.back())) {
+    //     tmp.resize(tmp.size() - 1);
+    // }
+	//env.push_back(tmp);
+	// tmp = "SERVER_PORT=" + conf.getPort();
+	// env.push_back(tmp);
 	tmp = "SERVER_PROTOCOL=HTTP/1.1";
 	env.push_back(tmp);
-	tmp = "SERVER_SOFTWARE=Webserv/1.0";
-	env.push_back(tmp);
-	tmp = "PHPRC=" + web.getServ_Root() + "/www/php/include/php.ini";
-	env.push_back(tmp);
-	tmp = "HTTP_=" + web.getReq().getHeader();
+	// tmp = "SERVER_SOFTWARE=Webserv/1.0";
+	// env.push_back(tmp);
+	// tmp = "PHPRC=" + web.getServ_Root() + "/www/php/include/php.ini";
+	// env.push_back(tmp);
+	// tmp = "HTTP_=" + web.getReq().getHeader();
 	// if (tmp[tmp.size() - 1] == '\n' && tmp[tmp.size() - 2] == '\n')
-	env.push_back(tmp);
+	//env.push_back(tmp);
 }
 
 char**	Cgi::getEnvp()

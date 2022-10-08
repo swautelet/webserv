@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:10:21 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:16:27 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/07 03:13:09 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class webServ
         webServ();
         ~webServ();
         webServ(webServ & other);
-        webServ(std::string argv);
+        webServ(std::string argv, char **envp);
         webServ &operator=(webServ const & other);
         Conf & getConf();
         char** getEnv();

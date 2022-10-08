@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:17:01 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/08 06:47:43 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -489,4 +489,14 @@ std::string error_parse(int code)
         }
     }
     return "";
+}
+
+void print_tab(char **tab)
+{
+    int i = 0;
+    while(tab[i])
+    {
+        std::cout << "[i]-> " << i <<  tab[i] << std::endl;
+        i++;
+    }
 }
