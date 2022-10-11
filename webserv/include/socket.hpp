@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:31:43 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 18:54:45 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/11 01:47:46 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ class Socket
         std::string getIp() const;
         std::string getPort() const;
         sockaddr_in getServ_address() const;
-    private:
         sockaddr_in serv_address;
+    private:
         int fd;
         std::string ip;
         std::string port;

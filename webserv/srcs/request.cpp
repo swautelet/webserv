@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:19:35 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/11 01:39:40 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,21 +39,15 @@ Request& Request::operator=(const Request& other)
 	return *this;
 }
 
-int Request::getInfo(int connection)
+int Request::getInfo(int connection, std::string string)
 {
+    (void)connection;
+    std::cout << string << std::endl;
     clear_info();
     std::vector<std::string> req, req2;
-    std::string string;
-    int ret;
-    char buff[10000];
-    
-    if ((ret = recv(connection, buff, sizeof(buff), 0)) < 0)
-        printerr("Error with recv ...");
-	if (ret == 0)
-       return 0;
-    buff[ret] = '\0';
-    string = buff;
- 	splitstring(buff, req, '\n');
+
+    //string = buff;
+ 	splitstring(string, req, '\n');
 	splitstring(req[0], req2, ' ');
     if (!req2[0].compare("GET") || !req2[0].compare("POST") || !req2[0].compare("DELETE"))
         method = req2[0];
@@ -63,7 +57,7 @@ int Request::getInfo(int connection)
 	type_data.clear();
     _search_info(req, string);
     lseek(fileno(brutbody), 0, SEEK_SET);
-    char* temp = buff + header.size();
+    char* temp = (char*)body.data();
     write(fileno(brutbody), temp, atoi(content_length.c_str()));
     lseek(fileno(brutbody), 0, SEEK_SET);
     if (url.find("?") != std::string::npos)
@@ -93,6 +87,7 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
         }
     }
     content_length = search_value_vect(req, "Content-Length:");
+    content_type = search_value_vect(req, "Content-Type:");
     if (content_length.empty())
         content_length = "0";
     int index;
@@ -142,6 +137,11 @@ const std::vector<std::string>&	Request::getDataType() const
 std::string Request::getBody() const 
 {
     return body;
+}
+
+std::string Request::getContentType() const 
+{
+    return content_type;
 }
 
 std::string Request::getContentLength() const

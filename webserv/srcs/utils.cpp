@@ -185,7 +185,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
 				}
                 else if (!conf.getIndex().empty())
                     fullpath = index_path;
-            } 
+            }
         }
 		closedir(dir);
     }
@@ -230,6 +230,7 @@ std::string itoa(int a)
 int printerr(const char *str)
 {
     std::cerr << str << std::endl;
+    std::cout << strerror(errno) << std::endl;
     exit(1);
 }
 

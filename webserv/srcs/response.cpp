@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:41:03 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/08 17:28:28 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,7 +292,7 @@ int Response::setContentType(std::string fullpath)
 			content_type = "image/bmp";
 		else if (type == "ico")
 			content_type = "image/png";
-		else if (type == "php")
+		else if (type == "php" || type == "py")
         {
             content_type = "text/html";
 			return 1;

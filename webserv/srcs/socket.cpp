@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:33:26 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/24 15:37:57 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/11 01:40:36 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ void Socket::setup(int backlog, confData & conf)
     create_socket(conf);
     create_bind();
     listen_socket(backlog);
-std::cout << conf.getAdress() << std::endl;	
+    std::cout << conf.getAdress() << std::endl;	
     set_ip(conf.getAdress());
-std::cout << "soket initialized" << std::endl;
+    std::cout << "soket initialized" << std::endl;
     set_port(conf.getPort());
 }
 
@@ -74,6 +74,8 @@ int Socket::listen_socket(int max_queue)
 {
     if (listen(fd, max_queue) < 0)
         return printerr("Error with socket listening ...");
+    if ((fcntl(fd, F_SETFL, O_NONBLOCK)) < 0)
+        return printerr("Error with fcntl ...");
     return 1;
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:21:03 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:16:11 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/11 01:29:54 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <cstring>
+#include <fcntl.h>
 
 #define ERROR_403 "www/error/403.html"
 #define ERROR_404 "www/error/404.html"

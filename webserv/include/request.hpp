@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:47 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:18:45 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/08 18:22:10 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ class Request
 		Request& operator=(const Request& other);
         void _search_info(std::vector<std::string> req, std::string buff);
 
-        int getInfo(int connection);
+        int getInfo(int connection, std::string string);
         std::string getUrl() const;
+        std::string getContentType() const;
         std::string getBody() const;
         std::string getMethod() const;
         std::string getHeader() const;
@@ -47,6 +48,7 @@ class Request
         std::string content_length;
 		std::vector<std::string> type_data;
         std::string query_s;
+        std::string content_type;
 };
 
 #endif
