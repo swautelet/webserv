@@ -12,6 +12,8 @@
 
 #include "request.hpp"
 
+#define BUFF_SIZE 10000
+
 Request::Request()
 {
     brutbody = tmpfile();
@@ -53,12 +55,16 @@ int Request::getInfo(int connection, std::string string)
         method = req2[0];
     url = req2[1];
     version = req2[2];
-    version.resize(strlen(version.c_str()) - 1);
+    version.resize(version.size() - 1);
 	type_data.clear();
     _search_info(req, string);
     lseek(fileno(brutbody), 0, SEEK_SET);
     char* temp = (char*)body.data();
-    write(fileno(brutbody), temp, atoi(content_length.c_str()));
+    char* temp2 = to_char(content_length);
+    if (temp)
+        write(fileno(brutbody), temp, atoi(temp2));
+    std::cout << "i wrote : " << content_length << " char in brutbody !!!!!!!!!!!!!!!!!!!!" << std::endl;
+    delete[] temp2;
     lseek(fileno(brutbody), 0, SEEK_SET);
     if (url.find("?") != std::string::npos)
     {
@@ -80,6 +86,7 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
     for (unsigned long i = 0; i < req.size(); i++)
     {
         str = req[i];
+        str.resize(str.size() - 1);
         if (!str.substr(0, searched.size()).compare(searched))
         {
 			splitstring(str.substr(searched.size(), str.size()), type_data, ',');
@@ -90,6 +97,8 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
     content_type = search_value_vect(req, "Content-Type:");
     if (content_length.empty())
         content_length = "0";
+    else
+        content_length.resize(content_length.size() - 1);
     int index;
     while(buff.find("\n") != std::string::npos)
     {
@@ -180,4 +189,10 @@ void    Request::clean_header()
     header.resize(header.size() - decal);
     if (header[header.size() - 2] == '\n' && header[header.size() - 1] == '\n')
         header.resize(header.size() - 1);
+    // DEBUG SHOULD NEVER DISPLAY
+    for (unsigned long i = 0; i < header.size(); i++)
+    {
+        if (header[i] == '\r')
+            std::cout << "ERROR WITH HEADER CLEANING " << header.size() - i  << std::endl;
+    }
 }

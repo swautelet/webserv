@@ -261,7 +261,9 @@ int confData::parsing(std::string path)
 {
     std::ifstream fd;
     std::stringstream buff;
-    fd.open(path.c_str(), std::ifstream::in);
+    char* temp = to_char(path);
+    fd.open(temp, std::ifstream::in);
+    delete[] temp;
     if (!fd)
         printerr("Error with file opening ...");
     buff << fd.rdbuf();

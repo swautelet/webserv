@@ -195,7 +195,11 @@ void location::edit_info(std::string str, std::string info, std::vector<std::str
     if (!str.compare("error_page"))
         error_page = info;
     if (!str.compare("autoindex"))
-        autoindex = atoi(info.c_str());
+    {
+        char* temp = to_char(info);
+        autoindex = atoi(temp);
+        delete[] temp;
+    }
     if (!str.compare("index"))
         index = vec;
     if (!str.compare("body_size"))
