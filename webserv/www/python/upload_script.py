@@ -1,7 +1,9 @@
-import os
-fi = form['filename']
-if fi.filename:
-	# This code will strip the leading absolute path from your file-name
-	fil = os.path.basename(fi.filename)
-	# open for reading & writing the file into the server
-	open(fn, 'wb').write(fi.file.read())
+import requests
+dfile = open("datafile.txt", "rb")
+url = "http://httpbin.org/post"
+test_res = requests.post(url, files = {"form_field_name": dfile})
+if test_res.ok:
+    print(" File uploaded successfully ! ")
+    print(test_res.text)
+else:
+    print(" Please Upload again ! ")
