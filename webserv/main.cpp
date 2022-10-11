@@ -99,7 +99,7 @@ void engine(webServ & web, int connection, int addrlen)
             {
                 FD_ZERO(&fdread);
                 fdread = fddump;
-                usleep(2000);
+                // sleep(2);
                 std::cout << "Select ...\n";
                 if ((status = select (connection + 1, &fdread, NULL, NULL, &tv)) < 0)
                     printerr("BIG ERROR ...");
@@ -159,7 +159,7 @@ int main(int argc, char **argv, char **envp)
     signal(SIGINT, &ctrl_c);
     while(1)
     {
-        usleep(20);
+        // sleep(2);
         fd_update();
         if ((retval = select(5 + 1, &copyset, NULL, NULL, &tv)) == -1)
             printerr("Error with select ...");

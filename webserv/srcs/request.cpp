@@ -44,7 +44,7 @@ Request& Request::operator=(const Request& other)
 int Request::getInfo(int connection, std::string string)
 {
     (void)connection;
-    std::cout << string << std::endl;
+    std::cout << "|" << string << "|" << std::endl;
     clear_info();
     std::vector<std::string> req, req2;
 
@@ -59,7 +59,9 @@ int Request::getInfo(int connection, std::string string)
 	type_data.clear();
     _search_info(req, string);
     lseek(fileno(brutbody), 0, SEEK_SET);
-    char* temp = (char*)body.data();
+    std::cout  << " ici =====================================" << std::endl << body << std::endl;
+    char* temp = (char*)string.data();
+    temp += string.find("\r\n\r\n") + 4;
     char* temp2 = to_char(content_length);
     if (temp)
         write(fileno(brutbody), temp, atoi(temp2));
