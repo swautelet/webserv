@@ -1,6 +1,7 @@
 <?php
-
-print_r($_SERVER);
+// phpinfo();
+// print_r($_GET);
+// print_r($_POST);
 if (isset($_GET['submit']) && $_SERVER["REQUEST_METHOD"] == "GET") {
     echo '<h3>Form GET Method</h3>';
     $lastname = $_GET['lastname'];

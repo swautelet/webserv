@@ -12,6 +12,8 @@
 
 #include "request.hpp"
 
+#define BUFF_SIZE 10000
+
 Request::Request()
 {
     brutbody = tmpfile();
@@ -45,7 +47,7 @@ int Request::getInfo(int connection)
     std::vector<std::string> req, req2;
     std::string string;
     int ret;
-    char buff[10000];
+    char buff[BUFF_SIZE];
     
     if ((ret = recv(connection, buff, sizeof(buff), 0)) < 0)
         printerr("Error with recv ...");
@@ -59,15 +61,25 @@ int Request::getInfo(int connection)
         method = req2[0];
     url = req2[1];
     version = req2[2];
-    char* temp = to_char(version);
-    version.resize(strlen(temp) - 1);
-    delete[]temp;
+    version.resize(version.size() - 1);
 	type_data.clear();
     _search_info(req, string);
-    lseek(fileno(brutbody), 0, SEEK_SET);
-    temp = buff + header.size();
+    close(getBrutbody_fileno());
+    brutbody = tmpfile();
+
+    char* temp = NULL;
+    for (unsigned i = 3; i < BUFF_SIZE; i++)
+    {
+        if (buff[i] == '\n' && buff[i - 1] == '\r' && buff[i - 2] == '\n' && buff[i - 3] == '\r')
+        {
+            temp = &buff[i + 1];
+            break ;
+        }
+    }
     char* temp2 = to_char(content_length);
-    write(fileno(brutbody), temp, atoi(temp2));
+    if (temp)
+        write(fileno(brutbody), temp, atoi(temp2));
+    std::cout << "i wrote : " << content_length << " char in brutbody !!!!!!!!!!!!!!!!!!!!" << std::endl;
     delete[] temp2;
     lseek(fileno(brutbody), 0, SEEK_SET);
     if (url.find("?") != std::string::npos)
@@ -90,6 +102,7 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
     for (unsigned long i = 0; i < req.size(); i++)
     {
         str = req[i];
+        str.resize(str.size() - 1);
         if (!str.substr(0, searched.size()).compare(searched))
         {
 			splitstring(str.substr(searched.size(), str.size()), type_data, ',');
@@ -99,6 +112,8 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
     content_length = search_value_vect(req, "Content-Length:");
     if (content_length.empty())
         content_length = "0";
+    else
+        content_length.resize(content_length.size() - 1);
     int index;
     while(buff.find("\n") != std::string::npos)
     {

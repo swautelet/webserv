@@ -542,7 +542,7 @@ void print_tab(char **tab)
     int i = 0;
     while(tab[i])
     {
-        std::cout << "[i]-> " << i <<  tab[i] << std::endl;
+        std::cout << "[" << i << "]-> " <<  tab[i] << std::endl;
         i++;
     }
 }

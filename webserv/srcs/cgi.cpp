@@ -11,10 +11,14 @@ std::string	Cgi::start_script(webServ& web)
 	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
 
-	print_tab(argtmp);
-	print_tab(envtmp);
 	pipe(outpip);
-//	lseek(fileno(infile), 0, SEEK_SET);
+	char buffer[10];
+	int ret;
+	while ((ret = read(web.getReq().getBrutbody_fileno(), buffer, 10)) > 0)
+	{
+		write(1, buffer, ret);
+	}
+	lseek(web.getReq().getBrutbody_fileno(), 0, SEEK_SET);
 	id = fork();
 	if (id == -1)
 	{
@@ -24,9 +28,13 @@ std::string	Cgi::start_script(webServ& web)
 	if (id == 0)
 	{
 		close (outpip[0]);
+		std::cout << "starting execve with : " << getPath() << std::endl;
+		print_tab(argtmp);
+		print_tab(envtmp);
 		dup2(outpip[1], STDOUT_FILENO);
 		dup2(web.getReq().getBrutbody_fileno(), STDIN_FILENO);
 		char* temp = to_char(getPath());
+		
 		if (execve(temp, argtmp, envtmp) < 0)
 		{
 			delete[] temp;
@@ -40,10 +48,9 @@ std::string	Cgi::start_script(webServ& web)
 	else
 	{
 		// std::cout << "waiting for script" << std::endl;
-		waitpid(id, &status, 0);
+		// waitpid(id, &status, 0);
 		close(outpip[1]);
 		//  std::cout << "php script finished with :" << status << std::endl;
-//		lseek(fileno(outfile), 0, SEEK_SET);
 		char buff[11];
 		buff[10] = '\0';
 		int size;
@@ -113,7 +120,7 @@ void	Cgi::set_transla_path(char** envp)
 			break;
 		}
 	}
-	find_transla_path("php", "php", paths);
+	find_transla_path("php-cgi", "php", paths);
 	find_transla_path("python3", "py", paths);
 }
 
@@ -126,7 +133,6 @@ void	Cgi::find_transla_path(std::string scri, std::string ext, std::vector<std::
 		if (!access(temp, X_OK))
 		{
 			delete[] temp;
-			std::cout << "i set :" << ext << " with :" << tmp << std::endl << std::endl;
 			pathmap[ext] = tmp;
 			std::cout << "i initialized script :" << ext << " with :" << tmp << std::endl;
 			break ;
@@ -141,7 +147,7 @@ char**	Cgi::getArgv()
 	res[0] = new char[this->getPath().size() + 1];
 	res[1] = new char[this->scripath.size() + 1];
 	res[2] = NULL;
-	std::string name = this->getPath().substr(getPath().rfind('/') + 1, getPath().size());
+	std::string name = this->getPath();
 	for (unsigned long i = 0; i < name.size(); i++)
 	{
 		res[0][i] = name[i];
@@ -210,9 +216,9 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 		if (!tmp.empty() && !isalnum(tmp.back())) {
    	     tmp.resize(tmp.size() - 1);
    		}
+		env.push_back(tmp);
 	}
 	//  + itoa(web.getReq().getQuery_string().size());
-	env.push_back(tmp);
 	tmp = search_value_vect(header, "Content-Type:");
 	if (tmp.size())
 	{
@@ -259,8 +265,6 @@ void	Cgi::setEnv(webServ& web, confData& conf)
         tmp.resize(tmp.size() - 1);
     }
 	//  + itoa(web.getReq().getQuery_string().size());
-	env.push_back(tmp);
-	tmp = "CONTENT_TYPE=application/x-www-form-urlencoded";
 	env.push_back(tmp);
 	tmp = "PATH_INFO=" + web.getReq().getUrl();
 	env.push_back(tmp);

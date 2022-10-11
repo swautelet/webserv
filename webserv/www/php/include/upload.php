@@ -1,26 +1,26 @@
 <?php
 // phpinfo();
 // var_dump($_POST);
-if (strcmp($_ENV["REQUEST_METHOD"], "POST") == 0)
-{
-    echo '</br>detected post</br>';
-    parse_str($_ENV["QUERY_STRING"], $_POST);
-    echo '</br>POST </br>';
-    print_r($_POST);
-}
-else if (strcmp($_ENV["REQUEST_METHOD"], "GET") == 0)
-{
-     echo '</br>detected get</br>';
-    parse_str($_ENV["QUERY_STRING"], $_GET);
-    echo '</br>GET </br>';
-    print_r($_GET);
-}
-else
-{
-  echo '</br>detected nothing</br>';
-}
-echo '</br>ENV </br>';
-print_r($_ENV);
+// if (strcmp($_ENV["REQUEST_METHOD"], "POST") == 0)
+// {
+//     echo '</br>detected post</br>';
+//     parse_str($_ENV["QUERY_STRING"], $_POST);
+//     echo '</br>POST </br>';
+//     print_r($_POST);
+// }
+// else if (strcmp($_ENV["REQUEST_METHOD"], "GET") == 0)
+// {
+//      echo '</br>detected get</br>';
+//     parse_str($_ENV["QUERY_STRING"], $_GET);
+//     echo '</br>GET </br>';
+//     print_r($_GET);
+// }
+// else
+// {
+//   echo '</br>detected nothing</br>';
+// }
+echo '</br>POST </br>';
+print_r($_POST);
 echo'</br>SERVER </br>';
 print_r($_SERVER);
 echo'</br>FILE </br>';
@@ -38,7 +38,7 @@ echo '</br> </br>';
 $target_dir = "www/upload/";
 $target_file = $target_dir . 'test.png';
 echo $target_file;
-file_put_contents($target_file, STDIN);
+// file_put_contents($target_file, STDIN);
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image
