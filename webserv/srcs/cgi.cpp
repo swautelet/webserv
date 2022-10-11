@@ -10,12 +10,9 @@ std::string	Cgi::start_script(webServ& web)
 	int outpip[2];
 	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
-/*	std::cout << "compared with real table ---------------------------" << std::endl;
-	for (int i = 0; envtmp[i]; i++)
-	{
-		std::cout << envtmp[i] << std::endl;
-	}*/
-	// std::cout << " i wrote this :---------------------------------------------------------------- " << std::endl << body << std::endl;
+
+	print_tab(argtmp);
+	print_tab(envtmp);
 	pipe(outpip);
 //	lseek(fileno(infile), 0, SEEK_SET);
 	id = fork();
@@ -188,7 +185,6 @@ void	Cgi::setFullpath(webServ& web,confData& conf)
 	if (locroot.size() > 0 && locroot[0] == '.')
 		locroot = locroot.substr(1, locroot.size());
 	this->scripath = web.getServ_Root() + locroot + temp;
-	std::cout << "i initialized scripath with :" << scripath << std::endl;
 }
 
 void	Cgi::setEnv(webServ& web, confData& conf)
@@ -200,10 +196,10 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 //	std::cout << "body req is :" << std::endl << web.getReq().getBody() << std::endl;
 	std::string tmp = "REDIRECT_STATUS=200";
 	env.push_back(tmp);
-	tmp = "GATEWAY_INTERFACE=CGI";
+	tmp = "GATEWAY_INTERFACE=CGI/1.1";
 	env.push_back(tmp);
-	tmp = "SCRIPT_NAME=" + this->scripath.substr(this->scripath.rfind('/') + 1, this->scripath.size());
-	env.push_back(tmp);
+	// tmp = "SCRIPT_NAME=" + this->scripath.substr(this->scripath.rfind('/') + 1, this->scripath.size());
+	// env.push_back(tmp);
 	tmp = "SCRIPT_FILENAME=" + this->scripath;
 	env.push_back(tmp);
 	tmp = "REQUEST_METHOD=" + web.getReq().getMethod();
@@ -231,6 +227,7 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	if (!web.getReq().getQuery_string().empty())
 	{
+		std::cout << "GET" << std::endl;
 		tmp = "QUERY_STRING=" + web.getReq().getQuery_string();
 		env.push_back(tmp);
 	}
@@ -261,9 +258,39 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	if (!tmp.empty() && !isalnum(tmp.back())) {
         tmp.resize(tmp.size() - 1);
     }
+	//  + itoa(web.getReq().getQuery_string().size());
 	env.push_back(tmp);
-	tmp = "SERVER_PORT=" + conf.getPort();
+	tmp = "CONTENT_TYPE=application/x-www-form-urlencoded";
 	env.push_back(tmp);
+	tmp = "PATH_INFO=" + web.getReq().getUrl();
+	env.push_back(tmp);
+	// tmp = "PATH_TRANSLATED=" + web.getReq().getUrl();
+	// env.push_back(tmp);
+	// tmp = "REMOTEaddr=" + conf.getAdress();
+	// env.push_back(tmp);
+	// tmp = "REMOTE_IDENT=" + search_value_vect(header, "Authorization:");
+	// env.push_back(tmp);
+	// tmp = "REMOTE_USER=" + search_value_vect(header, "Authorization:");
+	// env.push_back(tmp);
+	// tmp = "REQUEST_URI=" + web.getReq().getUrl();
+	// if (!web.getReq().getQuery_string().empty())
+	// 	tmp += "?" + web.getReq().getQuery_string();
+	// env.push_back(tmp);
+	// tmp = "SERVER_NAME=";
+	// if(search_value_vect(header, "Host: ").size())
+	// {
+	// 	tmp += search_value_vect(header, "Host: ");
+	// }
+	// else
+	// {
+	// 	tmp += conf.getServName();
+	// }
+	// if (!tmp.empty() && !isalnum(tmp.back())) {
+    //     tmp.resize(tmp.size() - 1);
+    // }
+	//env.push_back(tmp);
+	// tmp = "SERVER_PORT=" + conf.getPort();
+	// env.push_back(tmp);
 	tmp = "SERVER_PROTOCOL=HTTP/1.1";
 	env.push_back(tmp);
 	tmp = "SERVER_SOFTWARE=Webserv/1.0";

@@ -1,6 +1,5 @@
 <?php
 
-
 if (isset($_GET['submit'])) {
     echo '<h3>Form GET Method</h3>';
     $lastname = $_GET['lastname'];

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 18:43:26 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/27 19:39:38 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/07 03:12:59 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ webServ::webServ()
 	max_body_size = 0;
 }
 
-webServ::webServ(std::string argv)
+webServ::webServ(std::string argv, char **envp)
 {
 	conf = new Conf;
 	req = new Request;
@@ -30,9 +30,11 @@ webServ::webServ(std::string argv)
 	indexing = new Autodex;
 	_cgi = new Cgi;
 	max_body_size = 0;
+	this->env = envp;
 
     conf->parsing(argv);
     sock.reserve(conf->getNbrServer());
+	
 	std::cout << "Nombre de server = " << conf->getNbrServer() << std::endl;
 	for (unsigned long i = 0; i < conf->getNbrServer(); i++)
 	{
@@ -137,4 +139,9 @@ void webServ::cleave_info()
 {
     max_body_size = 0;
     req->clear_info();
+}
+
+char ** webServ::getEnv()
+{
+	return env;
 }
