@@ -58,7 +58,6 @@ int Request::getInfo(int connection, std::string string)
     version.resize(version.size() - 1);
 	type_data.clear();
     _search_info(req, string);
-    lseek(fileno(brutbody), 0, SEEK_SET);
     std::cout  << " ici =====================================" << std::endl << body << std::endl;
     char* temp = NULL;
     if (string.find("\r\n\r\n") != std::string::npos)
@@ -69,9 +68,7 @@ int Request::getInfo(int connection, std::string string)
     // char* temp2 = to_char(content_length);
     if (temp)
         Write_Brutbody(temp, string.size() - (string.find("\r\n\r\n") + 4));
-    std::cout << "i wrote : " << content_length << " char in brutbody !!!!!!!!!!!!!!!!!!!!" << std::endl;
     // delete[] temp2;
-    lseek(fileno(brutbody), 0, SEEK_SET);
     if (url.find("?") != std::string::npos)
     {
         query_s = url.substr(url.find("?") + 1, url.size());
@@ -172,6 +169,8 @@ void Request::clear_info()
     version = "";
     query_s = "";
     wrote = 0;
+    close(getBrutbody_fileno());
+    brutbody = tmpfile();
 }
 
 std::string Request::getQuery_string()
