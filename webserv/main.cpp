@@ -100,7 +100,7 @@ void engine(webServ & web, int connection, int addrlen)
                 FD_ZERO(&fdread);
                 fdread = fddump;
                 // sleep(2);
-                std::cout << "Select ...\n";
+                // std::cout << "Select ...\n";
                 if ((status = select (connection + 1, &fdread, NULL, NULL, &tv)) < 0)
                     printerr("BIG ERROR ...");
             }
@@ -115,6 +115,12 @@ void engine(webServ & web, int connection, int addrlen)
             if (!str.empty())
             {
                 web.getReq().getInfo(connection, str);
+                while (web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
+                {
+                    ret = recv(connection, buffer, sizeof(buffer) - 1, 0);
+                    web.getReq().Write_Brutbody(buffer, ret);
+                }
+                std::cout << "Trying to get the body, wrote is  : " << web.getReq().getWrote() << std::endl;
                 // std::cout << "Info done ..." << std::endl;
                 web.getRes().find_method(web, i);
                 web.getRes().concat_response(web);

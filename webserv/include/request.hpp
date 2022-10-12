@@ -33,6 +33,9 @@ class Request
         std::string getHeader() const;
         std::string getVersion() const;
         std::string getContentLength() const;
+        int    getWrote() const;
+        void        add_Wrote(int read);
+        void        Write_Brutbody(char* buff, int size);
 		const std::vector<std::string>& getDataType() const;
         std::string getQuery_string();
         int getBrutbody_fileno();
@@ -49,6 +52,7 @@ class Request
 		std::vector<std::string> type_data;
         std::string query_s;
         std::string content_type;
+        long int wrote;
 };
 
 #endif

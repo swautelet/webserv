@@ -60,13 +60,17 @@ int Request::getInfo(int connection, std::string string)
     _search_info(req, string);
     lseek(fileno(brutbody), 0, SEEK_SET);
     std::cout  << " ici =====================================" << std::endl << body << std::endl;
-    char* temp = (char*)string.data();
-    temp += string.find("\r\n\r\n") + 4;
-    char* temp2 = to_char(content_length);
+    char* temp = NULL;
+    if (string.find("\r\n\r\n") != std::string::npos)
+    {
+        temp = (char*)string.data();
+        temp += string.find("\r\n\r\n") + 4;
+    }
+    // char* temp2 = to_char(content_length);
     if (temp)
-        write(fileno(brutbody), temp, atoi(temp2));
+        Write_Brutbody(temp, string.size() - (string.find("\r\n\r\n") + 4));
     std::cout << "i wrote : " << content_length << " char in brutbody !!!!!!!!!!!!!!!!!!!!" << std::endl;
-    delete[] temp2;
+    // delete[] temp2;
     lseek(fileno(brutbody), 0, SEEK_SET);
     if (url.find("?") != std::string::npos)
     {
@@ -167,6 +171,7 @@ void Request::clear_info()
     body = "";
     version = "";
     query_s = "";
+    wrote = 0;
 }
 
 std::string Request::getQuery_string()
@@ -197,4 +202,21 @@ void    Request::clean_header()
         if (header[i] == '\r')
             std::cout << "ERROR WITH HEADER CLEANING " << header.size() - i  << std::endl;
     }
+}
+
+int    Request::getWrote() const
+{
+    return wrote;
+}
+
+void        Request::add_Wrote(int read)
+{
+    if (read > 0)
+        wrote += read;
+}
+
+void        Request::Write_Brutbody(char* buff, int size)
+{
+    write(getBrutbody_fileno(), buff, size);
+    add_Wrote(size);
 }

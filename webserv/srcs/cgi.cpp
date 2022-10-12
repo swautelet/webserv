@@ -1,6 +1,6 @@
 #include "cgi.hpp"
 
-
+#define BUFF_SIZE 1000
 std::string	Cgi::start_script(webServ& web)
 {
 	std::string rep;
@@ -14,15 +14,16 @@ std::string	Cgi::start_script(webServ& web)
 	char** envtmp = getEnvp();
 	char *exec_path;
 	(void)exec_path;
-	std::cout << "This :" << web.getCgi().getPath() << std::endl;
-
+	
 	pipe(outpip);
 	char buffer[10];
 	int ret;
+	std::cout << "This :" << web.getCgi().getPath() << " received this brutbody::::::::::::::::::::::::::::::::::::::::::::::::::"<< std::endl;
 	while ((ret = read(web.getReq().getBrutbody_fileno(), buffer, 10)) > 0)
 	{
 		write(1, buffer, ret);
 	}
+	std::cout << "finish ---------------------------------------" << std::endl;
 	lseek(web.getReq().getBrutbody_fileno(), 0, SEEK_SET);
 	id = fork();
 	if (id == -1)
@@ -33,9 +34,9 @@ std::string	Cgi::start_script(webServ& web)
 	if (id == 0)
 	{
 		close (outpip[0]);
-		std::cout << "starting execve with : " << getPath() << std::endl;
-		print_tab(argtmp);
-		print_tab(envtmp);
+		// std::cout << "starting execve with : " << getPath() << std::endl;
+		// print_tab(argtmp);
+		// print_tab(envtmp);
 		dup2(outpip[1], STDOUT_FILENO);
 		dup2(web.getReq().getBrutbody_fileno(), STDIN_FILENO);
 		char* temp = to_char(getPath());
@@ -56,12 +57,12 @@ std::string	Cgi::start_script(webServ& web)
 		// waitpid(id, &status, 0);
 		close(outpip[1]);
 		//  std::cout << "php script finished with :" << status << std::endl;
-		char buff[1001];
-		buff[1000] = '\0';
+		char buff[BUFF_SIZE + 1];
+		buff[BUFF_SIZE] = '\0';
 		int size;
-		while((size = read(outpip[0], buff, 1000)) > 0)
+		while((size = read(outpip[0], buff, BUFF_SIZE)) > 0)
 		{
-			for (int i = size; i < 11; i++)
+			for (int i = size; i <= BUFF_SIZE; i++)
 				buff[i] = '\0';
 			rep += buff;
 		}
@@ -69,7 +70,7 @@ std::string	Cgi::start_script(webServ& web)
 		// std::cout << "waiting for php " << std::endl;
 		// wait(&status);
 	}
-	std::cout << "php script answered with ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << rep << std::endl << "-------------------------------------------------------------------------------------------" << std::endl;
+	// std::cout << "php script answered with ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << rep << std::endl << "-------------------------------------------------------------------------------------------" << std::endl;
 	close(outpip[0]);
 //	fclose(infile);
 //	fclose(outfile);
@@ -83,12 +84,12 @@ void Cgi::run_api(webServ& web, confData& conf)
 	web.getCgi().setFullpath(web, conf);
 	web.getCgi().setEnv(web, conf);
 	body = web.getReq().getBody();
-	std::cout << "----------------------debug env------------------" << std::endl;
-	for (unsigned long i = 0; i < env.size(); i++)
-	{
-		std::cout << "|" << env[i] << "|" << std::endl;
-	}
-	std::cout << "--------------------------------------- finish --------------------------------" << std::endl;
+	// std::cout << "----------------------debug env------------------" << std::endl;
+	// for (unsigned long i = 0; i < env.size(); i++)
+	// {
+	// 	std::cout << "|" << env[i] << "|" << std::endl;
+	// }
+	// std::cout << "--------------------------------------- finish --------------------------------" << std::endl;
 	web.getRes().setBody(web.getCgi().start_script(web));
 	web.getRes().setContentType();
 	web.getRes().setStatus(200);
@@ -96,7 +97,6 @@ void Cgi::run_api(webServ& web, confData& conf)
 
 Cgi::Cgi()
 {
-	src = "www/post/name.txt";
 	// infile = tmpfile();
 //	this->this->scripath = new std::vector<std::string>;
 }
