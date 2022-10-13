@@ -17,6 +17,8 @@ class Cgi{
 		void	run_api(webServ& web, confData& conf);
 		char**	getArgv();
 		char**	getEnvp();
+		int		getCGIBool();
+		void	setCGIBool(int i);
 		void	setFullpath(webServ& web, confData& conf);
 		std::string	start_script(webServ& web);
 		void	set_transla_path(char** envp);
@@ -28,6 +30,7 @@ class Cgi{
 		std::vector<std::string> env;
 		std::string	scripath;
 		std::string body;
+		int cgi_on;
 };
 
 #endif

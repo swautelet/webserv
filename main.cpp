@@ -117,20 +117,25 @@ void engine(webServ & web, int connection, int addrlen)
             {
                 web.getReq().getInfo(connection, str);
                 std::string tmp = buffer;
-                int sizeheader = tmp.find("\r\n\r\n");
+                int sizeheader = tmp.find("\r\n\r\n") + 4;
                 web.getReq().Write_Brutbody(buffer + sizeheader, ret - sizeheader);
                 while (web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
                 {
-                    std::cout << "writing... wrote is : " << web.getReq().getWrote() << " and content length is : " << atoi(web.getReq().getContentLength().c_str()) << std::endl;
+                    //std::cout << "writing... wrote is : " << web.getReq().getWrote() << " and content length is : " << atoi(web.getReq().getContentLength().c_str()) << std::endl;
                     ret = recv(connection, buffer, sizeof(buffer) - 1, 0);
                     web.getReq().Write_Brutbody(buffer, ret);
                 }
-                std::cout << "Trying to get the body, wrote is  : " << web.getReq().getWrote() << std::endl;
+                //std::cout << "Trying to get the body, wrote is  : " << web.getReq().getWrote() << std::endl;
                 // std::cout << "Info done ..." << std::endl;
                 web.getRes().find_method(web, i);
-                web.getRes().concat_response(web);
+                if(web.getCgi().getCGIBool())
+                    web.getRes().concat_response(web);
+                else
+                    write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
                 write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
+                web.getCgi().setCGIBool(0);
                 str = "";
+
                 // std::cout << "uh" << std::endl;
             }
             close(connection);

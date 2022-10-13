@@ -83,6 +83,7 @@ std::string	Cgi::start_script(webServ& web)
 
 void Cgi::run_api(webServ& web, confData& conf)
 {
+	setCGIBool(1);
 	web.getCgi().setFullpath(web, conf);
 	web.getCgi().setEnv(web, conf);
 	body = web.getReq().getBody();
@@ -336,4 +337,14 @@ char**	Cgi::getEnvp()
 		}
 	}
 	return res;
+}
+
+int Cgi::getCGIBool()
+{
+	return cgi_on;
+}
+
+void Cgi::setCGIBool(int i)
+{
+	cgi_on = i;
 }
