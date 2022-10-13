@@ -74,8 +74,10 @@ std::string	Cgi::start_script(webServ& web)
 	close(outpip[0]);
 //	fclose(infile);
 //	fclose(outfile);
-	free_table(argtmp);
-	free_table(envtmp);
+	// free_table(argtmp);
+	// free_table(envtmp);
+	delete[] argtmp;
+	delete[] envtmp;
 	return rep;
 }
 

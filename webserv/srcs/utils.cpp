@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/08 06:47:43 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/13 03:13:04 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -438,6 +438,8 @@ char** vectstring_tochartable(const std::vector<std::string> vect)
 
 void	free_table(char** table)
 {
+    if (!table)
+        return ;
 	for (int i = 0; table[i]; i++)
 		delete (table[i]);
 	delete (table);
