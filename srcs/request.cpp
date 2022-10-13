@@ -179,7 +179,10 @@ std::string Request::getQuery_string()
 }
 int Request::getBrutbody_fileno()
 {
-    return fileno(brutbody);
+    int fd = fileno(brutbody);
+    if (fd == -1)
+        exit(0);
+    return fd;
 }
 
 void    Request::clean_header()

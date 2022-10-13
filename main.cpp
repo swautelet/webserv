@@ -148,7 +148,7 @@ int main(int argc, char **argv, char **envp)
     web.getCgi().set_transla_path(envp);
     int connection = 0;
     int addrlen = 0;
-    int backlog = 10;
+    int backlog = 128;
     int retval = 0;
     if (argc != 2)
         printerr("Usage : ./Webserv [conf file]");
