@@ -1,5 +1,5 @@
 <?php
-$uploaddir = 'uploads/';
+$uploaddir = "/mnt/c/Users/Shadow/Desktop/webserv/webserv/www/uploads/";
 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
 
 echo '<pre>';

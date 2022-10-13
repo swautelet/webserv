@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/11 01:56:07 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/13 04:47:20 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void engine(webServ & web, int connection, int addrlen)
         {
             int status = 0;
             addrlen = sizeof(web.getSock()[i].serv_address);
+            std::cout << "Accept ... " << std::endl;
             if ((connection = accept(web.getSock()[i].getFd(), (struct sockaddr*)&web.getSock()[i].serv_address, (socklen_t*)&addrlen)) < 0)
                 printerr("cannot connect ...");
             if ((fcntl(connection, F_SETFL, O_NONBLOCK)) < 0)
@@ -117,6 +118,7 @@ void engine(webServ & web, int connection, int addrlen)
                 web.getReq().getInfo(connection, str);
                 while (web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
                 {
+                    std::cout << "writing..." << std::endl;
                     ret = recv(connection, buffer, sizeof(buffer) - 1, 0);
                     web.getReq().Write_Brutbody(buffer, ret);
                 }
