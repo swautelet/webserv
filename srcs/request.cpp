@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/11 01:39:40 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/13 19:15:46 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,15 @@ int Request::getInfo(int connection, std::string string)
 	type_data.clear();
     _search_info(req, string);
     std::cout  << " ici =====================================" << std::endl << body << std::endl;
-    char* temp = NULL;
-    if (string.find("\r\n\r\n") != std::string::npos)
-    {
-        temp = (char*)string.data();
-        temp += string.find("\r\n\r\n") + 4;
-    }
+    // char* temp = NULL;
+    // if (string.find("\r\n\r\n") != std::string::npos)
+    // {
+    //     temp = (char*)string.data();
+    //     temp += string.find("\r\n\r\n") + 4;
+    // }
     // char* temp2 = to_char(content_length);
-    if (temp)
-        Write_Brutbody(temp, string.size() - (string.find("\r\n\r\n") + 4));
+    // if (temp)
+    //     Write_Brutbody(temp, string.size() - (string.find("\r\n\r\n") + 4));
     // delete[] temp2;
     if (url.find("?") != std::string::npos)
     {

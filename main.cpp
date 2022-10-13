@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/13 04:47:20 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/13 19:19:57 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,12 @@ void engine(webServ & web, int connection, int addrlen)
             if (!str.empty())
             {
                 web.getReq().getInfo(connection, str);
+                std::string tmp = buffer;
+                int sizeheader = tmp.find("\r\n\r\n");
+                web.getReq().Write_Brutbody(buffer + sizeheader, ret - sizeheader);
                 while (web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
                 {
-                    std::cout << "writing..." << std::endl;
+                    std::cout << "writing... wrote is : " << web.getReq().getWrote() << " and content length is : " << atoi(web.getReq().getContentLength().c_str()) << std::endl;
                     ret = recv(connection, buffer, sizeof(buffer) - 1, 0);
                     web.getReq().Write_Brutbody(buffer, ret);
                 }
