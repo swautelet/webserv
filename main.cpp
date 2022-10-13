@@ -29,15 +29,19 @@ void setup(webServ & web, int backlog)
     for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         int no = 0;
+        std::string tmp = web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort() + " " + web.getConf().getConflist(i).getServName();
+        tmp = tmp.substr(0, tmp.find(" "));
         for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
-            if (!it->compare(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort()))
+            if (!it->substr(0, it->find(" ")).compare(tmp))
                 no = 1;
         if (!no)
         {
             fdlist.push_back(web.getSock()[i].getFd());
             web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
             FD_SET(web.getSock()[i].getFd(), &fdset);
-            ip_vec.push_back(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort());  
+            std::cout << "!\n";
+            ip_vec.push_back(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort() + " " + web.getConf().getConflist(i).getServName());  
+            std::cout << web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort() + " " + web.getConf().getConflist(i).getServName() << std::endl;
         }
     }
     for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)

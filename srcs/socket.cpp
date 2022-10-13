@@ -41,12 +41,12 @@ Socket::Socket(const Socket & other)
 
 void Socket::setup(int backlog, confData & conf)
 {
+    std::cout << "ici ------------------------------------------------------------------ " <<conf.getAdress() << ":"<< conf.getPort()<<std::endl;	
+    std::cout << "soket initialized" << std::endl;
     create_socket(conf);
     create_bind();
     listen_socket(backlog);
-    std::cout << conf.getAdress() << std::endl;	
     set_ip(conf.getAdress());
-    std::cout << "soket initialized" << std::endl;
     set_port(conf.getPort());
 }
 
