@@ -5,24 +5,16 @@ std::string	Cgi::start_script(webServ& web)
 {
 	std::string rep;
 	int id;
-//	std::FILE *infile = tmpfile();
-//	std::FILE *outfile = tmpfile();
-	int status;
-	(void)status;
 	int outpip[2];
 	char** argtmp = getArgv();
 	char** envtmp = getEnvp();
-	char *exec_path;
-	(void)exec_path;
 	
 	pipe(outpip);
-	char buffer[10];
+	char buffer[10000];
 	int ret;
 	std::cout << "This :" << web.getCgi().getPath() << " received this brutbody::::::::::::::::::::::::::::::::::::::::::::::::::"<< std::endl;
-	while ((ret = read(web.getReq().getBrutbody_fileno(), buffer, 10)) > 0)
-	{
+	while ((ret = read(web.getReq().getBrutbody_fileno(), buffer, 10000)) > 0)
 		write(1, buffer, ret);
-	}
 	std::cout << "finish ---------------------------------------" << std::endl;
 	lseek(web.getReq().getBrutbody_fileno(), 0, SEEK_SET);
 	id = fork();
@@ -34,9 +26,6 @@ std::string	Cgi::start_script(webServ& web)
 	if (id == 0)
 	{
 		close (outpip[0]);
-		// std::cout << "starting execve with : " << getPath() << std::endl;
-		// print_tab(argtmp);
-		// print_tab(envtmp);
 		dup2(outpip[1], STDOUT_FILENO);
 		dup2(web.getReq().getBrutbody_fileno(), STDIN_FILENO);
 		char* temp = to_char(getPath());
@@ -46,7 +35,6 @@ std::string	Cgi::start_script(webServ& web)
 			delete[] temp;
 			std::cout << "Script couldn't be loaded with this->script : |" << argtmp[1] << "|" << std::endl;
 			std::cout << "and this->exe :" << getPath() << std::endl;
-			// std::cout << "errno : " << errno << std::endl;
 			perror("EXECVE ERROR :");
 			exit(10);
 		}
@@ -87,21 +75,12 @@ void Cgi::run_api(webServ& web, confData& conf)
 	web.getCgi().setFullpath(web, conf);
 	web.getCgi().setEnv(web, conf);
 	body = web.getReq().getBody();
-	// std::cout << "----------------------debug env------------------" << std::endl;
-	// for (unsigned long i = 0; i < env.size(); i++)
-	// {
-	// 	std::cout << "|" << env[i] << "|" << std::endl;
-	// }
-	// std::cout << "--------------------------------------- finish --------------------------------" << std::endl;
 	web.getRes().setBody(web.getCgi().start_script(web));
-	// web.getRes().setContentType();
-	// web.getRes().setStatus(200);
 }
 
 Cgi::Cgi()
 {
-	// infile = tmpfile();
-//	this->this->scripath = new std::vector<std::string>;
+	cgi_on = 0;
 }
 
 Cgi::~Cgi()

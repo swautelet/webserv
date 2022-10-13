@@ -276,7 +276,7 @@ int Response::setContentType(std::string fullpath)
 	if (fullpath.rfind('.') != std::string::npos)
 	{
 		std::string type = fullpath.substr(fullpath.rfind(".") + 1, fullpath.size());
-		if (type == "html")
+		if (type == "html" || type == "htm")
 			content_type = "text/html";
         else if (type == "gif")
 			content_type = "image/gif";
@@ -402,7 +402,7 @@ void Response::concat_response(webServ & web)
 			full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Length: " + content_length + body;
 	}
     web.del_redir();
-	// std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
+	std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
 }
 
 std::string Response::getResponse() const 
@@ -464,7 +464,7 @@ void  Response::setContentLength()
 	// if (getContentType().find("image") != std::string::npos)
 	// {
 		body.shrink_to_fit();
-		content_length = itoa(body.capacity());
+		content_length = itoa(body.size());
 	// }
 		
 	// else

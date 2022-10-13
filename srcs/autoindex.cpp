@@ -42,7 +42,6 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url,
     std::string full_url(url);
     std::string loca = loc.getPath().substr(2, loc.getPath().size());
 
-    // std::cout << "--------------AUTOINDEX CREATION---------------" << std::endl;
     if (web.getReq().getUrl().size() > 1)
         path = conf.getPath();
     if (path.rfind("/") == path.size() - 1)
@@ -55,8 +54,6 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url,
     {
         if (!conf.getLocation(i).getLocation_name().compare(path))
         {
-            // std::cout << "---- " << conf.getLocation(i).getLocation_name() << std::endl;
-            // std::cout << "---- " << conf.getLocation(i).getAutoIndex() << std::endl;
             path = conf.getGoodLocation(path).getPath();
             char* temp = to_char(conf.getLocation(i).getBodySize());
             web.setMax_body_size(atoi(temp));
@@ -67,7 +64,6 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url,
     char* temp = to_char(url);
     if ((dir = opendir(temp)) != NULL)
         index_str = html_creation(dir, full_url, loca, url);
-    // std::cout << "--------------AUTOINDEX ENDING---------------" << std::endl;
     delete[] temp;
     web.getRes().setContentType(".html");
     return index_str;

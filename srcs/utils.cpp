@@ -15,7 +15,6 @@
 std::string location_exe(confData & conf, std::string req_file)
 {
     
-    // std::cout << "SERVER = " << conf.getServName() << std::endl;
     if (!req_file.compare("/") && conf.LocationExist("/"))
         return "/";
 	if (req_file.size() >= 1 && req_file[req_file.size() - 1] == '/')
@@ -42,20 +41,16 @@ std::string index_exe(confData & conf, std::string loc)
 	{
 		for (unsigned long i = 0; i < conf.getGoodLocation(loc).getIndex().size(); i++)
 		{
-			index = conf.getGoodLocation(loc).getPath() + "/" + conf.getGoodLocation(loc).getIndex()[i];
-			std::cout << "Index location == " << index << std::endl;
-            char* temp = to_char(index);
-			if (stat(temp, &info) < 0)
+			index = conf.getGoodLocation(loc).getPath() + conf.getGoodLocation(loc).getLocation_name() + "/" +conf.getGoodLocation(loc).getIndex()[i];
+			if (stat(index.data(), &info) < 0)
             {
-                delete[] temp;
-				if (errno == ENOENT)
+				if (errno == ENOENT && i >= conf.getGoodLocation(loc).getIndex().size())
 					return "";
+                else
+                    continue;
             }
 			else
-            {
-                delete[] temp;
 				return index;
-            }
 		}
 	}
 	else
@@ -63,18 +58,13 @@ std::string index_exe(confData & conf, std::string loc)
 		for (unsigned long i = 0; i < conf.getIndex().size(); i++)
 		{
 			index = conf.getPath() + "/" + conf.getIndex()[i];
-            char* temp = to_char(index);
-			if (stat(temp, &info) < 0)
+			if (stat(index.data(), &info) < 0)
             {
-                delete[] temp;
 				if (errno == ENOENT)
 					return "";
             }
 			else
-            {
-                delete[] temp;
 				return index;
-            }
 		}
 	}
 	return "";
@@ -102,7 +92,9 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
     std::string loc;
 	std::string index_path;
     
+    std::cout << "!\n";
 	loc = location_exe(conf, req_file);
+    std::cout << loc << std::endl;
 	if (!loc.empty() && conf.LocationExist(loc))
 	{
         char* temp = to_char(conf.getGoodLocation(loc).getBodySize());
@@ -116,7 +108,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             delete[] temp;
             return "";
         }  
-		// std::cout << "Final location is " << loc <<std::endl;
+		std::cout << "Final location is " << loc <<std::endl;
         // std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
         {
@@ -220,7 +212,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
 		if (fullpath.empty())
 			fullpath = url;
     }
-    // std::cout << "Final fullpath = " << fullpath << std::endl;
+    std::cout << "Final fullpath = " << fullpath << std::endl;
     if (file_exist(url) == 0)
     {
         web.getRes().setContentType(".html");
@@ -257,7 +249,6 @@ std::string itoa(int a)
 int printerr(const char *str)
 {
     std::cerr << str << std::endl;
-    std::cout << strerror(errno) << std::endl;
     exit(1);
 }
 
@@ -407,9 +398,7 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
         std::ofstream out(temp);
         delete[] temp;
         if (!out.is_open())
-        {
             std::cout << errno << std::endl;
-        }
         for(unsigned long i = 0; i < post.size(); i++)
         {
             str += post[i].first + "=" + post[i].second;
@@ -480,7 +469,6 @@ int check_location_nbr(std::string str, std::string to_find)
     int i = 0;
     if (to_find.empty() || str.empty())
         return 0;
-    str = str.substr(str.find("\n") + 1, str.size());
     while (!str.empty())
     {
         cut = str.substr(0, str.find("\n"));
@@ -547,5 +535,28 @@ void print_tab(char **tab)
     {
         std::cout << "[" << i << "]-> " <<  tab[i] << std::endl;
         i++;
+    }
+}
+
+void select_connection(int connection)
+{
+    struct timeval tv;
+    int status = 0;
+    fd_set fdread;
+    fd_set fddump;
+
+    tv.tv_sec = 30;
+    tv.tv_usec = 0;
+
+    FD_ZERO(&fddump);
+    FD_SET(connection, &fddump);
+    while (status == 0)
+    {
+        FD_ZERO(&fdread);
+        fdread = fddump;
+        if ((status = select (connection + 1, &fdread, NULL, NULL, &tv)) == -1)
+            printerr("Error with select ...");
+        if (status == 0)
+           printerr("Timeout...");
     }
 }

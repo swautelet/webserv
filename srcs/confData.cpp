@@ -340,9 +340,9 @@ void confData::scrapData()
     while (!data.empty())
     {   
         tmp = data.substr(0, data.find("\n"));
-        data = data.substr(data.find("\n") + 1, data.size());
         if (!tmp.find("server") || tmp.find("{") != std::string::npos || tmp.find("location") != std::string::npos)
             break;
+        data = data.substr(data.find("\n") + 1, data.size());
         if (tmp.size() >= 1 && tmp[tmp.size() - 1] != ';')
             printerr("Error with conf file syntax ...");
         else if (tmp.find("listen")!= std::string::npos)
@@ -374,6 +374,7 @@ void confData::scrapLocation()
     int index = -1;
     std::string cpy_data(data);
     
+    std::cout << "data is == " << data << std::endl;
     if (data.find("server") != std::string::npos)
         data = data.substr(data.find("server"), data.size());
     if (path.empty())

@@ -12,11 +12,9 @@
 
 #include "include/header.hpp"
 
+
 fd_set fdset, copyset;
-std::vector<std::string> ip_vec;
-char buffer[10001];
-std::string str;
-std::vector<int> fdlist;
+int g_ctrl_called = 0;
 
 void fd_update()
 {
@@ -26,6 +24,7 @@ void fd_update()
 
 void setup(webServ & web, int backlog)
 {
+    std::vector<std::string> ip_vec;
     for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         int no = 0;
@@ -36,12 +35,9 @@ void setup(webServ & web, int backlog)
                 no = 1;
         if (!no)
         {
-            fdlist.push_back(web.getSock()[i].getFd());
             web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
             FD_SET(web.getSock()[i].getFd(), &fdset);
-            std::cout << "!\n";
             ip_vec.push_back(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort() + " " + web.getConf().getConflist(i).getServName());  
-            std::cout << web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort() + " " + web.getConf().getConflist(i).getServName() << std::endl;
         }
     }
     for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
@@ -50,7 +46,6 @@ void setup(webServ & web, int backlog)
 
 void error_handling(webServ & web)
 {
-  ////  int i = -1;
     int j;
     if (!web.getConf().getNbrServer())
         printerr("Error : No server configured ...");
@@ -63,33 +58,55 @@ void error_handling(webServ & web)
         {
             std::string check_address = web.getConf().getAddress(i);
             std::string check_port = web.getConf().getPort(i);
-            while (check_address[++j])
-                if (!isdigit(check_address[j]) && check_address[j] != '.')
-                    printerr("Error : Address must be numeric ...");
-            j = -1;
+            // while (check_address[++j])
+            //     if (!isdigit(check_address[j]) && check_address[j] != '.')
+            //         printerr("Error : Address must be numeric ...");
+            // j = -1;
             while(check_port[++j])
                 if (!isdigit(check_port[j]))
                     printerr("Error : Port must be numeric ...");
         }
         if (web.getConf().getServName(i).empty())
             web.getConf().getConflist(i).setServName("My Default Server");
+        if (!web.getConf().getPath(i).compare("../"))
+        {
+            std::cout << web.getConf().getServName(i) << std::endl;
+            web.getConf().getConflist(i).setPath("root ./");
+        }
     }
     j = -1;
 }
 
+void routine(webServ &web, std::string str, char *buffer, int connection, int ret, int i)
+{
+    if (!str.empty())
+    {
+        web.getReq().getInfo(connection, str);
+        std::string tmp = buffer;
+        int sizeheader = tmp.find("\r\n\r\n") + 4;
+        web.getReq().Write_Brutbody(buffer + sizeheader, ret - sizeheader);
+        while (web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
+        {
+            select_connection(connection);
+            ret = recv(connection, buffer, sizeof(buffer) - 1, 0);
+            web.getReq().Write_Brutbody(buffer, ret);
+        }
+        web.getRes().find_method(web, i);
+        web.getRes().concat_response(web);
+        write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
+        web.getCgi().setCGIBool(0);
+        str = "";
+    }
+}
 void engine(webServ & web, int connection, int addrlen)
 {
-    struct timeval tv;
-    fd_set fdread;
-    fd_set fddump;
-
-    tv.tv_sec = 1;
-    tv.tv_usec = 0;
+    char buffer[100001];
+    std::string str;
     for(unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         if (FD_ISSET(web.getSock()[i].getFd(), &copyset))
         {
-            int status = 0;
+            memset(buffer, 0, 100000);
             addrlen = sizeof(web.getSock()[i].serv_address);
             std::cout << "Accept ... " << std::endl;
             if ((connection = accept(web.getSock()[i].getFd(), (struct sockaddr*)&web.getSock()[i].serv_address, (socklen_t*)&addrlen)) < 0)
@@ -97,59 +114,25 @@ void engine(webServ & web, int connection, int addrlen)
             if ((fcntl(connection, F_SETFL, O_NONBLOCK)) < 0)
                 printerr("Error with fcntl ...");
             int ret = 1;
-            memset(buffer, 0, 10000);
-            FD_ZERO(&fddump);
-	        FD_SET(connection, &fddump);
-            while (status == 0)
-            {
-                FD_ZERO(&fdread);
-                fdread = fddump;
-                // sleep(2);
-                // std::cout << "Select ...\n";
-                if ((status = select (connection + 1, &fdread, NULL, NULL, &tv)) < 0)
-                    printerr("BIG ERROR ...");
-            }
             std::cout << "Recv ... : " << ret << std::endl;
+            select_connection(connection);
             if ((ret = recv(connection, buffer, sizeof(buffer) - 1, 0)) > 0)
             {
-                //std::cout << "ret in recv : " << ret << std::endl; 
                 buffer[ret] = '\0';
-                //std::cout << "recv called : " << ret << std::endl;
                 str += buffer;
             }
-            if (!str.empty())
-            {
-                web.getReq().getInfo(connection, str);
-                std::string tmp = buffer;
-                int sizeheader = tmp.find("\r\n\r\n") + 4;
-                web.getReq().Write_Brutbody(buffer + sizeheader, ret - sizeheader);
-                while (web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
-                {
-                    //std::cout << "writing... wrote is : " << web.getReq().getWrote() << " and content length is : " << atoi(web.getReq().getContentLength().c_str()) << std::endl;
-                    ret = recv(connection, buffer, sizeof(buffer) - 1, 0);
-                    web.getReq().Write_Brutbody(buffer, ret);
-                }
-                //std::cout << "Trying to get the body, wrote is  : " << web.getReq().getWrote() << std::endl;
-                // std::cout << "Info done ..." << std::endl;
-                web.getRes().find_method(web, i);
-                // if(!web.getCgi().getCGIBool())
-                web.getRes().concat_response(web);
-                write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
-                web.getCgi().setCGIBool(0);
-                str = "";
-
-                // std::cout << "uh" << std::endl;
-            }
+            routine(web, str, buffer, connection, ret, i);
             close(connection);
             return ;
         }
         
     }
 }
+
 void ctrl_c(int sig)
 {
 	(void)sig;
-	(void)sig;
+    g_ctrl_called = 1;
     std::cout << "\nBye bye" << std::endl;
     exit(0);
 }
@@ -158,9 +141,8 @@ void ctrl_c(int sig)
 int main(int argc, char **argv, char **envp)
 {
     struct timeval tv;
-    tv.tv_sec = 1;
+    tv.tv_sec = 30;
     tv.tv_usec = 0;
-	// web.env = envp;
     webServ web(argv[1], envp);
 	web.setServ_Root(envp);
     web.getCgi().set_transla_path(envp);
@@ -177,15 +159,13 @@ int main(int argc, char **argv, char **envp)
     signal(SIGINT, &ctrl_c);
     while(1)
     {
-        // sleep(2);
         fd_update();
-        if ((retval = select(5 + 1, &copyset, NULL, NULL, &tv)) == -1)
+        if ((retval = select(FD_SETSIZE, &copyset, NULL, NULL, &tv)) == -1)
             printerr("Error with select ...");
+        if (retval == 0)
+            printerr("Timeout...");
         else
-        {
-            //std::cout << "XD\n";
             engine(web, connection, addrlen);
-        }
     }
 }
 

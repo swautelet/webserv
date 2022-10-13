@@ -20,6 +20,7 @@ webServ::webServ()
 	indexing = new Autodex;
 	_cgi = new Cgi;
 	max_body_size = 0;
+	
 }
 
 webServ::webServ(std::string argv, char **envp)
@@ -49,6 +50,8 @@ webServ::~webServ()
 	delete req;
 	delete res;
 	delete indexing;
+	delete _cgi;
+	std::cout << "webServ destructor called" << std::endl;
 }
 
 webServ::webServ(webServ & other):conf(new Conf(other.getConf())), req(new Request(other.getReq())), res(new Response(other.getRes())), indexing(new Autodex(other.getAutodex())), serv_root(other.getServ_Root()), sock(other.getSock())
