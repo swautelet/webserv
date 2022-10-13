@@ -94,8 +94,8 @@ void Cgi::run_api(webServ& web, confData& conf)
 	// }
 	// std::cout << "--------------------------------------- finish --------------------------------" << std::endl;
 	web.getRes().setBody(web.getCgi().start_script(web));
-	web.getRes().setContentType();
-	web.getRes().setStatus(200);
+	// web.getRes().setContentType();
+	// web.getRes().setStatus(200);
 }
 
 Cgi::Cgi()

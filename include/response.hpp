@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:04 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:40:04 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/13 19:44:16 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Response
     	void  setStatus(int status);
 		void  setBody(std::string str);
     	int   setContentType(std::string str);
+        void  set_FullResponse(std::string str);
         
 		int getStatus() const;
         size_t getBodySize() const;

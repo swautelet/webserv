@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/08 17:28:28 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/13 19:57:03 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -395,7 +395,12 @@ void Response::concat_response(webServ & web)
     if (status == 301 || status == 302)
         full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Location : " + web.getbool_redir().second;
     else
-	    full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Length: " + content_length + "\n\n" + body;
+	{
+		if (!web.getCgi().getCGIBool())
+	    	full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Length: " + content_length + "\n\n" + body;
+		else
+			full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Length: " + content_length + body;
+	}
     web.del_redir();
 	// std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
 }
@@ -490,4 +495,9 @@ void Response::clear_info()
     content_length = "";
     body = "";
     full_response = "";
+}
+
+void  Response::set_FullResponse(std::string str)
+{
+	full_response = str;
 }

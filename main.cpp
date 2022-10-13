@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/13 19:19:57 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/10/13 19:50:20 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,10 +128,8 @@ void engine(webServ & web, int connection, int addrlen)
                 //std::cout << "Trying to get the body, wrote is  : " << web.getReq().getWrote() << std::endl;
                 // std::cout << "Info done ..." << std::endl;
                 web.getRes().find_method(web, i);
-                if(web.getCgi().getCGIBool())
-                    web.getRes().concat_response(web);
-                else
-                    write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
+                // if(!web.getCgi().getCGIBool())
+                web.getRes().concat_response(web);
                 write(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size());
                 web.getCgi().setCGIBool(0);
                 str = "";
