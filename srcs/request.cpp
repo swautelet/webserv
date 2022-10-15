@@ -22,6 +22,7 @@ Request::Request()
 Request::~Request()
 {
     type_data.clear();
+    std::cout << "Request destructor called" << std::endl;
 }
 
 Request::Request(const Request & other):method(other.getMethod()), url(other.getUrl()), version(other.getVersion()), header(other.getHeader()), body(other.getBody()), type_data(other.getDataType())
@@ -44,7 +45,7 @@ Request& Request::operator=(const Request& other)
 int Request::getInfo(int connection, std::string string)
 {
     (void)connection;
-    std::cout << "|" << string << "|" << std::endl;
+    //std::cout << "|" << string << "|" << std::endl;
     clear_info();
     std::vector<std::string> req, req2;
 
@@ -58,7 +59,7 @@ int Request::getInfo(int connection, std::string string)
     version.resize(version.size() - 1);
 	type_data.clear();
     _search_info(req, string);
-    std::cout  << " ici =====================================" << std::endl << body << std::endl;
+    //std::cout  << " ici =====================================" << std::endl << body << std::endl;
     // char* temp = NULL;
     // if (string.find("\r\n\r\n") != std::string::npos)
     // {
@@ -73,11 +74,11 @@ int Request::getInfo(int connection, std::string string)
     {
         query_s = url.substr(url.find("?") + 1, url.size());
         url = url.substr(0 ,url.find("?"));
-        std::cout << " BUT " << query_s << std::endl;
+        //std::cout << " BUT " << query_s << std::endl;
     }
     clean_header();
-    std::cout << std::endl << "Header is ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << header << std::endl << "-----------------------------------------------------------------------" << std::endl;
-    std::cout << "BODY IS ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << body << std::endl << "--------------------------------------------------------------" << std::endl;
+    //std::cout << std::endl << "Header is ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << header << std::endl << "-----------------------------------------------------------------------" << std::endl;
+    //std::cout << "BODY IS ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << body << std::endl << "--------------------------------------------------------------" << std::endl;
     return 1;
 }
 
@@ -179,9 +180,14 @@ std::string Request::getQuery_string()
 }
 int Request::getBrutbody_fileno()
 {
-    int fd = fileno(brutbody);
-    if (fd == -1)
-        exit(0);
+    int fd = -1;
+    //std::cout << "!\n";
+    if (brutbody)
+    {
+        fd = fileno(brutbody);
+        if (fd == -1)
+            exit(0);
+    }
     return fd;
 }
 

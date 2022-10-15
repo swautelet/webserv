@@ -20,6 +20,7 @@ Conf::Conf()
 Conf::~Conf()
 {
     confList.clear();
+    std::cout << "Conf destructor called" << std::endl;
 }
 
 Conf::Conf(const Conf & other)
@@ -40,7 +41,7 @@ void Conf::print_info()
 {
     for(unsigned long i = 0; i < nbr_serv; i++)
     {
-        std::cout << std::endl <<"[SERVER " << i + 1 << "]" << std::endl << std::endl; 
+        //std::cout << std::endl <<"[SERVER " << i + 1 << "]" << std::endl << std::endl; 
         (confList)[i].print_info();
     }
 }

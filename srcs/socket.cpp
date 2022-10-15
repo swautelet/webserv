@@ -15,17 +15,18 @@
 
 Socket::Socket()
 {
+    fd = -1;
     std::cout << "Socket constructor" << std::endl;
 }
 
 Socket::~Socket()
 {
-    std::cout << "Destructor socket called" << std::endl;
-    close(fd);
+    std::cout << "Destructor socket called : " << fd <<std::endl;
 }
 
 Socket::Socket(std::string ip, std::string port)
 {
+    fd = -1;
 	std::cout << "socket second constructor called " << std::endl;
     this->ip = ip;
     this->port = port;
@@ -37,12 +38,12 @@ Socket::Socket(const Socket & other)
     this->fd = other.fd;
     this->ip = other.ip;
     this->port = other.port;
+    //fd = -1;
+    std::cout << fd << std::endl;
 }
 
 void Socket::setup(int backlog, confData & conf)
 {
-    std::cout << "ici ------------------------------------------------------------------ " <<conf.getAdress() << ":"<< conf.getPort()<<std::endl;	
-    std::cout << "soket initialized" << std::endl;
     create_socket(conf);
     create_bind();
     listen_socket(backlog);
@@ -53,10 +54,8 @@ void Socket::setup(int backlog, confData & conf)
 int Socket::create_socket(confData & conf)
 {
     serv_address.sin_family = AF_INET;
-    serv_address.sin_addr.s_addr = INADDR_ANY;
-    char* temp = to_char(conf.getPort());
-    serv_address.sin_port = htons(atoi(temp));
-    delete[] temp;
+    serv_address.sin_addr.s_addr = htonl(INADDR_ANY);
+    serv_address.sin_port = htons(atoi(conf.getPort().data()));
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
         return printerr("Error with socket creation ...");
     return 1;
@@ -91,6 +90,11 @@ void Socket::set_port(std::string port)
     this->port = port;
 }
 
+void Socket::set_fd(int fd)
+{
+    this->fd = fd;
+}
+
 sockaddr_in Socket::getServ_address() const
 {
     return serv_address;
@@ -118,4 +122,9 @@ Socket &Socket::operator=(Socket const & other)
 	this->port = other.port;
 	this->ip = other.ip;
 	return (*this);
+}
+
+void Socket::close_fd()
+{
+    close(fd);
 }

@@ -140,8 +140,14 @@ void webServ::del_redir()
 
 void webServ::cleave_info()
 {
+	std::cout << "Cleave info ..." << std::endl;
     max_body_size = 0;
     req->clear_info();
+	for (std::vector<Socket>::iterator it = sock.begin(); it != sock.end(); it++)
+	{
+		std::cout << "Closing " << it->getFd() << std::endl;
+		it->close_fd();
+	}
 }
 
 char ** webServ::getEnv()

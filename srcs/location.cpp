@@ -26,7 +26,10 @@ location::~location()
 
 location::location(const location & other):path(other.getPath()), method(other.getMethod()), error_page(other.getErrorPage()), index(other.getIndex()), location_name(other.getLocation_name()), body_size(other.getBodySize()), autoindex(other.getAutoIndex())
 {
-    
+
+    std::cout << "Location destructor called" << std::endl;
+    redir.clear();
+    index.clear();
 }
 
 location& location::operator=(const location& other)
@@ -129,7 +132,7 @@ void location::setIndex(std::string str)
 
 void location::setErrorPage(std::string str)
 {
-    std::cout << "NOIOOOOO" << std::endl;
+    //std::cout << "NOIOOOOO" << std::endl;
     remove_spaces(str);
     error_page = str.substr(strlen("error_page "), str.size());
     if (error_page.empty())
@@ -168,13 +171,11 @@ void location::setRedir(std::string str)
         if (tmp.find("^") != std::string::npos)
         {
             if (!tmp.compare("^"))
-                std::cout << "kekw" << std::endl;
-            if (!tmp.compare("^"))
                 tmp = "/";
             else
                 tmp.erase(0, 1);
         }
-        std::cout << "tmp.. " << tmp << std::endl;
+       // std::cout << "tmp.. " << tmp << std::endl;
         redir.push_back(tmp);
         if (str.empty())
             return;
@@ -195,11 +196,7 @@ void location::edit_info(std::string str, std::string info, std::vector<std::str
     if (!str.compare("error_page"))
         error_page = info;
     if (!str.compare("autoindex"))
-    {
-        char* temp = to_char(info);
-        autoindex = atoi(temp);
-        delete[] temp;
-    }
+        autoindex = atoi(info.data());
     if (!str.compare("index"))
         index = vec;
     if (!str.compare("body_size"))

@@ -29,16 +29,18 @@ class Socket
         int listen_socket(int max_queue);
         int create_socket(confData & conf);
         void setup(int backlog, confData & conf);
+        void close_fd();
         
         void set_port(std::string port);
         void set_ip(const std::string& ip);
+        void set_fd(int fd);
         
         const int& getFd() const;
         std::string getIp() const;
         std::string getPort() const;
         sockaddr_in getServ_address() const;
-        sockaddr_in serv_address;
     private:
+        sockaddr_in serv_address;
         int fd;
         std::string ip;
         std::string port;

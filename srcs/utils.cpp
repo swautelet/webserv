@@ -72,9 +72,7 @@ std::string index_exe(confData & conf, std::string loc)
 
 int file_exist(std::string file)
 {
-    char* temp = to_char(file);
-    std::ifstream infile(temp);
-    delete[] temp;
+    std::ifstream infile(file.data());
 
     if (!infile.good())
         return 0;
@@ -92,23 +90,19 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
     std::string loc;
 	std::string index_path;
     
-    std::cout << "!\n";
+    //std::cout << "!\n";
 	loc = location_exe(conf, req_file);
-    std::cout << loc << std::endl;
+    //std::cout << loc << std::endl;
 	if (!loc.empty() && conf.LocationExist(loc))
 	{
-        char* temp = to_char(conf.getGoodLocation(loc).getBodySize());
-	    web.setMax_body_size(atoi(temp));
-        delete[] temp;
+	    web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().data()));
         if (!conf.getGoodLocation(loc).getRedir().empty())
         {
             web.setbool_redir(conf.getGoodLocation(loc).getRedir());
-            temp = to_char(conf.getGoodLocation(loc).getBodySize());
-			web.setMax_body_size(atoi(temp));
-            delete[] temp;
+			web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().data()));
             return "";
         }  
-		std::cout << "Final location is " << loc <<std::endl;
+		//std::cout << "Final location is " << loc <<std::endl;
         // std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
         {
@@ -126,9 +120,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
 	}
 	else
 	{
-        char* temp = to_char(conf.getBodySize());
-        web.setMax_body_size(atoi(temp));
-        delete[] temp;
+        web.setMax_body_size(atoi(conf.getBodySize().data()));
         if (!conf.getRedir().empty())
         {
             web.setbool_redir(conf.getRedir());
@@ -146,7 +138,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
     {
         if (conf.LocationExist(loc))
         {
-            std::cout << "wtf-2 "<< conf.getGoodLocation(loc).getBodySize() << std::endl;
+            //std::cout << "wtf-2 "<< conf.getGoodLocation(loc).getBodySize() << std::endl;
             if (!conf.getGoodLocation(loc).getErrorPage().empty())
                 fullpath = conf.getGoodLocation(loc).getErrorPage();
             else
@@ -160,9 +152,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
                 fullpath = ERROR_404;
         }
     }
-    char* temp = to_char(url);
-    dir = opendir(temp);
-    delete[] temp;
+    dir = opendir(url.data());
     if (dir != NULL)
     {
         // std::cout << "-------------------------- "<< std::endl;
@@ -183,20 +173,16 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
         }
         else
         {
-            char* temp = to_char(conf.getBodySize());
-			web.setMax_body_size(atoi(temp));
-            delete[] temp;
-            std::cout << "didnt found location" << std::endl;
+			web.setMax_body_size(atoi(conf.getBodySize().data()));
+            //std::cout << "didnt found location" << std::endl;
             if (BaseLocationExist(conf).empty())
             {
                 if (!conf.getAutoIndex() && conf.getIndex().empty())
                     fullpath = ERROR_403;
                 else if (conf.getAutoIndex())
 				{
-					web.getRes().setStatus(201);
-                    temp = to_char(conf.getBodySize());
-					web.setMax_body_size(atoi(temp));
-                    delete[] temp;
+					web.getRes().setStatus(200);
+					web.setMax_body_size(atoi(conf.getBodySize().data()));
 					closedir(dir);
                     return web.getAutodex().create_dex(web, conf, url, conf.getGoodLocation(loc));
 				}
@@ -212,15 +198,13 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
 		if (fullpath.empty())
 			fullpath = url;
     }
-    std::cout << "Final fullpath = " << fullpath << std::endl;
+    //std::cout << "Final fullpath = " << fullpath << std::endl;
     if (file_exist(url) == 0)
     {
         web.getRes().setContentType(".html");
         fullpath = ERROR_404;
     }
-    temp = to_char(fullpath);
-    fd.open(temp);
-    delete[] temp;
+    fd.open(fullpath.data());
     if (!fd.is_open())
         if (fd.good())
             printerr(" opening ... (ReadHTML)");
@@ -284,6 +268,8 @@ int check_server_nbr(std::string str, std::string to_find)
         else
             break;
 	}
+    if (find == 0)
+        return find + 1;
 	return find;
 }
 
@@ -378,7 +364,7 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
     std::string fullpath(url);
     std::string loc = location_exe(conf, url);
     std::string str = "";
-    std::cout << "loc == "<< loc << std::endl; 
+    //std::cout << "loc == "<< loc << std::endl; 
     if (loc.empty())
         url = conf.getPath() + "/" + url.substr(1, url.size());
     else
@@ -386,17 +372,13 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
         fullpath = conf.getGoodLocation(loc).getPath() + conf.getGoodLocation(loc).getLocation_name() + url.substr(loc.size(), url.size());
         url = url.substr(1, url.size());
     }
-    std::cout << "Post fullpath = " << fullpath << std::endl;
-    char* temp = to_char(fullpath);
-    dir = opendir(temp);
-    delete[] temp;
+    //std::cout << "Post fullpath = " << fullpath << std::endl;
+    dir = opendir(fullpath.data());
     if (!dir)
     {
         if (fullpath[0] == '.' && fullpath[1] == '/')
             fullpath.erase(0, 2);
-        temp = to_char(fullpath);
-        std::ofstream out(temp);
-        delete[] temp;
+        std::ofstream out(fullpath.data());
         if (!out.is_open())
             std::cout << errno << std::endl;
         for(unsigned long i = 0; i < post.size(); i++)
@@ -494,13 +476,11 @@ std::string error_parse(int code)
     if ((dir = opendir("www/error/")) != NULL)
     {
         print("is a file");
-        std::cout << "Parsing good error page ... " << std::endl;
+        //std::cout << "Parsing good error page ... " << std::endl;
         while ((ent = readdir(dir)) != NULL)
         {
-            char* temp = to_char(str);
-            if (!strcmp(ent->d_name, temp))
+            if (!strcmp(ent->d_name, str.data()))
             {
-                delete[] temp;
                 std::string file(ent->d_name);
                 fd.open("www/error/" + file);
                 if (!fd.is_open())
@@ -511,7 +491,6 @@ std::string error_parse(int code)
                 buff << fd.rdbuf();
                 return buff.str();
             }
-            delete[] temp;
         }
     }
     return "";
@@ -535,28 +514,5 @@ void print_tab(char **tab)
     {
         std::cout << "[" << i << "]-> " <<  tab[i] << std::endl;
         i++;
-    }
-}
-
-void select_connection(int connection)
-{
-    struct timeval tv;
-    int status = 0;
-    fd_set fdread;
-    fd_set fddump;
-
-    tv.tv_sec = 30;
-    tv.tv_usec = 0;
-
-    FD_ZERO(&fddump);
-    FD_SET(connection, &fddump);
-    while (status == 0)
-    {
-        FD_ZERO(&fdread);
-        fdread = fddump;
-        if ((status = select (connection + 1, &fdread, NULL, NULL, &tv)) == -1)
-            printerr("Error with select ...");
-        if (status == 0)
-           printerr("Timeout...");
     }
 }

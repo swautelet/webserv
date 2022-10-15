@@ -43,6 +43,7 @@ class webServ
 		void	setServ_Root(char **env);
 		const std::string&	getServ_Root() const;
         void    setEnv(char** envp);
+        void setSocket(std::vector<Socket> s);
 
     private:
 		char** env;

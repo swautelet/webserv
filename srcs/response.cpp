@@ -328,17 +328,10 @@ void Response::MethodGet(webServ & web, confData & conf)
 	{
 		body = readfile(web, conf, web.getReq().getUrl());
         if (!web.getbool_redir().first.empty() && !web.getbool_redir().second.empty())
-        {
-            std::cout << web.getReq().getUrl() << std::endl;
-			char* temp = to_char(web.getbool_redir().first);
-            web.getRes().setStatus(atoi(temp));
-			delete[] temp;
-        }
+            web.getRes().setStatus(atoi(web.getbool_redir().first.data()));
 		setContentLength();
-		char* temp = to_char(content_length);
-		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(temp))
+		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(content_length.data()))
 			content_length = itoa(web.getMax_body_size());
-		delete[] temp;
 	}
 	else
 		web.getCgi().run_api(web, conf);
@@ -346,9 +339,7 @@ void Response::MethodGet(webServ & web, confData & conf)
 
 void Response::MethodPost(webServ & web, confData & conf)
 {
-	char* temp = to_char(web.getReq().getContentLength());
-    int nbr = atoi(temp);
-	delete[] temp;
+    int nbr = atoi(web.getReq().getContentLength().data());
     // std::cout << " body is ----------------------------" << body << std::endl;
     if (setContentType(web.getReq().getUrl()) == 1)
         web.getCgi().run_api(web, conf);
@@ -374,8 +365,7 @@ void Response::MethodDel(webServ&  web, confData& conf)
     {
         fullpath = conf.getGoodLocation(loc).getPath() + url;
     }
-	char* temp = to_char(fullpath);
-	if (remove(temp) == 0)
+	if (remove(fullpath.data()) == 0)
 	{
 		setStatus(200);
 		setContentType();
@@ -386,7 +376,6 @@ void Response::MethodDel(webServ&  web, confData& conf)
 		setStatus(404);
 		setBody("");
 	}
-	delete[] temp;
 }
 
 void Response::concat_response(webServ & web)
@@ -402,7 +391,7 @@ void Response::concat_response(webServ & web)
 			full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Length: " + content_length + body;
 	}
     web.del_redir();
-	std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
+	//std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
 }
 
 std::string Response::getResponse() const 
@@ -444,9 +433,7 @@ void	Response::seterrorpage()
 	std::ifstream errorpage;
 	std::string tmp;
 	std::string path("www/error/" + itoa(status) + ".html");
-	char* temp = to_char(path);
-	errorpage.open(temp);
-	delete[] temp;
+	errorpage.open(path.data());
 	if (errorpage.is_open())
 	{
 		body.clear();

@@ -25,6 +25,7 @@ Autodex::~Autodex()
 Autodex::Autodex(const Autodex & other):index_str(other.getIndexStr())
 {
 //    *this = other;
+    std::cout << "Autodex destructor called" << std::endl;
 }
 
 Autodex& Autodex::operator=(const Autodex& other)
@@ -55,16 +56,12 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url,
         if (!conf.getLocation(i).getLocation_name().compare(path))
         {
             path = conf.getGoodLocation(path).getPath();
-            char* temp = to_char(conf.getLocation(i).getBodySize());
-            web.setMax_body_size(atoi(temp));
-            delete[] temp;
+            web.setMax_body_size(atoi(conf.getLocation(i).getBodySize().data()));
             break;
         }
     }
-    char* temp = to_char(url);
-    if ((dir = opendir(temp)) != NULL)
+    if ((dir = opendir(url.data())) != NULL)
         index_str = html_creation(dir, full_url, loca, url);
-    delete[] temp;
     web.getRes().setContentType(".html");
     return index_str;
 }

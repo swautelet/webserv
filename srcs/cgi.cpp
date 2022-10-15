@@ -12,15 +12,15 @@ std::string	Cgi::start_script(webServ& web)
 	pipe(outpip);
 	char buffer[10000];
 	int ret;
-	std::cout << "This :" << web.getCgi().getPath() << " received this brutbody::::::::::::::::::::::::::::::::::::::::::::::::::"<< std::endl;
+	//std::cout << "This :" << web.getCgi().getPath() << " received this brutbody::::::::::::::::::::::::::::::::::::::::::::::::::"<< std::endl;
 	while ((ret = read(web.getReq().getBrutbody_fileno(), buffer, 10000)) > 0)
 		write(1, buffer, ret);
-	std::cout << "finish ---------------------------------------" << std::endl;
+	//std::cout << "finish ---------------------------------------" << std::endl;
 	lseek(web.getReq().getBrutbody_fileno(), 0, SEEK_SET);
 	id = fork();
 	if (id == -1)
 	{
-		std::cout << "could'nt fork" << std::endl;
+		//std::cout << "could'nt fork" << std::endl;
 		return rep;
 	}
 	if (id == 0)
@@ -28,21 +28,18 @@ std::string	Cgi::start_script(webServ& web)
 		close (outpip[0]);
 		dup2(outpip[1], STDOUT_FILENO);
 		dup2(web.getReq().getBrutbody_fileno(), STDIN_FILENO);
-		char* temp = to_char(getPath());
 		
-		if (execve(temp, argtmp, envtmp) < 0)
+		if (execve(getPath().data(), argtmp, envtmp) < 0)
 		{
-			delete[] temp;
-			std::cout << "Script couldn't be loaded with this->script : |" << argtmp[1] << "|" << std::endl;
-			std::cout << "and this->exe :" << getPath() << std::endl;
+			//std::cout << "Script couldn't be loaded with this->script : |" << argtmp[1] << "|" << std::endl;
+			//std::cout << "and this->exe :" << getPath() << std::endl;
 			perror("EXECVE ERROR :");
 			exit(10);
 		}
 	}
 	else
 	{
-		// std::cout << "waiting for script" << std::endl;
-		// waitpid(id, &status, 0);
+		//std::cout << "waiting for script" << std::endl;
 		close(outpip[1]);
 		//  std::cout << "php script finished with :" << status << std::endl;
 		char buff[BUFF_SIZE + 1];
@@ -54,7 +51,7 @@ std::string	Cgi::start_script(webServ& web)
 				buff[i] = '\0';
 			rep += buff;
 		}
-		std::cout << "buff " << buff << std::endl;
+		//std::cout << "buff " << buff << std::endl;
 		// std::cout << "waiting for php " << std::endl;
 		// wait(&status);
 	}
@@ -85,8 +82,11 @@ Cgi::Cgi()
 
 Cgi::~Cgi()
 {
-	// fclose(infile);
-//	delete this->scripath;
+	pathmap.clear();
+	env.clear();
+	// 	fclose(infile);
+	//	delete this->scripath;
+	std::cout << "Cgi destructor called" << std::endl;
 }
 
 std::string& Cgi::getPath()
@@ -117,15 +117,12 @@ void	Cgi::find_transla_path(std::string scri, std::string ext, std::vector<std::
 	for (unsigned long i = 0; i < paths.size(); i++)
 	{
 		std::string tmp = paths[i] + "/" + scri;
-		char* temp = to_char(tmp);
-		if (!access(temp, X_OK))
+		if (!access(tmp.data(), X_OK))
 		{
-			delete[] temp;
 			pathmap[ext] = tmp;
-			std::cout << "i initialized script :" << ext << " with :" << tmp << std::endl;
+			//std::cout << "i initialized script :" << ext << " with :" << tmp << std::endl;
 			break ;
 		}
-		delete[] temp;
 	}
 }
 
@@ -222,7 +219,7 @@ void	Cgi::setEnv(webServ& web, confData& conf)
 	env.push_back(tmp);
 	if (!web.getReq().getQuery_string().empty())
 	{
-		std::cout << "GET" << std::endl;
+		//std::cout << "GET" << std::endl;
 		tmp = "QUERY_STRING=" + web.getReq().getQuery_string();
 		env.push_back(tmp);
 	}

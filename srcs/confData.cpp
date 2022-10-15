@@ -26,6 +26,7 @@ confData::~confData()
     loc.clear();
     index.clear();
     redir.clear();
+    std::cout << "ConfData destructor called" << std::endl;
 }
 
 confData::confData(const confData & other): autoindex(other.getAutoIndex()), port(other.getPort()), path(other.getPath()), method(other.getMethod()), address(other.getAdress()) , serv_name(other.getServName()) , body_size(other.getBodySize()),  nbr_loc(other.getLocationNbr()), error_page(other.getErrorPage()), loc(nbr_loc), index(other.getIndex())
@@ -207,7 +208,7 @@ void confData::setIndex(std::string str)
     index.push_back(str);
 	for (unsigned long i = 0; i < index.size(); i++)
 	{
-		std::cout << "Index is |" << index[i] << "|" << std::endl;
+		//std::cout << "Index is |" << index[i] << "|" << std::endl;
 	}
     if (index.back().empty())
         return;
@@ -261,9 +262,7 @@ int confData::parsing(std::string path)
 {
     std::ifstream fd;
     std::stringstream buff;
-    char* temp = to_char(path);
-    fd.open(temp, std::ifstream::in);
-    delete[] temp;
+    fd.open(path.data(), std::ifstream::in);
     if (!fd)
         printerr("Error with file opening ...");
     buff << fd.rdbuf();
