@@ -71,84 +71,84 @@ void Response::setStatMsg()
 {
 	switch(status)
 	{
-		case 100:
-			stat_msg = "Continue";
-			break;
-		case 101:
-			stat_msg = "Switching protocols";
-			break;
-		case 102:
-			stat_msg = "Processing";
-			break;
-		case 103:
-			stat_msg = "Early Hints";
-			break;
+		// case 100:
+		// 	stat_msg = "Continue";
+		// 	break;
+		// case 101:
+		// 	stat_msg = "Switching protocols";
+		// 	break;
+		// case 102:
+		// 	stat_msg = "Processing";
+		// 	break;
+		// case 103:
+		// 	stat_msg = "Early Hints";
+		// 	break;
 		case 200:
 			stat_msg = "OK";
 			break;
-		case 201:
-			stat_msg = "Created";
-			break;
-		case 202:
-			stat_msg = "Accepted";
-			break;
-		case 203:
-			stat_msg = "Non-Authoritative Information";
-			break;
-		case 204:
-			stat_msg = "No Content";
-			break;
-		case 205:
-			stat_msg = "Reset Content";
-			break;
-		case 206:
-			stat_msg = "Partial Content";
-			break;
-		case 207:
-			stat_msg = "Multi-Status";
-			break;
-		case 208:
-			stat_msg = "Already Reported";
-			break;
-		case 226:
-			stat_msg = "IM Used";
-			break;
-		case 300:
-			stat_msg = "Multiple Choices";
-			break;
+		// case 201:
+		// 	stat_msg = "Created";
+		// 	break;
+		// case 202:
+		// 	stat_msg = "Accepted";
+		// 	break;
+		// case 203:
+		// 	stat_msg = "Non-Authoritative Information";
+		// 	break;
+		// case 204:
+		// 	stat_msg = "No Content";
+		// 	break;
+		// case 205:
+		// 	stat_msg = "Reset Content";
+		// 	break;
+		// case 206:
+		// 	stat_msg = "Partial Content";
+		// 	break;
+		// case 207:
+		// 	stat_msg = "Multi-Status";
+		// 	break;
+		// case 208:
+		// 	stat_msg = "Already Reported";
+		// 	break;
+		// case 226:
+		// 	stat_msg = "IM Used";
+		// 	break;
+		// case 300:
+		// 	stat_msg = "Multiple Choices";
+		// 	break;
 		case 301:
 			stat_msg = "Moved Permanently";
 			break;
-		case 302:
-			stat_msg = "Found";
-			break;
-		case 303:
-			stat_msg = "See Other";
-			break;
-		case 304:
-			stat_msg = "Not Modified";
-			break;
-		case 305:
-			stat_msg = "Use Proxy";
-			break;
-		case 306:
-			stat_msg = "Switch Proxy";
-			break;
-		case 307:
-			stat_msg = "Temporary Redirect";
-			break;
-		case 308:
-			stat_msg = "Permanent Redirect";
-			break;
-		case 400:
-			stat_msg = "Bad Request";
-			break;
-		case 401:
-			stat_msg = "Unauthorized";
-			break;
-		case 402:
-			stat_msg = "Payment Required";
-			break;
+		// case 302:
+		// 	stat_msg = "Found";
+		// 	break;
+		// case 303:
+		// 	stat_msg = "See Other";
+		// 	break;
+		// case 304:
+		// 	stat_msg = "Not Modified";
+		// 	break;
+		// case 305:
+		// 	stat_msg = "Use Proxy";
+		// 	break;
+		// case 306:
+		// 	stat_msg = "Switch Proxy";
+		// 	break;
+		// case 307:
+		// 	stat_msg = "Temporary Redirect";
+		// 	break;
+		// case 308:
+		// 	stat_msg = "Permanent Redirect";
+		// 	break;
+		// case 400:
+		// 	stat_msg = "Bad Request";
+		// 	break;
+		// case 401:
+		// 	stat_msg = "Unauthorized";
+		// 	break;
+		// case 402:
+		// 	stat_msg = "Payment Required";
+		// 	break;
 		case 403:
 			stat_msg = "Forbidden";
 			break;
@@ -158,108 +158,102 @@ void Response::setStatMsg()
 		case 405:
 			stat_msg = "Method Not Allowed";
 			break;
-		case 406:
-			stat_msg = "Not Acceptable";
-			break;
-		case 407:
-			stat_msg = "Proxy Authentication Required";
-			break;
-		case 408:
-			stat_msg = "Request Timeout";
-			break;
-		case 409:
-			stat_msg = "Conflict";
-			break;
-		case 410:
-			stat_msg = "Gone";
-			break;
-		case 411:
-			stat_msg = "Length Required";
-			break;
-		case 412:
-			stat_msg = "Precondition Failed";
-			break;
+		// case 406:
+		// 	stat_msg = "Not Acceptable";
+		// 	break;
+		// case 407:
+		// 	stat_msg = "Proxy Authentication Required";
+		// 	break;
+		// case 408:
+		// 	stat_msg = "Request Timeout";
+		// 	break;
+		// case 409:
+		// 	stat_msg = "Conflict";
+		// 	break;
+		// case 410:
+		// 	stat_msg = "Gone";
+		// 	break;
+		// case 412:
+		// 	stat_msg = "Precondition Failed";
+		// 	break;
 		case 413:
-			stat_msg = "Payload Too Large";
+			stat_msg = "Request entity too large";
 			break;
 		case 414:
 			stat_msg = "URI Too Long";
 			break;
-		case 415:
-			stat_msg = "Unsupported Media Type";
-			break;
-		case 416:
-			stat_msg = "Range Not Satisfiable";
-			break;
-		case 417:
-			stat_msg = "Expectation Failed";
-			break;
-		case 418:
-			stat_msg = "I'm a Teapot";
-			break;
-		case 421:
-			stat_msg = "Misdirected Request";
-			break;
-		case 422:
-			stat_msg = "Unprocessable Entity";
-			break;
-		case 423:
-			stat_msg = "Locked";
-			break;
-		case 424:
-			stat_msg = "Failed Dependency";
-			break;
-		case 425:
-			stat_msg = "Too Early";
-			break;
-		case 426:
-			stat_msg = "Upgrade Required";
-			break;
-		case 428:
-			stat_msg = "Precondition Required";
-			break;
-		case 429:
-			stat_msg = "Too Many Requests";
-			break;
+		// case 416:
+		// 	stat_msg = "Range Not Satisfiable";
+		// 	break;
+		// case 417:
+		// 	stat_msg = "Expectation Failed";
+		// 	break;
+		// case 418:
+		// 	stat_msg = "I'm a Teapot";
+		// 	break;
+		// case 421:
+		// 	stat_msg = "Misdirected Request";
+		// 	break;
+		// case 422:
+		// 	stat_msg = "Unprocessable Entity";
+		// 	break;
+		// case 423:
+		// 	stat_msg = "Locked";
+		// 	break;
+		// case 424:
+		// 	stat_msg = "Failed Dependency";
+		// 	break;
+		// case 425:
+		// 	stat_msg = "Too Early";
+		// 	break;
+		// case 426:
+		// 	stat_msg = "Upgrade Required";
+		// 	break;
+		// case 428:
+		// 	stat_msg = "Precondition Required";
+		// 	break;
+		// case 429:
+		// 	stat_msg = "Too Many Requests";
+		// 	break;
 		case 431:
 			stat_msg = "Request Header Fields Too Large";
 			break;
-		case 451:
-			stat_msg = "Unavailable For Legal Reasons";
-			break;
-		case 500:
-			stat_msg = "Internal Server Error";
-			break;
-		case 501:
-			stat_msg = "Not Implemented";
-			break;
-		case 502:
-			stat_msg = "Bad Gateway";
-			break;
-		case 503:
-			stat_msg = "Service Unavailable";
-			break;
-		case 504:
-			stat_msg = "Gateway Timeout";
-			break;
+		// case 451:
+		// 	stat_msg = "Unavailable For Legal Reasons";
+		// 	break;
+		// case 500:
+		// 	stat_msg = "Internal Server Error";
+		// 	break;
+		// case 501:
+		// 	stat_msg = "Not Implemented";
+		// 	break;
+		// case 502:
+		// 	stat_msg = "Bad Gateway";
+		// 	break;
+		// case 503:
+		// 	stat_msg = "Service Unavailable";
+		// 	break;
+		// case 504:
+		// 	stat_msg = "Gateway Timeout";
+		// 	break;
 		case 505:
 			stat_msg = "HTTP Version Not Supported";
 			break;
-		case 506:
-			stat_msg = "Variant Also Negotiates";
-			break;
-		case 507:
-			stat_msg = "Insufficient Storage";
-			break;
-		case 508:
-			stat_msg = "Loop Detected";
-			break;
-		case 510:
-			stat_msg = "Not Extended";
-			break;
-		case 511:
-			stat_msg = "Network Authentication Required";
-			break;
+		// case 506:
+		// 	stat_msg = "Variant Also Negotiates";
+		// 	break;
+		// case 507:
+		// 	stat_msg = "Insufficient Storage";
+		// 	break;
+		// case 508:
+		// 	stat_msg = "Loop Detected";
+		// 	break;
+		// case 510:
+		// 	stat_msg = "Not Extended";
+		// 	break;
+		// case 511:
+		// 	stat_msg = "Network Authentication Required";
+		// 	break;
 		default:
 			stat_msg = "Unknown";
 			break;
@@ -330,8 +324,7 @@ void Response::MethodGet(webServ & web, confData & conf)
         if (!web.getbool_redir().first.empty() && !web.getbool_redir().second.empty())
             web.getRes().setStatus(atoi(web.getbool_redir().first.data()));
 		setContentLength();
-		if (web.getMax_body_size() > 0 && web.getMax_body_size() < atoi(content_length.data()))
-			content_length = itoa(web.getMax_body_size());
+		web.setMax_body_size(is_bodySized(web,conf));
 	}
 	else
 		web.getCgi().run_api(web, conf);
@@ -380,8 +373,26 @@ void Response::MethodDel(webServ&  web, confData& conf)
 
 void Response::concat_response(webServ & web)
 {
-    setStatMsg();
-    if (status == 301 || status == 302)
+	std::cout <<"body == " << web.getMax_body_size() << std::endl;
+
+    if (atoi(content_length.c_str()) > web.getMax_body_size() && web.getMax_body_size() > 0)
+	{
+		setStatus(413);
+		setStatMsg();
+		setContentType(".html");
+		body = CreateErrorPage(413);
+		setContentLength();
+		full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Length: " + content_length + "\n\n" + body;
+	}
+	if (status == 403 || status == 404 || status == 405)
+	{
+		setStatMsg();
+		setContentType(".html");
+		body = CreateErrorPage(status);
+		setContentLength();
+		full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Length: " + content_length + "\n\n" + body;
+	}
+    else if (status == 301)
         full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Location : " + web.getbool_redir().second;
     else
 	{
@@ -391,7 +402,7 @@ void Response::concat_response(webServ & web)
 			full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Length: " + content_length + body;
 	}
     web.del_redir();
-	//std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
+	std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
 }
 
 std::string Response::getResponse() const 

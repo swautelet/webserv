@@ -123,6 +123,8 @@ void webServ::setbool_redir(std::vector<std::string> vec)
     std::string loc;
     
     loc = vec.at(0);
+	if (loc.compare("301"))
+		loc = "301";
     str = vec.at(1);
     bool_redir = std::make_pair(loc, str);
 }

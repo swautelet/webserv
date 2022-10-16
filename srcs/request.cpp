@@ -45,7 +45,7 @@ Request& Request::operator=(const Request& other)
 int Request::getInfo(int connection, std::string string)
 {
     (void)connection;
-    //std::cout << "|" << string << "|" << std::endl;
+    std::cout << "|" << string << "|" << std::endl;
     clear_info();
     std::vector<std::string> req, req2;
 
@@ -89,6 +89,8 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
     std::string searched = "Accept: ";
     for (unsigned long i = 0; i < req.size(); i++)
     {
+        if (!searched.empty())
+            break;
         str = req[i];
         str.resize(str.size() - 1);
         if (!str.substr(0, searched.size()).compare(searched))

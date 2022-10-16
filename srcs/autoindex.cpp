@@ -37,38 +37,28 @@ Autodex& Autodex::operator=(const Autodex& other)
 std::string Autodex::create_dex(webServ & web, confData & conf, std::string url, const location & loc)
 {
     DIR *dir;
+    (void)web;
+    (void)conf;
+    (void)loc;
+    (void)dir;
     
     int i = -1;
-    std::string path;
+    (void)i;
     std::string full_url(url);
-    std::string loca = loc.getPath().substr(2, loc.getPath().size());
+    std::string index_str;
+    std::string loca = location_exe(conf, url);;
 
-    if (web.getReq().getUrl().size() > 1)
-        path = conf.getPath();
-    if (path.rfind("/") == path.size() - 1)
-        path = path.substr(0, path.size() - 1);
-    if (url.rfind("/") == url.size() - 1)
-        url = url.substr(0, url.size() - 1);
-    if (url[0] == '.' && url[1] == '/')
-        url.erase(0, 2);
-    while(++i < conf.getLocationNbr())
-    {
-        if (!conf.getLocation(i).getLocation_name().compare(path))
-        {
-            path = conf.getGoodLocation(path).getPath();
-            web.setMax_body_size(atoi(conf.getLocation(i).getBodySize().data()));
-            break;
-        }
-    }
-    if ((dir = opendir(url.data())) != NULL)
-        index_str = html_creation(dir, full_url, loca, url);
+    if ((dir = opendir(full_url.data())) != NULL)
+        index_str = html_creation(dir, full_url, loca, web.getReq().getUrl());
     web.getRes().setContentType(".html");
     return index_str;
 }
 
 std::string Autodex::html_creation(DIR *dir, std::string full_url, std::string loca, std::string url)
 {
+    (void)loca;
     struct dirent *ent;
+    int download = 0;
     std::string tmp;
     tmp += "<html>";
 	tmp += "<head><title>Index of ";
@@ -76,44 +66,29 @@ std::string Autodex::html_creation(DIR *dir, std::string full_url, std::string l
 	tmp += "<body>\n";
 	tmp += "<h1>Index of ";
 	tmp += url + "</h1><hr><pre>";
-    full_url = url;
-    if (url.find("/") == std::string::npos)
-        url = "";
-    else
-        url = url.substr(url.find("/"), url.size());
+    if (!url.substr(url.rfind("/") + 1, url.size()).compare("download"))
+        download = 1;
     while ((ent = readdir(dir)) != NULL)
-    {
-        if (strcmp(ent->d_name, "."))
-        {
-                tmp += "<a href=";
-                if (!strcmp(ent->d_name, ".."))
-                {
-                    if (full_url.compare(loca))
-                    {
-                        tmp += url.substr(0, url.rfind("/"));
-                        tmp += "/";
-                    }
-                    tmp += ">";
-                    tmp += ent->d_name;
-                    tmp += " </a>\n";
-                }
-                else
-                {
-                    if (!url.empty())
-                    {
-                        tmp += url;
-                        tmp += "/";
-                    }
-                    tmp += ent->d_name;
-                    tmp += ">";
-                    tmp += ent->d_name;
-                    tmp += " </a>\n";
-                }
-        }
-    }
-    closedir(dir);
-    tmp += "</pre><hr></body>\n";
+	{
+		if (strcmp(ent->d_name, ".") != 0)
+		{
+			tmp += "<a href=\"";
+			tmp += url;
+			if (url[url.size() - 1] != '/')
+				tmp += '/';
+			tmp += ent->d_name;
+            if (download == 1)
+                tmp += "\"download";
+            else
+                tmp += "\"";
+			tmp += ">";
+			tmp += ent->d_name;
+			tmp += " </a>\n";
+		}
+	}
+	tmp += "</pre><hr></body>";
 	tmp += "</html>";
+    closedir(dir);
     return tmp;
 }
 

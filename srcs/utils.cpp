@@ -95,14 +95,12 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
     //std::cout << loc << std::endl;
 	if (!loc.empty() && conf.LocationExist(loc))
 	{
-	    web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().data()));
         if (!conf.getGoodLocation(loc).getRedir().empty())
         {
             web.setbool_redir(conf.getGoodLocation(loc).getRedir());
-			web.setMax_body_size(atoi(conf.getGoodLocation(loc).getBodySize().data()));
             return "";
         }  
-		//std::cout << "Final location is " << loc <<std::endl;
+		std::cout << "Final location is " << loc <<std::endl;
         // std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
         {
@@ -120,19 +118,20 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
 	}
 	else
 	{
-        web.setMax_body_size(atoi(conf.getBodySize().data()));
         if (!conf.getRedir().empty())
         {
             web.setbool_redir(conf.getRedir());
             return "";
         }
-		// std::cout << "No similar location found : base location will be used" <<std::endl;
+		std::cout << "No similar location found : base location will be used" <<std::endl;
 		if (!conf.getPath().compare("./"))
 			url = "." + req_file;
 		else
 			url = conf.getPath() + req_file;
+        if (!url.empty() && url.rfind("/") == url.size() - 1)
+            url.resize(url.size() - 1);
 	}
-    // std::cout << "!url = " << url << std::endl;
+    std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, loc);
     if (file_exist(url) == 0)
     {
@@ -173,7 +172,6 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
         }
         else
         {
-			web.setMax_body_size(atoi(conf.getBodySize().data()));
             //std::cout << "didnt found location" << std::endl;
             if (BaseLocationExist(conf).empty())
             {
@@ -182,7 +180,6 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
                 else if (conf.getAutoIndex())
 				{
 					web.getRes().setStatus(200);
-					web.setMax_body_size(atoi(conf.getBodySize().data()));
 					closedir(dir);
                     return web.getAutodex().create_dex(web, conf, url, conf.getGoodLocation(loc));
 				}
@@ -198,18 +195,26 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
 		if (fullpath.empty())
 			fullpath = url;
     }
-    //std::cout << "Final fullpath = " << fullpath << std::endl;
     if (file_exist(url) == 0)
     {
         web.getRes().setContentType(".html");
+        web.getRes().setStatus(404);
+        web.getRes().setStatMsg();
         fullpath = ERROR_404;
+    }
+    std::cout << "Final fullpath = " << fullpath << std::endl;
+    if (!fullpath.compare(ERROR_403) || !fullpath.compare(ERROR_404))
+    {
+        if (!fullpath.compare(ERROR_404))
+            web.getRes().setStatus(404);
+        else
+            web.getRes().setStatus(403);
     }
     fd.open(fullpath.data());
     if (!fd.is_open())
         if (fd.good())
-            printerr(" opening ... (ReadHTML)");
+            printerr("Open failed ...");
     buff << fd.rdbuf();
-	web.getRes().setContentType(fullpath);
 	web.getRes().setContentType(fullpath);
     return buff.str();
 }
@@ -515,4 +520,44 @@ void print_tab(char **tab)
         std::cout << "[" << i << "]-> " <<  tab[i] << std::endl;
         i++;
     }
+}
+
+
+std::string CreateErrorPage(int code)
+{
+    std::cout << "Error Page Creation ..." << std::endl; 
+    std::string msg = "";
+    switch (code)
+    {
+        case 403:
+            msg = "Forbidden";
+            break;
+        case 404:
+            msg = "Not Found";
+            break;
+        case 405:
+            msg = "Method Not Allowed";
+            break;
+        case 413:
+            msg = "Request entity too large";
+            break;
+        default:
+            break;
+    }
+    std::string str = "<html><head><title>";
+    str += itoa(code) + " " + msg; 
+    str += "</title></head><body><center><h1>";
+    str += itoa(code) + " " + msg; 
+    str += "</h1></center><hr><center>Webserv</center></body></html>";
+    return str;
+}
+
+int is_bodySized(webServ & web, confData & conf)
+{
+    std::string loc = location_exe(conf,web.getReq().getUrl());
+	std::cout << "loc is : " << loc << std::endl;
+    if (loc.empty())
+        return atoi(conf.getBodySize().data());
+    return atoi(conf.getGoodLocation(loc).getBodySize().data());
+
 }

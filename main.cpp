@@ -116,7 +116,6 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         }
         web.getRes().find_method(web, i);
         web.getRes().concat_response(web);
-        std::cout << "fack\n";
         send(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size(), 0);
         web.getCgi().setCGIBool(0);
         str = "";
@@ -132,7 +131,6 @@ int engine(webServ & web)
     int connection = -1;
     int i = 0;
 
-    std::cout << "!\n";
     for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
     {
         if (FD_ISSET(it->getFd(), &sready))
@@ -158,7 +156,7 @@ int engine(webServ & web)
                 buffer[ret] = '\0';
                 str += buffer;
             }
-            if (ret < 1)
+            if (ret < 0)
             {
                 printerr("Recv returned -1 ...");
                 return (0);
@@ -186,7 +184,7 @@ int loopselect()
 {
     int status = 0;
     struct timeval select_timeout;
-    select_timeout.tv_sec = 30;
+    select_timeout.tv_sec = 90;
     select_timeout.tv_usec = 0;
     while(!g_ctrl_called && status == 0)
     {
@@ -214,7 +212,7 @@ int main(int argc, char **argv, char **envp)
 {
     FD_ZERO(&sdump);
     struct timeval tv;
-    tv.tv_sec = 30;
+    tv.tv_sec = 90;
     tv.tv_usec = 0;
     if (argc != 2)
         printerr("Usage : ./Webserv [conf file]");
