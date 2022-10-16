@@ -100,7 +100,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             web.setbool_redir(conf.getGoodLocation(loc).getRedir());
             return "";
         }  
-		std::cout << "Final location is " << loc <<std::endl;
+		//std::cout << "Final location is " << loc <<std::endl;
         // std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
         {
@@ -123,7 +123,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             web.setbool_redir(conf.getRedir());
             return "";
         }
-		std::cout << "No similar location found : base location will be used" <<std::endl;
+		//std::cout << "No similar location found : base location will be used" <<std::endl;
 		if (!conf.getPath().compare("./"))
 			url = "." + req_file;
 		else
@@ -131,7 +131,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
         if (!url.empty() && url.rfind("/") == url.size() - 1)
             url.resize(url.size() - 1);
 	}
-    std::cout << "!url = " << url << std::endl;
+    //std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, loc);
     if (file_exist(url) == 0)
     {
@@ -202,7 +202,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
         web.getRes().setStatMsg();
         fullpath = ERROR_404;
     }
-    std::cout << "Final fullpath = " << fullpath << std::endl;
+    //std::cout << "Final fullpath = " << fullpath << std::endl;
     if (!fullpath.compare(ERROR_403) || !fullpath.compare(ERROR_404))
     {
         if (!fullpath.compare(ERROR_404))
@@ -555,7 +555,7 @@ std::string CreateErrorPage(int code)
 int is_bodySized(webServ & web, confData & conf)
 {
     std::string loc = location_exe(conf,web.getReq().getUrl());
-	std::cout << "loc is : " << loc << std::endl;
+	// << "loc is : " << loc << std::endl;
     if (loc.empty())
         return atoi(conf.getBodySize().data());
     return atoi(conf.getGoodLocation(loc).getBodySize().data());

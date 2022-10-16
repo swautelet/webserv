@@ -57,6 +57,7 @@ std::string Autodex::create_dex(webServ & web, confData & conf, std::string url,
 std::string Autodex::html_creation(DIR *dir, std::string full_url, std::string loca, std::string url)
 {
     (void)loca;
+    (void)full_url;
     struct dirent *ent;
     int download = 0;
     std::string tmp;
