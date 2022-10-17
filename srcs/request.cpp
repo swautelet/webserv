@@ -45,7 +45,7 @@ Request& Request::operator=(const Request& other)
 int Request::getInfo(int connection, std::string string)
 {
     (void)connection;
-    std::cout << "|" << string << "|" << std::endl;
+    //std::cout << "|" << string << "|" << std::endl;
     clear_info();
     std::vector<std::string> req, req2;
 
@@ -227,7 +227,8 @@ void        Request::add_Wrote(int read)
 
 void        Request::Write_Brutbody(char* buff, int size)
 {
+    std::cout << getBrutbody_fileno() << std::endl;
     if ((write(getBrutbody_fileno(), buff, size) < 0))
-        printerr("Error with write...");
+        printerr("Error with write..");
     add_Wrote(size);
 }

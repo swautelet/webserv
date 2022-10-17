@@ -238,6 +238,7 @@ std::string itoa(int a)
 int printerr(const char *str)
 {
     std::cerr << str << std::endl;
+    std::cerr << errno << std::endl;
     exit(1);
 }
 

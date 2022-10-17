@@ -93,8 +93,6 @@ Cgi::~Cgi()
 {
 	pathmap.clear();
 	env.clear();
-	// 	fclose(infile);
-	//	delete this->scripath;
 	std::cout << "Cgi destructor called" << std::endl;
 }
 

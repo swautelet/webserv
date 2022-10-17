@@ -42,7 +42,6 @@ int select_connection(int connection)
                 printerr("Error with select ...");
             return (0);
         }
-        std::cout << "STATUS:" << status << std::endl;
     }
     if (g_ctrl_called)
         return (0);
@@ -63,7 +62,6 @@ void setup(webServ & web, int backlog)
         if (!no)
         {
             web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
-            std::cout << "FD ARE : " << web.getSock()[i].getFd() << std::endl;
             FD_SET(web.getSock()[i].getFd(), &sdump);
             FD_SET(web.getSock()[i].getFd(), &rdump);
             ip_vec.push_back(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort());
@@ -113,19 +111,16 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         web.getReq().getInfo(connection, str);
         std::string tmp = buffer;
         int sizeheader = tmp.find("\r\n\r\n") + 4;
-        web.getReq().Write_Brutbody(buffer + sizeheader, ret - sizeheader);
+        if (web.getReq().getBrutbody_fileno() != -1)
+            web.getReq().Write_Brutbody(buffer + sizeheader, ret - sizeheader);
         while (!g_ctrl_called && web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
         {
             if (!select_connection(connection))
                 return 0;
             if ((ret = recv(connection, buffer, BUFFER_SIZE - 1, 0)) < 0)
-            {
                 printerr("Recv returned -1 ...");
-                return (0);
-            }
-            if(ret == 0)
-                
-            web.getReq().Write_Brutbody(buffer, ret);
+            if (web.getReq().getBrutbody_fileno() != -1)
+                web.getReq().Write_Brutbody(buffer, ret);
         }
         web.getRes().find_method(web, i);
         web.getRes().concat_response(web);
@@ -149,7 +144,6 @@ int engine(webServ & web)
     {
         if (FD_ISSET(it->getFd(), &sready))
         {
-            std::cout << "fd is : " << it->getFd() << std::endl;
             memset(buffer, 0, BUFFER_SIZE);
             struct sockaddr client_address;
 	        int addrlen = sizeof(sizeof(struct sockaddr_in));
@@ -172,10 +166,7 @@ int engine(webServ & web)
                 str += buffer;
             }
             if (ret < 0)
-            {
                 printerr("Recv returned -1 ...");
-                return (0);
-            }
             if (!routine(web, str, buffer, connection, ret, i))
             {
                 close(connection);
