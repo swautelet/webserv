@@ -14,6 +14,8 @@
 
 fd_set sdump;
 fd_set sready;
+fd_set rdump;
+fd_set rready;
 int g_ctrl_called = 0;
 std::vector<std::string> ip_vec;
 
@@ -24,15 +26,20 @@ int select_connection(int connection)
 
     tv.tv_sec = 1;
     tv.tv_usec = 0;
-    fd_set read_set, read_dump;
+    fd_set read_set, read_dump, write_set, write_dump;
     FD_ZERO(&read_dump);
+    FD_ZERO(&write_dump);
     FD_SET(connection, &read_dump);
+    FD_SET(connection, &write_dump);
     while (!g_ctrl_called && status == 0)
     {
         FD_ZERO(&read_set);
+        FD_ZERO(&write_set);
         read_set = read_dump;
+        write_set = write_dump;
         usleep(2000);
-        if ((status = select (connection + 1, &read_set, NULL, NULL, &tv)) < 0)
+        std::cout << "Select connection ... " << std::endl;
+        if ((status = select(connection + 1, &read_set, &write_set, NULL, &tv)) < 0)
         {
             if (!g_ctrl_called)
                 printerr("Error with select ...");
@@ -47,6 +54,7 @@ int select_connection(int connection)
 void setup(webServ & web, int backlog)
 {
     FD_ZERO(&sready);
+    FD_ZERO(&rready);
     for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         int no = 0;
@@ -57,13 +65,14 @@ void setup(webServ & web, int backlog)
         if (!no)
         {
             web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
-            //std::cout << "FD ARE : " << web.getSock()[i].getFd() << std::endl;
+            std::cout << "FD ARE : " << web.getSock()[i].getFd() << std::endl;
             FD_SET(web.getSock()[i].getFd(), &sdump);
+            FD_SET(web.getSock()[i].getFd(), &rdump);
             ip_vec.push_back(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort());
         }
     }
-    // for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
-        // std::cout << "Unique ip:" << *it << std::endl;
+    for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
+        std::cout << "Unique ip:" << *it << std::endl;
 }
 
 void error_handling(webServ & web)
@@ -116,6 +125,7 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         }
         web.getRes().find_method(web, i);
         web.getRes().concat_response(web);
+        
         send(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size(), 0);
         web.getCgi().setCGIBool(0);
         str = "";
@@ -135,6 +145,7 @@ int engine(webServ & web)
     {
         if (FD_ISSET(it->getFd(), &sready))
         {
+            std::cout << "fd is : " << it->getFd() << std::endl;
             memset(buffer, 0, 10000);
             struct sockaddr client_address;
 	        int addrlen = sizeof(sizeof(struct sockaddr_in));
@@ -186,12 +197,15 @@ int loopselect()
     struct timeval select_timeout;
     select_timeout.tv_sec = 90;
     select_timeout.tv_usec = 0;
+    FD_ZERO(&sready);
+    FD_ZERO(&rready);
+    sready = sdump;
+    rready = rdump;
     while(!g_ctrl_called && status == 0)
     {
-        FD_ZERO(&sready);
-        sready = sdump;
         usleep(20);
-        if ((status = select(FD_SETSIZE, &sready, NULL, NULL, &select_timeout)) < 0)
+        std::cout << "Loop Select ... " << std::endl;
+        if ((status = select(FD_SETSIZE, &sready, &rready, NULL, &select_timeout)) < 0)
         {
             if (!g_ctrl_called)
                 printerr("Error with select ...");
@@ -211,9 +225,7 @@ int loopselect()
 int main(int argc, char **argv, char **envp)
 {
     FD_ZERO(&sdump);
-    struct timeval tv;
-    tv.tv_sec = 90;
-    tv.tv_usec = 0;
+    FD_ZERO(&sready);
     if (argc != 2)
         printerr("Usage : ./Webserv [conf file]");
     webServ web(argv[1], envp);

@@ -379,6 +379,7 @@ void confData::scrapLocation()
     if (path.empty())
         path = "./";
     nbr_loc = check_location_nbr(cpy_data, "location ");
+    std::cout << "aie\n";
     std::cout << "Nbr of location : " << nbr_loc << std::endl;
     loc.reserve(nbr_loc);
     loc.resize(nbr_loc);

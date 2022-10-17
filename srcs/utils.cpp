@@ -460,7 +460,7 @@ int check_location_nbr(std::string str, std::string to_find)
     {
         cut = str.substr(0, str.find("\n"));
         str = str.substr(str.find("\n") + 1, str.size());
-        if (!cut.find("server"))
+        if (!cut.compare("}") || !cut.find("server"))
             return i; 
         if (cut.find(to_find) != std::string::npos)
             i++;
