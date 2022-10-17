@@ -227,6 +227,7 @@ void        Request::add_Wrote(int read)
 
 void        Request::Write_Brutbody(char* buff, int size)
 {
-    write(getBrutbody_fileno(), buff, size);
+    if ((write(getBrutbody_fileno(), buff, size) < 0))
+        printerr("Error with write...");
     add_Wrote(size);
 }

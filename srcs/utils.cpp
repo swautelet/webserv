@@ -561,3 +561,29 @@ int is_bodySized(webServ & web, confData & conf)
     return atoi(conf.getGoodLocation(loc).getBodySize().data());
 
 }
+
+int ReadWriteProtection(int fd)
+{
+    struct timeval tv;
+    int status = 0;
+
+    tv.tv_sec = 1;
+    tv.tv_usec = 0;
+    fd_set read_set, read_dump, write_set, write_dump;
+    FD_ZERO(&read_dump);
+    FD_ZERO(&write_dump);
+    FD_SET(fd, &read_dump);
+    FD_SET(fd, &write_dump);
+    while (status == 0)
+    {
+        FD_ZERO(&read_set);
+        FD_ZERO(&write_set);
+        read_set = read_dump;
+        write_set = write_dump;
+        usleep(2000);
+        std::cout << "ReadWrite protection ... " << std::endl;
+        if ((status = select(fd + 1, &read_set, &write_set, NULL, &tv)) < 0)
+            printerr("Error with ReadWrite protection ...");
+    }
+    return 1;
+}

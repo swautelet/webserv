@@ -13,8 +13,13 @@ std::string	Cgi::start_script(webServ& web)
 	char buffer[10000];
 	int ret;
 	//std::cout << "This :" << web.getCgi().getPath() << " received this brutbody::::::::::::::::::::::::::::::::::::::::::::::::::"<< std::endl;
+	if (!ReadWriteProtection(web.getReq().getBrutbody_fileno()))
+		printerr("Error with select on read Brutbody ...");
 	while ((ret = read(web.getReq().getBrutbody_fileno(), buffer, 10000)) > 0)
-		write(1, buffer, ret);
+		if ((write(1, buffer, ret)) < 0)
+			printerr("Error with write ...");
+	if (ret == -1)
+		printerr("Error with read ...");
 	//std::cout << "finish ---------------------------------------" << std::endl;
 	lseek(web.getReq().getBrutbody_fileno(), 0, SEEK_SET);
 	id = fork();
@@ -45,12 +50,16 @@ std::string	Cgi::start_script(webServ& web)
 		char buff[BUFF_SIZE + 1];
 		buff[BUFF_SIZE] = '\0';
 		int size;
+		if (!ReadWriteProtection(web.getReq().getBrutbody_fileno()))
+			printerr("Error with select on read execve outpout ...");	
 		while((size = read(outpip[0], buff, BUFF_SIZE)) > 0)
 		{
 			for (int i = size; i <= BUFF_SIZE; i++)
 				buff[i] = '\0';
 			rep += buff;
 		}
+		if (size == -1)
+			printerr("Error with read ...");
 		//std::cout << "buff " << buff << std::endl;
 		// std::cout << "waiting for php " << std::endl;
 		// wait(&status);

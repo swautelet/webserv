@@ -12,10 +12,7 @@
 
 #include "include/header.hpp"
 
-fd_set sdump;
-fd_set sready;
-fd_set rdump;
-fd_set rready;
+fd_set sdump, sready, rdump, rready;
 int g_ctrl_called = 0;
 std::vector<std::string> ip_vec;
 
@@ -45,6 +42,7 @@ int select_connection(int connection)
                 printerr("Error with select ...");
             return (0);
         }
+        std::cout << "STATUS:" << status << std::endl;
     }
     if (g_ctrl_called)
         return (0);
@@ -120,7 +118,13 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         {
             if (!select_connection(connection))
                 return 0;
-            ret = recv(connection, buffer, sizeof(buffer) - 1, 0);
+            if ((ret = recv(connection, buffer, BUFFER_SIZE - 1, 0)) < 0)
+            {
+                printerr("Recv returned -1 ...");
+                return (0);
+            }
+            if(ret == 0)
+                
             web.getReq().Write_Brutbody(buffer, ret);
         }
         web.getRes().find_method(web, i);
@@ -135,7 +139,7 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
 
 int engine(webServ & web)
 {
-    char buffer[10000];
+    char buffer[BUFFER_SIZE];
     std::string str = "";
     int ret;
     int connection = -1;
@@ -146,7 +150,7 @@ int engine(webServ & web)
         if (FD_ISSET(it->getFd(), &sready))
         {
             std::cout << "fd is : " << it->getFd() << std::endl;
-            memset(buffer, 0, 10000);
+            memset(buffer, 0, BUFFER_SIZE);
             struct sockaddr client_address;
 	        int addrlen = sizeof(sizeof(struct sockaddr_in));
             //std::cout << "Accept ... " << std::endl;

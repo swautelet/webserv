@@ -54,6 +54,8 @@
 #define ERROR_403 "www/error/403.html"
 #define ERROR_404 "www/error/404.html"
 
+#define BUFFER_SIZE 10000
+
 int printerr(const char *str);
 std::string itoa(int a);
 std::string readfile(webServ & web, confData & conf, std::string file);
@@ -81,6 +83,7 @@ std::string error_parse(int code);
 char*   to_char(const std::string& str);
 std::string CreateErrorPage(int code);
 int is_bodySized(webServ & web, confData & conf);
+int ReadWriteProtection(int fd);
 
 #endif
 
