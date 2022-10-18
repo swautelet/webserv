@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/13 19:50:20 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/10/18 16:50:38 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,10 +117,9 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         {
             if (!select_connection(connection))
                 return 0;
-            if ((ret = recv(connection, buffer, BUFFER_SIZE - 1, 0)) < 0)
-                printerr("Recv returned -1 ...");
-            if (web.getReq().getBrutbody_fileno() != -1)
-                web.getReq().Write_Brutbody(buffer, ret);
+            if ((ret = recv(connection, buffer, BUFFER_SIZE - 1, 0)) > 0)
+                if (web.getReq().getBrutbody_fileno() != -1)
+                    web.getReq().Write_Brutbody(buffer, ret);
         }
         web.getRes().find_method(web, i);
         web.getRes().concat_response(web);
@@ -164,13 +163,11 @@ int engine(webServ & web)
             {
                 buffer[ret] = '\0';
                 str += buffer;
-            }
-            if (ret < 0)
-                printerr("Recv returned -1 ...");
-            if (!routine(web, str, buffer, connection, ret, i))
-            {
-                close(connection);
-                return 0;
+                if (!routine(web, str, buffer, connection, ret, i))
+                {
+                    close(connection);
+                    return 0;
+                }
             }
             close(connection);
         }
