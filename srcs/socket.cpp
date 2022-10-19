@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "header.hpp"
-
+#include <arpa/inet.h>
 
 Socket::Socket()
 {
@@ -21,7 +21,8 @@ Socket::Socket()
 
 Socket::~Socket()
 {
-    std::cout << "Destructor socket called : " << fd <<std::endl;
+    std::cout << "Socket destructor called : " << fd <<std::endl;
+    close(fd);
 }
 
 Socket::Socket(std::string ip, std::string port)
@@ -39,7 +40,6 @@ Socket::Socket(const Socket & other)
     this->ip = other.ip;
     this->port = other.port;
     //fd = -1;
-    std::cout << fd << std::endl;
 }
 
 void Socket::setup(int backlog, confData & conf)
@@ -54,8 +54,9 @@ void Socket::setup(int backlog, confData & conf)
 int Socket::create_socket(confData & conf)
 {
     serv_address.sin_family = AF_INET;
-    serv_address.sin_addr.s_addr = htonl(INADDR_ANY);
+    serv_address.sin_addr.s_addr = inet_addr(conf.getAdress().c_str());
     serv_address.sin_port = htons(atoi(conf.getPort().data()));
+    memset(serv_address.sin_zero, 0, sizeof(serv_address.sin_zero));
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
         return printerr("Error with socket creation ...");
     return 1;
@@ -73,7 +74,8 @@ int Socket::create_bind()
 
 int Socket::listen_socket(int max_queue)
 {
-    if (listen(fd, max_queue) < 0)
+    (void)max_queue;
+    if (listen(fd, SOMAXCONN) < 0)
         return printerr("Error with socket listening ...");
     if ((fcntl(fd, F_SETFL, O_NONBLOCK)) < 0)
         return printerr("Error with fcntl ...");

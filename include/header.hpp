@@ -65,7 +65,7 @@ int	test(std::string str, std::string c);
 char	*test1(std::string str , std::string c);
 void print_tab(char **tab);
 void remove_spaces(std::string &str);
-std::string BaseLocationExist(confData conf);
+std::string BaseLocationExist(confData &    conf);
 std::string location_exe(confData & conf, std::string req_file);
 void	splitstring(std::string str, std::vector<std::string>& vect, char c);
 void	splitstring(std::string str, std::vector<std::string>& vect, char c);

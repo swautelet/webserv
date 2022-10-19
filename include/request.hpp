@@ -40,6 +40,7 @@ class Request
         std::string getQuery_string();
         int getBrutbody_fileno();
         void    clean_header();
+        FILE* getBrutBody();
         
     private:
         FILE* brutbody;

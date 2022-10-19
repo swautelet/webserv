@@ -172,7 +172,6 @@ void Request::clear_info()
     version = "";
     query_s = "";
     wrote = 0;
-    close(getBrutbody_fileno());
     brutbody = tmpfile();
 }
 
@@ -227,8 +226,13 @@ void        Request::add_Wrote(int read)
 
 void        Request::Write_Brutbody(char* buff, int size)
 {
-    std::cout << getBrutbody_fileno() << std::endl;
+    //std::cout << getBrutbody_fileno() << std::endl;
     if ((write(getBrutbody_fileno(), buff, size) < 0))
         printerr("Error with write..");
     add_Wrote(size);
+}
+
+FILE * Request::getBrutBody()
+{
+    return brutbody;
 }

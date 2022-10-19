@@ -19,13 +19,12 @@ Autodex::Autodex()
 
 Autodex::~Autodex()
 {
-    
+    std::cout << "Autodex destructor called" << std::endl;
 }
 
 Autodex::Autodex(const Autodex & other):index_str(other.getIndexStr())
 {
 //    *this = other;
-    std::cout << "Autodex destructor called" << std::endl;
 }
 
 Autodex& Autodex::operator=(const Autodex& other)

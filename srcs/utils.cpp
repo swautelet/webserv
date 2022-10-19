@@ -295,7 +295,7 @@ void remove_spaces(std::string &str)
     }
 }
 
-std::string BaseLocationExist(confData conf)
+std::string BaseLocationExist(confData & conf)
 {
     int i = 0;
     while (i < conf.getLocationNbr())
