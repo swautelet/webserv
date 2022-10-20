@@ -42,13 +42,13 @@ Socket::Socket(const Socket & other)
     //fd = -1;
 }
 
-void Socket::setup(int backlog, confData & conf)
+int Socket::setup(int backlog, confData & conf)
 {
-    create_socket(conf);
-    create_bind();
-    listen_socket(backlog);
+    if (!create_socket(conf) || !create_bind() || !listen_socket(backlog))
+        return 0;
     set_ip(conf.getAdress());
     set_port(conf.getPort());
+    return 1;
 }
 
 int Socket::create_socket(confData & conf)

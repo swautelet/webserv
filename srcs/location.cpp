@@ -16,6 +16,7 @@ location::location()
 {
     autoindex = 0;
     error_page = "";
+    cgi = 0;
 }
 
 location::~location()
@@ -74,9 +75,19 @@ std::string location::getBodySize() const
     return body_size;   
 }
 
+std::string location::getCGIPath() const 
+{
+    return cgi_upload_path;   
+}
+
 int location::getAutoIndex() const 
 {
     return autoindex;
+}
+
+int location::getCGI() const 
+{
+    return cgi;
 }
 
 const std::vector<std::string> & location::getRedir() const
@@ -108,6 +119,15 @@ void location::setMethod(std::string str)
     if (method.empty())
         return;
     method.resize(method.size() - 1);
+}
+
+void location::setCGIPath(std::string str)
+{
+    remove_spaces(str);
+    cgi_upload_path = str.substr(strlen("cgi_upload_path "), str.size());
+    if (cgi_upload_path.empty())
+        return;
+    cgi_upload_path.resize(cgi_upload_path.size() - 1);
 }
 
 void location::setIndex(std::string str)
@@ -158,6 +178,15 @@ void location::setAutoIndex(std::string str)
         autoindex = 0;
 }
 
+void location::setCGI(std::string str)
+{
+    remove_spaces(str);
+    if (!str.compare("cgi on;"))
+        cgi = 1;
+    else if (!str.compare("cgi off;"))
+        cgi = 0;
+}
+
 void location::setRedir(std::string str)
 {
     if (!redir.empty())
@@ -197,6 +226,8 @@ void location::edit_info(std::string str, std::string info, std::vector<std::str
         error_page = info;
     if (!str.compare("autoindex"))
         autoindex = atoi(info.data());
+    if (!str.compare("cgi"))
+        cgi = atoi(info.data());
     if (!str.compare("index"))
         index = vec;
     if (!str.compare("body_size"))
@@ -213,6 +244,8 @@ void location::print_info() const
         std::cout << "Path->            " << "[" << path << "]" << std::endl;
     if (!method.empty())
         std::cout << "Method->          " << "[" << method << "]" << std::endl;
+    if (!cgi_upload_path.empty())
+        std::cout << "cgi_upload_path->          " << "[" << cgi_upload_path << "]" << std::endl;
     if (!index.empty())
     {
         std::cout << "Index->           ";
@@ -236,6 +269,7 @@ void location::print_info() const
     if (!body_size.empty())
         std::cout << "Body_size->       " << "[" << body_size << "]" << std::endl;
     std::cout << "AutoIndex->       " << "[" << autoindex << "]" << std::endl << std::endl;
+    std::cout << "Cgi->             " << "[" << cgi << "]" << std::endl << std::endl;
 }
 
 
@@ -268,6 +302,10 @@ int location::scrapData(std::string data, int i)
             setErrorPage(tmp);
         else if (tmp.find("autoindex")!= std::string::npos)
             setAutoIndex(tmp);
+        else if (tmp.find("cgi_upload_path")!= std::string::npos)
+            setCGIPath(tmp);
+        else if (tmp.find("cgi")!= std::string::npos)
+            setCGI(tmp);
         else if (tmp.find("index")!= std::string::npos)
             setIndex(tmp);
         else if (tmp.find("client_max_body_size")!= std::string::npos)

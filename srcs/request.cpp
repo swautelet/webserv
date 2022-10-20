@@ -79,6 +79,8 @@ int Request::getInfo(int connection, std::string string)
     clean_header();
     //std::cout << std::endl << "Header is ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << header << std::endl << "-----------------------------------------------------------------------" << std::endl;
     //std::cout << "BODY IS ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << body << std::endl << "--------------------------------------------------------------" << std::endl;
+    req.clear();
+    req2.clear();
     return 1;
 }
 

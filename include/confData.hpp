@@ -41,6 +41,8 @@ class confData
         std::string getBodySize() const;
         std::string getServName() const;
         std::string getErrorPage() const;
+        int getCGI() const;
+        std::string getCGIPath() const;
         const std::string& getAdress() const;
         std::vector<std::string> getIndex() const;
         const location & getLocation(int index) const;
@@ -56,14 +58,18 @@ class confData
         void setBodySize(std::string str);
         void setErrorPage(std::string str);
         void setAutoIndex(std::string str);
+        void setCGI(std::string str);
+        void setCGIPath(std::string str);
     private:
         int autoindex;
+        int cgi;
         std::string port;
         std::string path;
         std::string method;
         std::string address;
         std::string serv_name;
         std::string body_size;
+        std::string cgi_upload_path;
         unsigned long nbr_loc;
         std::string error_page;
         std::vector<location> loc;

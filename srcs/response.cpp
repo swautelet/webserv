@@ -316,6 +316,7 @@ int how_many(std::string str)
  
 void Response::MethodGet(webServ & web, confData & conf)
 {
+	std::string loc = location_exe(conf, web.getReq().getUrl());
     version = web.getReq().getVersion();
 	setStatus(200);
 	if (setContentType(web.getReq().getUrl()) == 0)
@@ -327,15 +328,47 @@ void Response::MethodGet(webServ & web, confData & conf)
 		web.setMax_body_size(is_bodySized(web,conf));
 	}
 	else
+	{
+		if (!loc.empty())
+		{
+			if (conf.getCGI() == 0)
+			{
+				std::cout << "cgi is off";
+				return;
+			}
+		}
+		else if (conf.getGoodLocation(loc).getCGI() == 0)
+		{
+			std::cout << "cgi is off";
+			return;
+		}
+		std::cout << "AAAAAAAAAH" << std::endl;
 		web.getCgi().run_api(web, conf);
+	}
+
 }
 
 void Response::MethodPost(webServ & web, confData & conf)
 {
     int nbr = atoi(web.getReq().getContentLength().data());
-    // std::cout << " body is ----------------------------" << body << std::endl;
+	std::string loc = location_exe(conf, web.getReq().getUrl());
     if (setContentType(web.getReq().getUrl()) == 1)
-        web.getCgi().run_api(web, conf);
+	{
+		if (!loc.empty())
+		{
+			if (conf.getCGI() == 0)
+			{
+				std::cout << "cgi is off ...";
+				return;
+			}
+		}
+		else if (conf.getGoodLocation(loc).getCGI() == 0)
+		{
+			std::cout << "cgi is off ...";
+			return;
+		}
+		web.getCgi().run_api(web, conf);
+	}
     else if (!nbr)
 	{
 		setStatus(100);
@@ -346,6 +379,7 @@ void Response::MethodPost(webServ & web, confData & conf)
 	{
 		std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
 		post_exe(web, post, conf, nbr);
+		post.clear();
 	}
 }
 

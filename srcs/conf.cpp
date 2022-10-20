@@ -87,7 +87,7 @@ void Conf::parsing(std::string path)
 {
     if (!(nbr_serv = (confList)[0].parsing(path)))
         printerr("Error with parsing, 0 server found ...");
-    confList.resize(nbr_serv, confData());
+    confList.resize(nbr_serv);
     for (unsigned long i = 0; i < nbr_serv; i++)
         (confList)[i].scrapData();
     print_info();

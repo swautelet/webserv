@@ -68,7 +68,7 @@ int select_connection_send(int connection)
         tset = tstock;
         wset = wstock;
         std::cout << "Select connection idk ... " << std::endl;
-        if ((status = select(connection + 1, NULL, &wset, NULL, &tv)) < 0)
+        if ((status = select(connection + 1, &tset, &wset, NULL, &tv)) < 0)
         {
             if (!g_ctrl_called)
                 return printerr("Error with select ...");
@@ -81,29 +81,24 @@ int select_connection_send(int connection)
 }
 
 
-void setup(webServ & web, int backlog)
+int setup(webServ & web, int backlog)
 {
     FD_ZERO(&sready);
     FD_ZERO(&rready);
     for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
     {
-        int no = 0;
-        std::string tmp = web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort();
-        for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
-            if (!it->compare(tmp))
-                no = 1;
-        if (!no)
-        {
-            web.getSock()[i].setup(backlog, web.getConf().getConflist(i));
-            FD_SET(web.getSock()[i].getFd(), &sstock);
-            FD_SET(web.getSock()[i].getFd(), &rstock);
-            ip_vec.push_back(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort());
-            if (web.getSock()[i].getFd() > max_fd)
-                max_fd = web.getSock()[i].getFd();
-        }
+        if (!web.getSock()[i].setup(backlog, web.getConf().getConflist(i)))
+            return 0;
+        FD_SET(web.getSock()[i].getFd(), &sstock);
+        FD_SET(web.getSock()[i].getFd(), &rstock);
+        //ip_vec.push_back(web.getConf().getConflist(i).getAdress() + ":" + web.getConf().getConflist(i).getPort());
+        if (web.getSock()[i].getFd() > max_fd)
+            max_fd = web.getSock()[i].getFd();
+        //}
     }
-    for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
-        std::cout << "Unique ip:" << *it << std::endl;
+    // for(std::vector<std::string>::iterator it = ip_vec.begin(); it != ip_vec.end(); it++)
+    //     std::cout << "Unique ip:" << *it << std::endl;
+    return 1;
 }
 
 int error_handling(webServ & web)
@@ -120,10 +115,6 @@ int error_handling(webServ & web)
         {
             std::string check_address = web.getConf().getAddress(i);
             std::string check_port = web.getConf().getPort(i);
-            // while (check_address[++j])
-            //     if (!isdigit(check_address[j]) && check_address[j] != '.')
-            //         printerr("Error : Address must be numeric ...");
-            // j = -1;
             while(check_port[++j])
                 if (!isdigit(check_port[j]))
                     printerr("Error : Port must be numeric ...");
@@ -168,17 +159,14 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         long count = 0;
         for (unsigned long i = 0; i < web.getRes().getResponse().size(); i += count)
         {
-
 		    if (!select_connection_send(connection))
         	    return printerr("Error with Select send ...");
-            count = send(connection, web.getRes().getResponse().data() + i, web.getRes().getResponse().size() - i, 0);
-            if (count == -1)
+            if ((count = send(connection, web.getRes().getResponse().data() + i, web.getRes().getResponse().size() - i, 0)) < 0)
                 return printerr("Error with send ...");
             if (!count)
                 break;
         }
         web.getCgi().setCGIBool(0);
-        str = "";
         if (web.getReq().getBrutbody_fileno() != -1)
             fclose(web.getReq().getBrutBody());
     }
@@ -265,7 +253,11 @@ int main(int argc, char **argv, char **envp)
     webServ web(argv[1], envp);
 	web.setServ_Root(envp);
     web.getCgi().set_transla_path(envp);
-    setup(web, 0);
+    if (!setup(web, 0))
+    {
+        web.cleave_info();
+        return 0;
+    }
     if (!error_handling(web))
         return 0;
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
@@ -278,5 +270,4 @@ int main(int argc, char **argv, char **envp)
         close(connection);
     }
     web.cleave_info();
-    
 }

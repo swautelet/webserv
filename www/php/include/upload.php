@@ -1,5 +1,5 @@
 <?php
-$uploaddir = "../../uploads/";
+$uploaddir = ini_get('upload_tmp_dir');
 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
 
 echo '<pre>';

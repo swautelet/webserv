@@ -26,11 +26,13 @@ class location
         int scrapData(std::string str, int i);
         void edit_info(std::string str, std::string info, std::vector<std::string> vec);
         int getAutoIndex() const;
+        int getCGI() const;
         std::string getPath() const;
         std::string getMethod() const;
         std::string getBodySize() const;
         std::string getErrorPage() const;
         std::string getLocation_name() const;
+        std::string getCGIPath() const;
         std::vector<std::string> getIndex() const;
         const std::vector<std::string> & getRedir() const;
         
@@ -41,6 +43,8 @@ class location
         void setBodySize(std::string str);
         void setAutoIndex(std::string str);
         void setErrorPage(std::string str);
+        void setCGI(std::string str);
+        void setCGIPath(std::string str);
         void setLocation_name(std::string& str);
     private:
         std::string path;
@@ -49,7 +53,9 @@ class location
         std::vector<std::string> index;
         std::string location_name;
         std::string body_size;
+        std::string cgi_upload_path;
         int autoindex;
+        int cgi;
         std::vector<std::string> redir;
 };
 

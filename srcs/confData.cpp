@@ -19,6 +19,7 @@ confData::confData()
 {
     nbr_loc = 0;
     autoindex = 0;
+    cgi = 0;
 }
 
 confData::~confData()
@@ -92,6 +93,11 @@ std::string confData::getBodySize() const
     return body_size;
 }
 
+std::string confData::getCGIPath() const 
+{
+    return cgi_upload_path;
+}
+
 int confData::getLocationNbr() const 
 {
     return nbr_loc;
@@ -100,6 +106,11 @@ int confData::getLocationNbr() const
 int confData::getAutoIndex() const 
 {
     return autoindex;
+}
+
+int confData::getCGI() const 
+{
+    return cgi;
 }
 
 const location & confData::getLocation(int index) const
@@ -223,6 +234,24 @@ void confData::setAutoIndex(std::string str)
         autoindex = 0;
 }
 
+void confData::setCGI(std::string str)
+{
+    remove_spaces(str);
+    if (!str.compare("cgi on;"))
+        cgi = 1;
+    else if (!str.compare("cgi off;"))
+        cgi = 0;
+}
+
+void confData::setCGIPath(std::string str)
+{
+    remove_spaces(str);
+    cgi_upload_path = str.substr(strlen("cgi_upload_path "), str.size());
+    if (cgi_upload_path.empty())
+        return;
+    cgi_upload_path.resize(cgi_upload_path.size() - 1);
+}
+
 void confData::setBodySize(std::string str)
 {
     remove_spaces(str);
@@ -300,11 +329,14 @@ void confData::print_info()
     }
     if (!method.empty())
         std::cout << "Method->          " << "[" << method << "]" << std::endl;
+    if (!cgi_upload_path.empty())
+        std::cout << "cgi_upload_path->          " << "[" << cgi_upload_path << "]" << std::endl;
     if (!error_page.empty())
         std::cout << "Error_page->      " << "[" << error_page << "]" << std::endl;
     if (!body_size.empty())
         std::cout << "Body->            " << "[" << body_size << "]" << std::endl;
     std::cout << "Autoindex->       " << "[" << autoindex << "]" << std::endl;
+    std::cout << "Cgi->             " << "[" << cgi << "]" << std::endl;
     for (unsigned long x = 0; x < nbr_loc; x++)
         (loc)[x].print_info();
     std::cout << "--------------------------------------" << std::endl;
@@ -339,6 +371,7 @@ void confData::scrapData()
     while (!data.empty())
     {   
         tmp = data.substr(0, data.find("\n"));
+        std::cout << tmp << std::endl;
         if (!tmp.find("server") || tmp.find("{") != std::string::npos || tmp.find("location") != std::string::npos)
             break;
         data = data.substr(data.find("\n") + 1, data.size());
@@ -356,6 +389,10 @@ void confData::scrapData()
             setErrorPage(tmp);
         else if (tmp.find("autoindex")!= std::string::npos)
             setAutoIndex(tmp);
+        else if (tmp.find("cgi_upload_path")!= std::string::npos)
+            setCGIPath(tmp);
+        else if (tmp.find("cgi")!= std::string::npos)
+            setCGI(tmp);
         else if (tmp.find("index")!= std::string::npos)
             setIndex(tmp);
         else if (tmp.find("client_max_body_size")!= std::string::npos)
@@ -379,7 +416,6 @@ void confData::scrapLocation()
     if (path.empty())
         path = "./";
     nbr_loc = check_location_nbr(cpy_data, "location ");
-    std::cout << "aie\n";
     std::cout << "Nbr of location : " << nbr_loc << std::endl;
     loc.reserve(nbr_loc);
     loc.resize(nbr_loc);
@@ -412,6 +448,9 @@ void confData::complete_loc(int i)
     
     if (loc[i].getBodySize().empty())
         loc[i].edit_info("body_size", getBodySize(), vec);
+    
+    if (loc[i].getCGI() != getCGI())
+        loc[i].edit_info("cgi", itoa(getCGI()), vec); 
 
     if (loc[i].getRedir().empty())
         loc[i].edit_info("redir", "", getRedir());

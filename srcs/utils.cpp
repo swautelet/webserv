@@ -212,8 +212,13 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
     }
     fd.open(fullpath.data());
     if (!fd.is_open())
+    {
         if (fd.good())
-            printerr("Open failed ...");
+        {
+            printerr("Error with open ...");
+            return "";
+        }
+    }
     buff << fd.rdbuf();
 	web.getRes().setContentType(fullpath);
     return buff.str();
@@ -385,17 +390,22 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
             fullpath.erase(0, 2);
         std::ofstream out(fullpath.data());
         if (!out.is_open())
-            std::cout << errno << std::endl;
-        for(unsigned long i = 0; i < post.size(); i++)
+            printerr("Error with open ...");
+        else
         {
-            str += post[i].first + "=" + post[i].second;
-            if (i + 1 < post.size())
-                str += "\n";
+
+            for(unsigned long i = 0; i < post.size(); i++)
+            {
+                str += post[i].first + "=" + post[i].second;
+                if (i + 1 < post.size())
+                    str += "\n";
+            }
+            str.resize(nbr);
+            out << str;
+            out.close();
         }
-        str.resize(nbr);
-        out << str;
-        out.close();
     }
+    closedir(dir);
 }
 
 char** vectstring_tochartable(const std::vector<std::string> vect)
