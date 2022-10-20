@@ -67,8 +67,7 @@ int select_connection_send(int connection)
         FD_ZERO(&wset);
         tset = tstock;
         wset = wstock;
-        usleep(2000);
-        std::cout << "Select connection ... " << std::endl;
+        std::cout << "Select connection idk ... " << std::endl;
         if ((status = select(connection + 1, NULL, &wset, NULL, &tv)) < 0)
         {
             if (!g_ctrl_called)
@@ -168,9 +167,11 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         unsigned long count = 0;
         for (unsigned long i = 0; i < web.getRes().getResponse().size(); i += count)
         {
-		    if (select_connection_send(connection))
+
+		    if (!g_ctrl_called && select_connection_send(connection))
         	    count = send(connection, web.getRes().getResponse().data() + i, web.getRes().getResponse().size() - i, 0);
-            std::cout << "Now i = " << i << " and count = " << count << std::endl;
+            if (!count)
+                break;
         }
         web.getCgi().setCGIBool(0);
         str = "";
@@ -186,10 +187,6 @@ int engine(webServ & web)
     std::string str = "";
     int ret;
     int i = 0;
-
-    for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
-        if (FD_ISSET(it->getFd(), &sstock))
-            std::cout << "fd on stock are : " << it->getFd() << std::endl;
     std::cout << std::endl;
     for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
     {
@@ -212,7 +209,7 @@ int engine(webServ & web)
             }
             if (!select_connection(connection))
                 return 0;
-            std::cout << "This if fd before accept : " << it->getFd() << std::endl;
+            // std::cout << "This if fd before accept : " << it->getFd() << std::endl;
             //std::cout << "fd of connection after accept : " << connection << std::endl;
             //std::cout << "errno : " << errno << std::endl;
             if ((ret = recv(connection, buffer, sizeof(buffer) - 1, 0)) > 0)
@@ -228,13 +225,9 @@ int engine(webServ & web)
             }
             else
             {
-                std::cout << strerror(errno) << std::endl;
                 close(connection);
                 if (ret < 0)
-                {
-                    std::cout << "NO ONE ELSE, ret : " << ret <<std::endl;
                     printerr("Recv -1 ...");
-                }
             }
             close(connection);
         }
@@ -263,6 +256,7 @@ int loopselect()
         sready = sstock;
         rready = rstock;
         usleep(20);
+        std::cout << "Loop Select ..." << std::endl;
         if ((status = select(max_fd + 1, &sready, &rready, NULL, &tv)) < 0)
         {
             if (!g_ctrl_called)
