@@ -150,6 +150,7 @@ void webServ::cleave_info()
 		std::cout << "Closing " << it->getFd() << std::endl;
 		it->close_fd();
 	}
+	std::cout << "\nBye bye" << std::endl;
 }
 
 char ** webServ::getEnv()

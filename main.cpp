@@ -165,12 +165,15 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         }
         web.getRes().find_method(web, i);
         web.getRes().concat_response(web);
-        unsigned long count = 0;
+        long count = 0;
         for (unsigned long i = 0; i < web.getRes().getResponse().size(); i += count)
         {
 
-		    if (!g_ctrl_called && select_connection_send(connection))
-        	    count = send(connection, web.getRes().getResponse().data() + i, web.getRes().getResponse().size() - i, 0);
+		    if (!select_connection_send(connection))
+        	    return printerr("Error with Select send ...");
+            count = send(connection, web.getRes().getResponse().data() + i, web.getRes().getResponse().size() - i, 0);
+            if (count == -1)
+                return printerr("Error with send ...");
             if (!count)
                 break;
         }
@@ -225,7 +228,6 @@ void ctrl_c(int sig)
 {
 	(void)sig;
     g_ctrl_called = 1;
-    std::cout << "\nBye bye" << std::endl;
 }
 
 int loopselect()
@@ -276,4 +278,5 @@ int main(int argc, char **argv, char **envp)
         close(connection);
     }
     web.cleave_info();
+    
 }
