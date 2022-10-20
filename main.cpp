@@ -49,6 +49,39 @@ int select_connection(int connection)
     return 1;
 }
 
+int select_connection_send(int connection)
+{
+    struct timeval tv;
+    int status = 0;
+
+    tv.tv_sec = 1;
+    tv.tv_usec = 0;
+    fd_set tset, tstock, wset, wstock;
+    FD_ZERO(&tstock);
+    FD_ZERO(&wstock);
+    FD_SET(connection, &tstock);
+    FD_SET(connection, &wstock);
+    while (!g_ctrl_called && status == 0)
+    {
+        FD_ZERO(&tset);
+        FD_ZERO(&wset);
+        tset = tstock;
+        wset = wstock;
+        usleep(2000);
+        std::cout << "Select connection ... " << std::endl;
+        if ((status = select(connection + 1, NULL, &wset, NULL, &tv)) < 0)
+        {
+            if (!g_ctrl_called)
+                printerr("Error with select ...");
+            return (0);
+        }
+    }
+    if (g_ctrl_called)
+        return (0);
+    return 1;
+}
+
+
 void setup(webServ & web, int backlog)
 {
     FD_ZERO(&sready);
@@ -120,8 +153,8 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
             printerr("error with brutbody");
         while (!g_ctrl_called && web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
         {
-            // if (!select_connection(connection))
-            //     return 0;
+            if (!select_connection(connection))
+                 return 0;
             if ((ret = recv(connection, buffer, BUFFER_SIZE - 1, 0)) > 0)
             {
                 if (web.getReq().getBrutbody_fileno() != -1)
@@ -132,7 +165,8 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         }
         web.getRes().find_method(web, i);
         web.getRes().concat_response(web);
-        send(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size(), 0);
+		if (select_connection_send(connection))
+        	send(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size(), 0);
         web.getCgi().setCGIBool(0);
         str = "";
         if (web.getReq().getBrutbody_fileno() != -1)
