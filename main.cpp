@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/20 13:38:35 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/10/21 01:18:38 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,8 +144,8 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
             return printerr("Error with brutbody");
         while (!g_ctrl_called && web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
         {
-            if (!select_connection(connection))
-                 return 0;
+            // if (!select_connection(connection))
+            //      return 0;
             if ((ret = recv(connection, buffer, BUFFER_SIZE - 1, 0)) > 0)
             {
                 if (web.getReq().getBrutbody_fileno() != -1)

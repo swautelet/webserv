@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/18 18:43:26 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/10/07 03:12:59 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/21 01:48:11 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ void webServ::cleave_info()
 		std::cout << "Closing " << it->getFd() << std::endl;
 		it->close_fd();
 	}
+	fclose(req->getBrutBody());
 	std::cout << "\nBye bye" << std::endl;
 }
 
