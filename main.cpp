@@ -40,7 +40,7 @@ int select_connection(int connection)
         if ((status = select(connection + 1, &tset, NULL, NULL, &tv)) < 0)
         {
             if (!g_ctrl_called)
-                printerr("Error with select ...");
+                return printerr("Error with select ...");
             return (0);
         }
     }
@@ -71,7 +71,7 @@ int select_connection_send(int connection)
         if ((status = select(connection + 1, NULL, &wset, NULL, &tv)) < 0)
         {
             if (!g_ctrl_called)
-                printerr("Error with select ...");
+                return printerr("Error with select ...");
             return (0);
         }
     }
@@ -106,7 +106,7 @@ void setup(webServ & web, int backlog)
         std::cout << "Unique ip:" << *it << std::endl;
 }
 
-void error_handling(webServ & web)
+int error_handling(webServ & web)
 {
     int j;
     if (!web.getConf().getNbrServer())
@@ -137,6 +137,7 @@ void error_handling(webServ & web)
         }
     }
     j = -1;
+    return 1;
 }
 
 int routine(webServ &web, std::string str, char *buffer, int connection, int ret, int i)
@@ -149,7 +150,7 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         if (web.getReq().getBrutbody_fileno() != -1)
             web.getReq().Write_Brutbody(buffer + sizeheader, ret - sizeheader);
         else
-            printerr("error with brutbody");
+            return printerr("Error with brutbody");
         while (!g_ctrl_called && web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
         {
             if (!select_connection(connection))
@@ -160,7 +161,7 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
                     web.getReq().Write_Brutbody(buffer, ret);
             }
             else
-                printerr("Recv body -1 ...");
+                return printerr("Recv body -1 ...");
         }
         web.getRes().find_method(web, i);
         web.getRes().concat_response(web);
@@ -181,55 +182,39 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
     return 1;
 }
 
-int engine(webServ & web)
+int engine(webServ & web, int *connection)
 {
     char buffer[BUFFER_SIZE];
     std::string str = "";
     int ret;
     int i = 0;
-    std::cout << std::endl;
     for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
     {
         if (FD_ISSET(it->getFd(), &sready))
         {
-            int connection = -1;
             memset(buffer, 0, BUFFER_SIZE);
             struct sockaddr client_address;
 	        int addrlen = sizeof(sizeof(struct sockaddr_in));
             //std::cout << "Accept ... " << std::endl;
-            if ((connection = accept(it->getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
-            {
-                printerr("Error with accept ...");
-                return (0);
-            }
-            if ((fcntl(connection, F_SETFL, O_NONBLOCK)) < 0)
-            {
-                printerr("Error with fcntl ...");
-                return (0);
-            }
-            if (!select_connection(connection))
+            if ((*connection = accept(it->getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
+                return printerr("Error with accept ...");
+            if ((fcntl(*connection, F_SETFL, O_NONBLOCK)) < 0)
+                return printerr("Error with fcntl ...");
+            if (!select_connection(*connection))
                 return 0;
             // std::cout << "This if fd before accept : " << it->getFd() << std::endl;
             //std::cout << "fd of connection after accept : " << connection << std::endl;
             //std::cout << "errno : " << errno << std::endl;
-            if ((ret = recv(connection, buffer, sizeof(buffer) - 1, 0)) > 0)
+            if ((ret = recv(*connection, buffer, sizeof(buffer) - 1, 0)) > 0)
             {
                 buffer[ret] = '\0';
                 str += buffer;
-                if (!routine(web, str, buffer, connection, ret, i))
-                {
-                    close(connection);
-                    printerr("Error with routine ...");
-                    return 0;
-                }
+                if (!routine(web, str, buffer, *connection, ret, i))
+                    return printerr("Error with routine ...");
             }
             else
-            {
-                close(connection);
                 if (ret < 0)
-                    printerr("Recv -1 ...");
-            }
-            close(connection);
+                    return printerr("Recv -1 ...");
         }
         i++;
     }
@@ -260,7 +245,7 @@ int loopselect()
         if ((status = select(max_fd + 1, &sready, &rready, NULL, &tv)) < 0)
         {
             if (!g_ctrl_called)
-                printerr("Error with select ...");
+                return printerr("Error with select ...");
             return (0);
         }
     }
@@ -279,11 +264,16 @@ int main(int argc, char **argv, char **envp)
 	web.setServ_Root(envp);
     web.getCgi().set_transla_path(envp);
     setup(web, 0);
-    error_handling(web);
+    if (!error_handling(web))
+        return 0;
     std::cout << "\n+++++++ Waiting for new connection ++++++++\n\n" << std::endl;
     signal(SIGINT, &ctrl_c);
     while(!g_ctrl_called)
-        if (!loopselect() || (!engine(web)))
+    {
+        int connection = -1;
+        if (!loopselect() || (!engine(web, &connection)))
             break;
+        close(connection);
+    }
     web.cleave_info();
 }
