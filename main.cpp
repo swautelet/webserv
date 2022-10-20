@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/18 17:15:36 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/20 13:38:35 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,8 +165,13 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
         }
         web.getRes().find_method(web, i);
         web.getRes().concat_response(web);
-		if (select_connection_send(connection))
-        	send(connection, web.getRes().getResponse().c_str(), web.getRes().getResponse().size(), 0);
+        unsigned long count = 0;
+        for (unsigned long i = 0; i < web.getRes().getResponse().size(); i += count)
+        {
+		    if (select_connection_send(connection))
+        	    count = send(connection, web.getRes().getResponse().data() + i, web.getRes().getResponse().size() - i, 0);
+            std::cout << "Now i = " << i << " and count = " << count << std::endl;
+        }
         web.getCgi().setCGIBool(0);
         str = "";
         if (web.getReq().getBrutbody_fileno() != -1)
@@ -225,8 +230,11 @@ int engine(webServ & web)
             {
                 std::cout << strerror(errno) << std::endl;
                 close(connection);
-                std::cout << "NO ONE ELSE, ret : " << ret <<std::endl;
-                printerr("Recv -1 ...");
+                if (ret < 0)
+                {
+                    std::cout << "NO ONE ELSE, ret : " << ret <<std::endl;
+                    printerr("Recv -1 ...");
+                }
             }
             close(connection);
         }
