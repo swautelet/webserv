@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/21 01:57:01 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/21 04:11:32 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,69 +16,72 @@ fd_set sstock, sready, rstock, rready;
 int g_ctrl_called = 0;
 int max_fd;
 std::vector<std::string> ip_vec;
+int done = 0;
+int step = 0;
+std::string str = "";
 
-int select_connection(int connection)
-{
-    struct timeval tv;
-    int status = 0;
+// int select_connection(int connection)
+// {
+//     struct timeval tv;
+//     int status = 0;
 
-    tv.tv_sec = 1;
-    tv.tv_usec = 0;
-    fd_set tset, tstock, wset, wstock;
-    FD_ZERO(&tstock);
-    FD_ZERO(&wstock);
-    FD_SET(connection, &tstock);
-    FD_SET(connection, &wstock);
-    while (!g_ctrl_called && status == 0)
-    {
-        FD_ZERO(&tset);
-        FD_ZERO(&wset);
-        tset = tstock;
-        wset = wstock;
-        usleep(2000);
-        std::cout << "Select connection ... " << std::endl;
-        if ((status = select(connection + 1, &tset, NULL, NULL, &tv)) < 0)
-        {
-            if (!g_ctrl_called)
-                return printerr("Error with select ...");
-            return (0);
-        }
-    }
-    if (g_ctrl_called)
-        return (0);
-    return 1;
-}
+//     tv.tv_sec = 1;
+//     tv.tv_usec = 0;
+//     fd_set tset, tstock, wset, wstock;
+//     FD_ZERO(&tstock);
+//     FD_ZERO(&wstock);
+//     FD_SET(connection, &tstock);
+//     FD_SET(connection, &wstock);
+//     while (!g_ctrl_called && status == 0)
+//     {
+//         FD_ZERO(&tset);
+//         FD_ZERO(&wset);
+//         tset = tstock;
+//         wset = wstock;
+//         usleep(2000);
+//         std::cout << "Select connection ... " << std::endl;
+//         if ((status = select(connection + 1, &tset, NULL, NULL, &tv)) < 0)
+//         {
+//             if (!g_ctrl_called)
+//                 return printerr("Error with select ...");
+//             return (0);
+//         }
+//     }
+//     if (g_ctrl_called)
+//         return (0);
+//     return 1;
+// }
 
-int select_connection_send(int connection)
-{
-    struct timeval tv;
-    int status = 0;
+// int select_connection_send(int connection)
+// {
+//     struct timeval tv;
+//     int status = 0;
 
-    tv.tv_sec = 1;
-    tv.tv_usec = 0;
-    fd_set tset, tstock, wset, wstock;
-    FD_ZERO(&tstock);
-    FD_ZERO(&wstock);
-    FD_SET(connection, &tstock);
-    FD_SET(connection, &wstock);
-    while (!g_ctrl_called && status == 0)
-    {
-        FD_ZERO(&tset);
-        FD_ZERO(&wset);
-        tset = tstock;
-        wset = wstock;
-        std::cout << "Select connection idk ... " << std::endl;
-        if ((status = select(connection + 1, &tset, &wset, NULL, &tv)) < 0)
-        {
-            if (!g_ctrl_called)
-                return printerr("Error with select ...");
-            return (0);
-        }
-    }
-    if (g_ctrl_called)
-        return (0);
-    return 1;
-}
+//     tv.tv_sec = 1;
+//     tv.tv_usec = 0;
+//     fd_set tset, tstock, wset, wstock;
+//     FD_ZERO(&tstock);
+//     FD_ZERO(&wstock);
+//     FD_SET(connection, &tstock);
+//     FD_SET(connection, &wstock);
+//     while (!g_ctrl_called && status == 0)
+//     {
+//         FD_ZERO(&tset);
+//         FD_ZERO(&wset);
+//         tset = tstock;
+//         wset = wstock;
+//         std::cout << "Select connection idk ... " << std::endl;
+//         if ((status = select(connection + 1, &tset, &wset, NULL, &tv)) < 0)
+//         {
+//             if (!g_ctrl_called)
+//                 return printerr("Error with select ...");
+//             return (0);
+//         }
+//     }
+//     if (g_ctrl_called)
+//         return (0);
+//     return 1;
+// }
 
 
 int setup(webServ & web, int backlog)
@@ -131,11 +134,11 @@ int error_handling(webServ & web)
     return 1;
 }
 
-int routine(webServ &web, std::string str, char *buffer, int connection, int ret, int i)
+int routine(webServ &web, std::string str, char *buffer, int ret)
 {
     if (!str.empty())
     {
-        web.getReq().getInfo(connection, str);
+        web.getReq().getInfo(web.getConnection(), str);
         std::string tmp = buffer;
         int sizeheader = tmp.find("\r\n\r\n") + 4;
         if (web.getReq().getBrutbody_fileno() != -1)
@@ -144,9 +147,9 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
             return printerr("Error with brutbody");
         while (!g_ctrl_called && web.getReq().getWrote() < atoi(web.getReq().getContentLength().data()) && web.getReq().getWrote() >= 0)
         {
-            // if (!select_connection(connection))
+            // if (!select_web.getConnection()(web.getConnection()))
             //      return 0;
-            if ((ret = recv(connection, buffer, BUFFER_SIZE - 1, 0)) > 0)
+            if ((ret = recv(web.getConnection(), buffer, BUFFER_SIZE - 1, 0)) > 0)
             {
                 if (web.getReq().getBrutbody_fileno() != -1)
                     web.getReq().Write_Brutbody(buffer, ret);
@@ -154,60 +157,81 @@ int routine(webServ &web, std::string str, char *buffer, int connection, int ret
             else
                 return printerr("Recv body -1 ...");
         }
+    }
+    return 1;
+}
+
+int sending(webServ &web, std::string str, int i)
+{
+    if (!str.empty())
+    {
         web.getRes().find_method(web, i);
         web.getRes().concat_response(web);
         long count = 0;
         for (unsigned long i = 0; i < web.getRes().getResponse().size(); i += count)
         {
-		    if (!select_connection_send(connection))
-        	    return printerr("Error with Select send ...");
-            if ((count = send(connection, web.getRes().getResponse().data() + i, web.getRes().getResponse().size() - i, 0)) < 0)
+            done = 1;
+            if ((count = send(web.getConnection(), web.getRes().getResponse().data() + i, web.getRes().getResponse().size() - i, 0)) < 0)
                 return printerr("Error with send ...");
             if (!count)
                 break;
         }
         web.getCgi().setCGIBool(0);
-        if (web.getReq().getBrutbody_fileno() != -1)
-            fclose(web.getReq().getBrutBody());
+        // if (web.getReq().getBrutbody_fileno() != -1)
+        //     fclose(web.getReq().getBrutBody());
+        web.getRes().clear_info();
     }
     return 1;
 }
 
-int engine(webServ & web, int *connection)
+int engine(webServ & web)
 {
     char buffer[BUFFER_SIZE];
-    std::string str = "";
     int ret;
     int i = 0;
     for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
     {
+        if (FD_ISSET(web.getConnection(), &rready))
+        {
+            if (!sending(web, str, i))
+                return printerr("Error with routine ...");
+            step = 3;
+        }
+        if (FD_ISSET(web.getConnection(), &sready))
+        {
+            if ((ret = recv(web.getConnection(), buffer, sizeof(buffer) - 1, 0)) > 0)
+            {
+                buffer[ret] = '\0';
+                str += buffer;
+                if (!routine(web, str, buffer, ret))
+                    return printerr("Error with routine ...");
+                step = 2;
+            }
+            else
+                if (ret < 0)
+                    return printerr("Recv -1 ...");
+            //std::cout << "Ret : " << ret << std::endl;
+            break;
+        }
         if (FD_ISSET(it->getFd(), &sready))
         {
             memset(buffer, 0, BUFFER_SIZE);
             struct sockaddr client_address;
 	        int addrlen = sizeof(sizeof(struct sockaddr_in));
             //std::cout << "Accept ... " << std::endl;
-            if ((*connection = accept(it->getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
-                return printerr("Error with accept ...");
-            if ((fcntl(*connection, F_SETFL, O_NONBLOCK)) < 0)
-                return printerr("Error with fcntl ...");
-            if (!select_connection(*connection))
-                return 0;
-            // std::cout << "This if fd before accept : " << it->getFd() << std::endl;
-            //std::cout << "fd of connection after accept : " << connection << std::endl;
-            //std::cout << "errno : " << errno << std::endl;
-            if ((ret = recv(*connection, buffer, sizeof(buffer) - 1, 0)) > 0)
+            if (web.getConnection() == -1)
             {
-                buffer[ret] = '\0';
-                str += buffer;
-                if (!routine(web, str, buffer, *connection, ret, i))
-                    return printerr("Error with routine ...");
+                if ((ret = accept(it->getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
+                    return printerr("Error with accept ...");
+                web.setConnection(ret);
+                if ((fcntl(web.getConnection(), F_SETFL, O_NONBLOCK)) < 0)
+                    return printerr("Error with fcntl ...");
+                // if (!select_connection(web.getConnection()))
+                step = 1;
+                // std::cout << "connection fd : " << web.getConnection() << std::endl;
+                return 1;
             }
-            else
-                if (ret < 0)
-                    return printerr("Recv -1 ...");
         }
-        i++;
     }
     return 1;
 }
@@ -218,7 +242,33 @@ void ctrl_c(int sig)
     g_ctrl_called = 1;
 }
 
-int loopselect()
+// int loopselect()
+// {
+//     int status = 0;
+//     struct timeval tv;
+//     tv.tv_sec = 1;
+//     tv.tv_usec = 0;
+//     while(!g_ctrl_called && status == 0)
+//     {
+//         FD_ZERO(&sready);
+//         FD_ZERO(&rready);
+//         sready = sstock;
+//         rready = rstock;
+//         usleep(20);
+//         std::cout << "Loop Select ..." << std::endl;
+//         if ((status = select(max_fd + 1, &sready, &rready, NULL, &tv)) < 0)
+//         {
+//             if (!g_ctrl_called)
+//                 return printerr("Error with select ...");
+//             return (0);
+//         }
+//     }
+//     if (g_ctrl_called)
+//         return 0;
+//     return 1;
+// }
+
+int selecting(webServ & web)
 {
     int status = 0;
     struct timeval tv;
@@ -226,13 +276,42 @@ int loopselect()
     tv.tv_usec = 0;
     while(!g_ctrl_called && status == 0)
     {
-        FD_ZERO(&sready);
-        FD_ZERO(&rready);
-        sready = sstock;
-        rready = rstock;
-        usleep(20);
+        if (step == 0)
+        {
+            ///std::cout << "STEP 0 !\n";
+            FD_ZERO(&sready);
+            FD_ZERO(&rready);
+            sready = sstock;
+        }
+        if (step == 1)
+        {
+            FD_ZERO(&sready);
+            FD_ZERO(&rready);
+            sready = sstock;
+            ///std::cout << "STEP 1 !\n";
+            if (web.getConnection() != -1)
+            {
+                std::cout << "Set connection to sready...\n";
+                FD_SET(web.getConnection(), &sready);
+                if (web.getConnection() >= max_fd)
+                    max_fd = web.getConnection();
+            }
+        }
+        if (step == 2)
+        {
+            ///std::cout << "STEP 2 !\n";
+            FD_ZERO(&sready);
+            FD_ZERO(&rready);
+            FD_SET(web.getConnection(), &rready);
+            if (web.getConnection() >= max_fd)
+                    max_fd = web.getConnection();
+
+        }
+        // rready = rstock;
+        //std::cout << "max fd : " << max_fd << std::endl;
+        usleep(2000);
         std::cout << "Loop Select ..." << std::endl;
-        if ((status = select(max_fd + 1, &sready, &rready, NULL, &tv)) < 0)
+        if ((status = select(FD_SETSIZE, &sready, &rready, NULL, &tv)) < 0)
         {
             if (!g_ctrl_called)
                 return printerr("Error with select ...");
@@ -264,10 +343,17 @@ int main(int argc, char **argv, char **envp)
     signal(SIGINT, &ctrl_c);
     while(!g_ctrl_called)
     {
-        int connection = -1;
-        if (!loopselect() || (!engine(web, &connection)))
+        if (!selecting(web) || (!engine(web)))
             break;
-        close(connection);
+        //std::cout << "MH\n";
+        if (step == 3 && web.getConnection() > 0)
+        {
+            //std::cout << "Close" << std::endl;
+            close(web.getConnection());
+            web.setConnection(-1);
+            step = 0;
+            str = "";
+        }
     }
     web.cleave_info();
 }
