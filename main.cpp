@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/21 01:18:38 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/21 01:57:01 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,7 @@ int main(int argc, char **argv, char **envp)
     FD_ZERO(&sstock);
     FD_ZERO(&sready);
     if (argc != 2)
-        printerr("Usage : ./Webserv [conf file]");
+        return printerr("Usage : ./Webserv [conf file]");
     webServ web(argv[1], envp);
 	web.setServ_Root(envp);
     web.getCgi().set_transla_path(envp);

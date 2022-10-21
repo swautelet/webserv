@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/13 03:13:04 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/21 02:15:02 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,17 +211,18 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             web.getRes().setStatus(403);
     }
     fd.open(fullpath.data());
-    if (!fd.is_open())
+    if (fd.is_open())
     {
         if (fd.good())
         {
-            printerr("Error with open ...");
-            return "";
+            buff << fd.rdbuf();
+            web.getRes().setContentType(fullpath);
+            return buff.str();
         }
     }
-    buff << fd.rdbuf();
-	web.getRes().setContentType(fullpath);
-    return buff.str();
+    else
+        printerr("Error with open ...");
+        return "";
 }
 
 std::string itoa(int a)
