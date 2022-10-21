@@ -78,10 +78,18 @@ std::string	Cgi::start_script(webServ& web)
 void Cgi::run_api(webServ& web, confData& conf)
 {
 	setCGIBool(1);
-	web.getCgi().setFullpath(web, conf);
-	web.getCgi().setEnv(web, conf);
-	body = web.getReq().getBody();
-	web.getRes().setBody(web.getCgi().start_script(web));
+	if (conf_php_ini(web, conf) >= 0)
+	{
+		web.getCgi().setFullpath(web, conf);
+		web.getCgi().setEnv(web, conf);
+		body = web.getReq().getBody();
+		web.getRes().setBody(web.getCgi().start_script(web));
+	}
+	else
+	{
+		web.getRes().setStatus(500);
+		web.getRes().setBody("");
+	}
 }
 
 Cgi::Cgi()
@@ -330,4 +338,24 @@ int Cgi::getCGIBool()
 void Cgi::setCGIBool(int i)
 {
 	cgi_on = i;
+}
+
+int 	Cgi::conf_php_ini(webServ& web, confData& conf)
+{
+	std::fstream php_ini;
+	php_ini.open(web.getServ_Root() + "/www/php/include/php.ini", std::fstream::out | std::fstream::trunc);
+	if (php_ini.is_open())
+	{
+		std::string content = ("file_uploads = 1\nupload_max_filesize = 1000M\nupload_tmp_dir = ");
+		php_ini << content;
+		if (!conf.getCGIPath().empty())
+			{php_ini << conf.getCGIPath();
+			std::cout << " i wrote with variable --------------------------------------------------------" << std::endl;}
+		else
+			{php_ini << "../../uploads/";
+			std::cout << " i wrote with default --------------------------------------------------------" << std::endl;}
+	}
+	else
+		return -1;
+	return 0;
 }
