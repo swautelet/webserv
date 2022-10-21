@@ -6,7 +6,7 @@
 /*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/13 19:57:03 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/10/21 19:30:59 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,19 +329,19 @@ void Response::MethodGet(webServ & web, confData & conf)
 	}
 	else
 	{
-		if (!loc.empty())
-		{
-			if (conf.getCGI() == 0)
-			{
-				std::cout << "cgi is off";
-				return;
-			}
-		}
-		else if (conf.getGoodLocation(loc).getCGI() == 0)
-		{
-			std::cout << "cgi is off";
-			return;
-		}
+		// if (!loc.empty())
+		// {
+		// 	if (conf.getCGI() == 0)
+		// 	{
+		// 		std::cout << "cgi is off";
+		// 		return;
+		// 	}
+		// }
+		// else if (conf.getGoodLocation(loc).getCGI() == 0)
+		// {
+		// 	std::cout << "cgi is off";
+		// 	return;
+		// }
 		std::cout << "AAAAAAAAAH" << std::endl;
 		web.getCgi().run_api(web, conf);
 	}
@@ -354,19 +354,19 @@ void Response::MethodPost(webServ & web, confData & conf)
 	std::string loc = location_exe(conf, web.getReq().getUrl());
     if (setContentType(web.getReq().getUrl()) == 1)
 	{
-		if (!loc.empty())
-		{
-			if (conf.getCGI() == 0)
-			{
-				std::cout << "cgi is off ...";
-				return;
-			}
-		}
-		else if (conf.getGoodLocation(loc).getCGI() == 0)
-		{
-			std::cout << "cgi is off ...";
-			return;
-		}
+		// if (!loc.empty())
+		// {
+		// 	if (conf.getCGI() == 0)
+		// 	{
+		// 		std::cout << "cgi is off ...";
+		// 		return;
+		// 	}
+		// }
+		// else if (conf.getGoodLocation(loc).getCGI() == 0)
+		// {
+		// 	std::cout << "cgi is off ...";
+		// 	return;
+		// }
 		web.getCgi().run_api(web, conf);
 	}
     else if (!nbr)

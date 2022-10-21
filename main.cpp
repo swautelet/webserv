@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/21 04:11:32 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/21 19:44:12 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,9 @@ int sending(webServ &web, std::string str, int i)
     if (!str.empty())
     {
         web.getRes().find_method(web, i);
+        std::cout << "before : " << web.getRes().getBody() << std::endl;
         web.getRes().concat_response(web);
+        std::cout << "after : " << web.getRes().getBody() << std::endl;
         long count = 0;
         for (unsigned long i = 0; i < web.getRes().getResponse().size(); i += count)
         {
@@ -191,13 +193,13 @@ int engine(webServ & web)
     int i = 0;
     for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
     {
-        if (FD_ISSET(web.getConnection(), &rready))
+        if (FD_ISSET(web.getConnection(), &rready) && step == 2)
         {
             if (!sending(web, str, i))
                 return printerr("Error with routine ...");
             step = 3;
         }
-        if (FD_ISSET(web.getConnection(), &sready))
+        if (FD_ISSET(web.getConnection(), &sready) && step == 1)
         {
             if ((ret = recv(web.getConnection(), buffer, sizeof(buffer) - 1, 0)) > 0)
             {
@@ -213,7 +215,7 @@ int engine(webServ & web)
             //std::cout << "Ret : " << ret << std::endl;
             break;
         }
-        if (FD_ISSET(it->getFd(), &sready))
+        if (FD_ISSET(it->getFd(), &sready) && step == 0)
         {
             memset(buffer, 0, BUFFER_SIZE);
             struct sockaddr client_address;

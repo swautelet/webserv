@@ -1,2 +1,2 @@
-login=rfefrf
-password=erfer
+login=wdaw
+password=awda
