@@ -6,7 +6,7 @@
 /*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:23:39 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/21 02:15:02 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/21 23:26:22 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -551,6 +551,9 @@ std::string CreateErrorPage(int code)
             break;
         case 413:
             msg = "Request entity too large";
+            break;
+        case 500:
+            msg = "Internal Server Error";
             break;
         default:
             break;

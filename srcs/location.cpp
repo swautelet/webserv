@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 12:02:42 by chly-huc          #+#    #+#             */
-/*   Updated: 2022/09/27 19:16:45 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/21 23:12:31 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,6 +224,8 @@ void location::edit_info(std::string str, std::string info, std::vector<std::str
         method = info;
     if (!str.compare("error_page"))
         error_page = info;
+    if (!str.compare("cgi_upload_path"))
+        cgi_upload_path = info;
     if (!str.compare("autoindex"))
         autoindex = atoi(info.data());
     if (!str.compare("cgi"))

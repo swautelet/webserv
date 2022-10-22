@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 00:42:01 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/21 19:30:59 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/10/21 23:24:57 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,9 +221,9 @@ void Response::setStatMsg()
 		// case 451:
 		// 	stat_msg = "Unavailable For Legal Reasons";
 		// 	break;
-		// case 500:
-		// 	stat_msg = "Internal Server Error";
-		// 	break;
+		case 500:
+			stat_msg = "Internal Server Error";
+			break;
 		// case 501:
 		// 	stat_msg = "Not Implemented";
 		// 	break;
@@ -329,19 +329,19 @@ void Response::MethodGet(webServ & web, confData & conf)
 	}
 	else
 	{
-		// if (!loc.empty())
-		// {
-		// 	if (conf.getCGI() == 0)
-		// 	{
-		// 		std::cout << "cgi is off";
-		// 		return;
-		// 	}
-		// }
-		// else if (conf.getGoodLocation(loc).getCGI() == 0)
-		// {
-		// 	std::cout << "cgi is off";
-		// 	return;
-		// }
+		if (loc.empty())
+		{
+			if (conf.getCGI() == 0)
+			{
+				web.getRes().setStatus(500);
+				return;
+			}
+		}
+		else if (conf.getGoodLocation(loc).getCGI() == 0)
+		{
+			web.getRes().setStatus(500);
+			return;
+		}
 		std::cout << "AAAAAAAAAH" << std::endl;
 		web.getCgi().run_api(web, conf);
 	}
@@ -354,19 +354,19 @@ void Response::MethodPost(webServ & web, confData & conf)
 	std::string loc = location_exe(conf, web.getReq().getUrl());
     if (setContentType(web.getReq().getUrl()) == 1)
 	{
-		// if (!loc.empty())
-		// {
-		// 	if (conf.getCGI() == 0)
-		// 	{
-		// 		std::cout << "cgi is off ...";
-		// 		return;
-		// 	}
-		// }
-		// else if (conf.getGoodLocation(loc).getCGI() == 0)
-		// {
-		// 	std::cout << "cgi is off ...";
-		// 	return;
-		// }
+		if (loc.empty())
+		{
+			if (conf.getCGI() == 0)
+			{
+				web.getRes().setStatus(500);
+				return;
+			}
+		}
+		else if (conf.getGoodLocation(loc).getCGI() == 0)
+		{
+			web.getRes().setStatus(500);
+			return;
+		}
 		web.getCgi().run_api(web, conf);
 	}
     else if (!nbr)
@@ -418,7 +418,7 @@ void Response::concat_response(webServ & web)
 		setContentLength();
 		full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Length: " + content_length + "\n\n" + body;
 	}
-	if (status == 403 || status == 404 || status == 405)
+	if (status == 403 || status == 404 || status == 405 || status == 500)
 	{
 		setStatMsg();
 		setContentType(".html");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chly-huc <chly-huc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/09/27 19:16:42 by chly-huc         ###   ########.fr       */
+/*   Updated: 2022/10/21 23:13:17 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -450,7 +450,10 @@ void confData::complete_loc(int i)
         loc[i].edit_info("body_size", getBodySize(), vec);
     
     if (loc[i].getCGI() != getCGI())
-        loc[i].edit_info("cgi", itoa(getCGI()), vec); 
+        loc[i].edit_info("cgi", itoa(getCGI()), vec);
+
+    if (loc[i].getCGIPath().empty())
+        loc[i].edit_info("cgi_upload_path", getCGIPath(), vec); 
 
     if (loc[i].getRedir().empty())
         loc[i].edit_info("redir", "", getRedir());

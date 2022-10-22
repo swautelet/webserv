@@ -343,17 +343,28 @@ void Cgi::setCGIBool(int i)
 int 	Cgi::conf_php_ini(webServ& web, confData& conf)
 {
 	std::fstream php_ini;
+	std::string loc = location_exe(conf, web.getReq().getUrl());
 	php_ini.open(web.getServ_Root() + "/www/php/include/php.ini", std::fstream::out | std::fstream::trunc);
 	if (php_ini.is_open())
 	{
+		std::cout << "loc :" << loc <<std::endl;
 		std::string content = ("file_uploads = 1\nupload_max_filesize = 1000M\nupload_tmp_dir = ");
 		php_ini << content;
-		if (!conf.getCGIPath().empty())
-			{php_ini << conf.getCGIPath();
-			std::cout << " i wrote with variable --------------------------------------------------------" << std::endl;}
+		if (loc.empty())
+		{
+			php_ini << conf.getCGIPath();
+			std::cout << " i wrote with variable --------------------------------------------------------" << std::endl;
+		}
+		else if (!conf.getGoodLocation(loc).getCGIPath().empty())
+		{
+			php_ini << conf.getGoodLocation(loc).getCGIPath();
+			std::cout << " i wrote with loc variable --------------------------------------------------------" << std::endl;
+		}
 		else
-			{php_ini << "../../uploads/";
-			std::cout << " i wrote with default --------------------------------------------------------" << std::endl;}
+		{
+			php_ini << "../../uploads/";
+			std::cout << " i wrote with default --------------------------------------------------------" << std::endl;
+		}
 	}
 	else
 		return -1;

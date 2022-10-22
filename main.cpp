@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/21 20:14:33 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/10/21 23:46:48 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,9 +166,9 @@ int sending(webServ &web, std::string str, int i)
     if (!str.empty())
     {
         web.getRes().find_method(web, i);
-        std::cout << "before : " << web.getRes().getBody() << std::endl;
+        //std::cout << "before : " << web.getRes().getBody() << std::endl;
         web.getRes().concat_response(web);
-        std::cout << "after : " << web.getRes().getBody() << std::endl;
+        //std::cout << "after : " << web.getRes().getBody() << std::endl;
         long count = 0;
         for (unsigned long i = 0; i < web.getRes().getResponse().size(); i += count)
         {

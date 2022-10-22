@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
+/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 01:02:50 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/21 18:37:06 by simonwautel      ###   ########.fr       */
+/*   Updated: 2022/10/21 23:47:03 by shyrno           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ Request& Request::operator=(const Request& other)
 int Request::getInfo(int connection, std::string string)
 {
     (void)connection;
-    std::cout << "|" << string << "|" << std::endl;
+    //std::cout << "|" << string << "|" << std::endl;
     clear_info();
     std::vector<std::string> req, req2;
 
@@ -174,7 +174,7 @@ void Request::clear_info()
     version = "";
     query_s = "";
 
-    if (brutbody->_file)
+    if (brutbody->_fileno)
     {
         fclose(brutbody);
         brutbody = tmpfile();
