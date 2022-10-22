@@ -46,6 +46,8 @@ class webServ
         void    setEnv(char** envp);
         void setSocket(std::vector<Socket> s);
         void setConnection(int fd);
+        void setErrorPage(std::string str);
+        std::string getErrorPage();
 
     private:
 		char** env;
@@ -59,6 +61,7 @@ class webServ
 		std::string	serv_root;
         std::vector<Socket> sock;
         std::pair<std::string, std::string> bool_redir;
+        std::string error_page;
 };
 
 #endif

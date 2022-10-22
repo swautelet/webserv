@@ -73,8 +73,7 @@ std::string index_exe(confData & conf, std::string loc)
 int file_exist(std::string file)
 {
     std::ifstream infile(file.data());
-
-    if (!infile.is_open())
+    if (errno == EACCES)
         return -1;
     if (!infile.good())
         return 0;

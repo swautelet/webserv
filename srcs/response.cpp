@@ -47,6 +47,11 @@ void Response::find_method(webServ & web, int i)
 {
 	clear_info();
 	version = web.getReq().getVersion();
+	std::string loc = location_exe(web.getConf().getConflist(i), web.getReq().getUrl());;
+    if (!loc.empty())
+		web.setErrorPage(web.getConf().getConflist(i).getErrorPage());
+	else
+		web.setErrorPage(web.getConf().getConflist(0).getErrorPage());
     if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
     else if (web.getReq().getMethod() == "DELETE" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("DELETE") != std::string::npos)
@@ -408,7 +413,8 @@ void Response::MethodDel(webServ&  web, confData& conf)
 void Response::concat_response(webServ & web)
 {
 	//std::cout <<"body == " << web.getMax_body_size() << std::endl;
-
+	// int x = 0;
+	std::cout << "This is error_page : " << web.getErrorPage() << std::endl; 
     if (atoi(content_length.c_str()) > web.getMax_body_size() && web.getMax_body_size() > 0)
 	{
 		setStatus(413);

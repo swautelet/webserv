@@ -98,6 +98,16 @@ void	webServ::setServ_Root(char **env)
 	}
 }
 
+void webServ::setErrorPage(std::string str)
+{
+	error_page = str;
+}
+
+std::string webServ::getErrorPage()
+{
+	return error_page;
+}
+
 const std::string&	webServ::getServ_Root() const 
 {
 	return serv_root;
