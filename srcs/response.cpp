@@ -48,15 +48,22 @@ void Response::find_method(webServ & web, int i)
 	clear_info();
 	version = web.getReq().getVersion();
 	std::string loc = location_exe(web.getConf().getConflist(i), web.getReq().getUrl());
+	std::string method;
     if (!loc.empty())
+	{
+		method = web.getConf().getConflist(i).getGoodLocation(loc).getMethod();
 		web.setErrorPage(web.getConf().getConflist(i).getGoodLocation(loc).getErrorPage());
+	}
 	else
+	{
+		method = web.getConf().getConflist(i).getMethod();
 		web.setErrorPage(web.getConf().getConflist(i).getErrorPage());
-    if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
+	}
+    if (web.getReq().getMethod() == "GET" && method.find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
-    else if (web.getReq().getMethod() == "DELETE" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("DELETE") != std::string::npos)
+    else if (web.getReq().getMethod() == "DELETE" && method.find("DELETE") != std::string::npos)
         MethodDel(web, web.getConf().getConflist(i));
-    else if (web.getReq().getMethod() == "POST" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("POST") != std::string::npos)
+    else if (web.getReq().getMethod() == "POST" && method.find("POST") != std::string::npos)
         MethodPost(web, web.getConf().getConflist(i));
 	else
 	{
@@ -103,9 +110,9 @@ void Response::setStatMsg()
 		// case 204:
 		// 	stat_msg = "No Content";
 		// 	break;
-		// case 205:
-		// 	stat_msg = "Reset Content";
-		// 	break;
+		case 205:
+			stat_msg = "Reset Content";
+			break;
 		// case 206:
 		// 	stat_msg = "Partial Content";
 		// 	break;
@@ -385,11 +392,13 @@ void Response::MethodPost(webServ & web, confData & conf)
 		std::vector<std::pair<std::string, std::string> > post(post_arg(web.getReq().getBody(), nbr));
 		post_exe(web, post, conf, nbr);
 		post.clear();
+		setStatus(205);
 	}
 }
 
 void Response::MethodDel(webServ&  web, confData& conf)
 {
+	std::cout << "YES" << std::endl;
 	std::string url(web.getReq().getUrl());
     std::string fullpath;
     std::string loc = location_exe(conf, url);
@@ -442,7 +451,8 @@ void Response::concat_response(webServ & web)
 			full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Length: " + content_length + body;
 	}
     web.del_redir();
-	//std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
+	web.setErrorPage("");
+	std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
 }
 
 std::string Response::getResponse() const 

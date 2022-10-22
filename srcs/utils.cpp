@@ -369,11 +369,12 @@ std::vector<std::pair<std::string, std::string> > post_arg(std::string str, int 
         vec[i].first = cut.substr(0, tmp.find('='));
         vec[i].second = cut.substr(tmp.find('=') + 1, tmp.size());
         tmp = tmp.substr(tmp.find('&') + 1, tmp.size());
+        std::cout << tmp << std::endl;
         if (tmp.find('&') == std::string::npos)
         {
             vec[i + 1].first = tmp.substr(0, tmp.find('='));
             vec[i + 1].second = tmp.substr(tmp.find('=') + 1, tmp.size());
-            return vec;
+            break;
         }
         i++;
     }
@@ -396,9 +397,7 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
         fullpath = conf.getGoodLocation(loc).getPath() + conf.getGoodLocation(loc).getLocation_name() + url.substr(loc.size(), url.size());
         url = url.substr(1, url.size());
     }
-    //std::cout << "Post fullpath = " << fullpath << std::endl;
-    dir = opendir(fullpath.data());
-    if (!dir)
+    if (!(dir = opendir(fullpath.data())))
     {
         if (fullpath[0] == '.' && fullpath[1] == '/')
             fullpath.erase(0, 2);
@@ -419,7 +418,9 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
             out.close();
         }
     }
-    closedir(dir);
+    else
+        closedir(dir);
+    std::cout << "!\n";
 }
 
 char** vectstring_tochartable(const std::vector<std::string> vect)

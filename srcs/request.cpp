@@ -45,7 +45,7 @@ Request& Request::operator=(const Request& other)
 int Request::getInfo(int connection, std::string string)
 {
     (void)connection;
-    //std::cout << "|" << string << "|" << std::endl;
+    std::cout << "|" << string << "|" << std::endl;
     clear_info();
     std::vector<std::string> req, req2;
 
