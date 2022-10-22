@@ -74,6 +74,8 @@ int file_exist(std::string file)
 {
     std::ifstream infile(file.data());
 
+    if (!infile.is_open())
+        return -1;
     if (!infile.good())
         return 0;
     return 1;
@@ -202,6 +204,13 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
         web.getRes().setStatMsg();
         fullpath = ERROR_404;
     }
+    if (file_exist(url) == -1)
+    {
+        web.getRes().setContentType(".html");
+        web.getRes().setStatus(405);
+        web.getRes().setStatMsg();
+        fullpath = ERROR_403;
+    }
     //std::cout << "Final fullpath = " << fullpath << std::endl;
     if (!fullpath.compare(ERROR_403) || !fullpath.compare(ERROR_404))
     {
@@ -210,19 +219,24 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
         else
             web.getRes().setStatus(403);
     }
-    fd.open(fullpath.data());
-    if (fd.is_open())
+    else
     {
-        if (fd.good())
+        fd.open(fullpath.data());
+        if (fd.is_open())
         {
-            buff << fd.rdbuf();
-            web.getRes().setContentType(fullpath);
-            return buff.str();
+            if (fd.good())
+            {
+                buff << fd.rdbuf();
+                web.getRes().setContentType(fullpath);
+                return buff.str();
+            }
+        }
+        else
+        {
+            printerr("Error with open ...");
         }
     }
-    else
-        printerr("Error with open ...");
-        return "";
+    return "";
 }
 
 std::string itoa(int a)
@@ -536,7 +550,6 @@ void print_tab(char **tab)
 
 std::string CreateErrorPage(int code)
 {
-    std::cout << "Error Page Creation ..." << std::endl; 
     std::string msg = "";
     switch (code)
     {
@@ -576,7 +589,7 @@ int is_bodySized(webServ & web, confData & conf)
 
 }
 
-int ReadWriteProtection(int fd)
+int ReadWriteProtection(int fd, int what)
 {
     struct timeval tv;
     int status = 0;
@@ -586,15 +599,18 @@ int ReadWriteProtection(int fd)
     fd_set read_set, read_dump, write_set, write_dump;
     FD_ZERO(&read_dump);
     FD_ZERO(&write_dump);
-    FD_SET(fd, &read_dump);
-    FD_SET(fd, &write_dump);
+    if (what == 0)
+        FD_SET(fd, &read_dump);
+    else
+        FD_SET(fd, &write_dump);
     while (status == 0)
     {
         FD_ZERO(&read_set);
         FD_ZERO(&write_set);
-        read_set = read_dump;
-        write_set = write_dump;
-        usleep(2000);
+        if (what == 0)
+            read_set = read_dump;
+        else
+            write_set = write_dump;
         std::cout << "ReadWrite protection ... " << std::endl;
         if ((status = select(fd + 1, &read_set, &write_set, NULL, &tv)) < 0)
             printerr("Error with ReadWrite protection ...");

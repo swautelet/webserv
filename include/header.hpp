@@ -83,7 +83,7 @@ std::string error_parse(int code);
 char*   to_char(const std::string& str);
 std::string CreateErrorPage(int code);
 int is_bodySized(webServ & web, confData & conf);
-int ReadWriteProtection(int fd);
+int ReadWriteProtection(int fd, int what);
 
 #endif
 
