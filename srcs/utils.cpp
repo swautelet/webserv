@@ -420,7 +420,6 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
     }
     else
         closedir(dir);
-    std::cout << "!\n";
 }
 
 char** vectstring_tochartable(const std::vector<std::string> vect)

@@ -423,7 +423,6 @@ void Response::concat_response(webServ & web)
 {
 	//std::cout <<"body == " << web.getMax_body_size() << std::endl;
 	// int x = 0;
-	std::cout << "This is error_page  ----------------------------------- : " << web.getErrorPage() << std::endl; 
     if (atoi(content_length.c_str()) > web.getMax_body_size() && web.getMax_body_size() > 0)
 	{
 		setStatus(413);
