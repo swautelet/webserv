@@ -624,7 +624,6 @@ int ReadWriteProtection(int fd, int what)
             read_set = read_dump;
         else
             write_set = write_dump;
-        std::cout << "ReadWrite protection ... " << std::endl;
         if ((status = select(fd + 1, &read_set, &write_set, NULL, &tv)) < 0)
             printerr("Error with ReadWrite protection ...");
     }

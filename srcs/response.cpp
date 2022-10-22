@@ -452,7 +452,6 @@ void Response::concat_response(webServ & web)
 	}
     web.del_redir();
 	web.setErrorPage("");
-	std::cout << std::endl << "FULL_RESPONSE IS :::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << full_response  << std::endl;
 }
 
 std::string Response::getResponse() const 
