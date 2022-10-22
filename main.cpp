@@ -113,14 +113,16 @@ int error_handling(webServ & web)
     {
         j = -1;
         if (web.getConf().getAddress(i).empty() || web.getConf().getPort(i).empty())
-            printerr("Error : No address or port configured ...");
+            return printerr("Error : No address or port configured ...");
+        else if (web.getConf().getPort(i).size() > 4 || atoi(web.getConf().getPort(i).c_str()) < 0)
+            return printerr("Error with port ...");
         else
         {
             std::string check_address = web.getConf().getAddress(i);
             std::string check_port = web.getConf().getPort(i);
             while(check_port[++j])
                 if (!isdigit(check_port[j]))
-                    printerr("Error : Port must be numeric ...");
+                    return printerr("Error : Port must be numeric ...");
         }
         if (web.getConf().getServName(i).empty())
             web.getConf().getConflist(i).setServName("My Default Server");
