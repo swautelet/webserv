@@ -547,7 +547,7 @@ void print_tab(char **tab)
 }
 
 
-std::string CreateErrorPage(int code)
+std::string CreateErrorPage(webServ &web, int code)
 {
     std::string msg = "";
     switch (code)
@@ -569,6 +569,19 @@ std::string CreateErrorPage(int code)
             break;
         default:
             break;
+    }
+    if (!web.getErrorPage().empty())
+    {
+        std::stringstream buff;
+        std::string path;
+        path = "www/error/" + web.getErrorPage();
+        if (file_exist(path))
+        {
+            std::ifstream fd(path);
+            buff<< fd.rdbuf();
+            web.getRes().setContentType(path);
+            return buff.str();
+        }
     }
     std::string str = "<html><head><title>";
     str += itoa(code) + " " + msg; 

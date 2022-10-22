@@ -81,7 +81,7 @@ int str_isspace(std::string str);
 int check_location_nbr(std::string str, std::string to_find);
 std::string error_parse(int code);
 char*   to_char(const std::string& str);
-std::string CreateErrorPage(int code);
+std::string CreateErrorPage(webServ & web, int code);
 int is_bodySized(webServ & web, confData & conf);
 int ReadWriteProtection(int fd, int what);
 

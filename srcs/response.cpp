@@ -47,11 +47,11 @@ void Response::find_method(webServ & web, int i)
 {
 	clear_info();
 	version = web.getReq().getVersion();
-	std::string loc = location_exe(web.getConf().getConflist(i), web.getReq().getUrl());;
+	std::string loc = location_exe(web.getConf().getConflist(i), web.getReq().getUrl());
     if (!loc.empty())
-		web.setErrorPage(web.getConf().getConflist(i).getErrorPage());
+		web.setErrorPage(web.getConf().getConflist(i).getGoodLocation(loc).getErrorPage());
 	else
-		web.setErrorPage(web.getConf().getConflist(0).getErrorPage());
+		web.setErrorPage(web.getConf().getConflist(i).getErrorPage());
     if (web.getReq().getMethod() == "GET" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("GET") != std::string::npos)
         MethodGet(web, web.getConf().getConflist(i));
     else if (web.getReq().getMethod() == "DELETE" && web.getConf().getConflist(i).LocationFinder(web.getReq().getUrl()).getMethod().find("DELETE") != std::string::npos)
@@ -414,13 +414,13 @@ void Response::concat_response(webServ & web)
 {
 	//std::cout <<"body == " << web.getMax_body_size() << std::endl;
 	// int x = 0;
-	std::cout << "This is error_page : " << web.getErrorPage() << std::endl; 
+	std::cout << "This is error_page  ----------------------------------- : " << web.getErrorPage() << std::endl; 
     if (atoi(content_length.c_str()) > web.getMax_body_size() && web.getMax_body_size() > 0)
 	{
 		setStatus(413);
 		setStatMsg();
 		setContentType(".html");
-		body = CreateErrorPage(413);
+		body = CreateErrorPage(web, 413);
 		setContentLength();
 		full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Length: " + content_length + "\n\n" + body;
 	}
@@ -428,7 +428,7 @@ void Response::concat_response(webServ & web)
 	{
 		setStatMsg();
 		setContentType(".html");
-		body = CreateErrorPage(status);
+		body = CreateErrorPage(web, status);
 		setContentLength();
 		full_response = version + ' ' + itoa(status) + ' ' + stat_msg + '\n' + "Content-Type: " + content_type + '\n' + "Content-Length: " + content_length + "\n\n" + body;
 	}
