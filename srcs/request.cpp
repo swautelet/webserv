@@ -42,13 +42,11 @@ Request& Request::operator=(const Request& other)
 	return *this;
 }
 
-int Request::getInfo(int connection, std::string string)
+int Request::getInfo(std::string string)
 {
-    (void)connection;
     clear_info();
     std::vector<std::string> req, req2;
 
-    //string = buff;
  	splitstring(string, req, '\n');
 	splitstring(req[0], req2, ' ');
     if (!req2[0].compare("GET") || !req2[0].compare("POST") || !req2[0].compare("DELETE"))
@@ -58,22 +56,10 @@ int Request::getInfo(int connection, std::string string)
     version.resize(version.size() - 1);
 	type_data.clear();
     _search_info(req, string);
-    //std::cout  << " ici =====================================" << std::endl << body << std::endl;
-    // char* temp = NULL;
-    // if (string.find("\r\n\r\n") != std::string::npos)
-    // {
-    //     temp = (char*)string.data();
-    //     temp += string.find("\r\n\r\n") + 4;
-    // }
-    // char* temp2 = to_char(content_length);
-    // if (temp)
-    //     Write_Brutbody(temp, string.size() - (string.find("\r\n\r\n") + 4));
-    // delete[] temp2;
     if (url.find("?") != std::string::npos)
     {
         query_s = url.substr(url.find("?") + 1, url.size());
         url = url.substr(0 ,url.find("?"));
-        //std::cout << " BUT " << query_s << std::endl;
     }
     clean_header();
     //std::cout << std::endl << "Header is ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << header << std::endl << "-----------------------------------------------------------------------" << std::endl;
@@ -106,7 +92,7 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
         content_length = "0";
     else
         content_length.resize(content_length.size() - 1);
-    int index;
+    int index = 0;
     while(buff.find("\n") != std::string::npos)
     {
         std::string tmp_2;
@@ -122,7 +108,6 @@ void Request::_search_info(std::vector<std::string> req, std::string buff)
     }
     if (!content_length.empty())
         body = buff;
-    
 }
 
 std::string Request::getUrl() const 
@@ -188,7 +173,6 @@ std::string Request::getQuery_string()
 int Request::getBrutbody_fileno()
 {
     int fd = -1;
-    //std::cout << "!\n";
     if (brutbody)
     {
         fd = fileno(brutbody);
@@ -230,13 +214,14 @@ void        Request::add_Wrote(int read)
         wrote += read;
 }
 
-void        Request::Write_Brutbody(char* buff, int size)
+int        Request::Write_Brutbody(char* buff, int size)
 {
     if (!ReadWriteProtection(getBrutbody_fileno(), 1))
-        printerr("Error with write on brutbody ...");
+        return printerr("Error with write on brutbody ...");
     if ((write(getBrutbody_fileno(), buff, size) < 0))
-        printerr("Error with write..");
+        return printerr("Error with write..");
     add_Wrote(size);
+    return 1;
 }
 
 FILE * Request::getBrutBody()

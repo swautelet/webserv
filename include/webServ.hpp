@@ -38,7 +38,7 @@ class webServ
         std::vector<Socket> &getSock();
         std::pair<std::string, std::string> &getbool_redir();
         void del_redir();
-        void cleave_info();
+        int cleave_info(std::string error, int quit);
         void setMax_body_size(int i);
         void setbool_redir(std::vector<std::string> vec);
 		void	setServ_Root(char **env);

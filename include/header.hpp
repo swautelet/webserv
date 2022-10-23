@@ -53,6 +53,8 @@
 
 #define ERROR_403 "www/error/403.html"
 #define ERROR_404 "www/error/404.html"
+#define STOP  1
+#define GO 0
 
 #define BUFFER_SIZE 10000
 

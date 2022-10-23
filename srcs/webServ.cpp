@@ -162,8 +162,10 @@ void webServ::del_redir()
     bool_redir.second = "";
 }
 
-void webServ::cleave_info()
+int webServ::cleave_info(std::string error, int quit)
 {
+	if (!error.empty())
+		std::cout << error << std::endl;
 	std::cout << "Cleave info ..." << std::endl;
     max_body_size = 0;
     req->clear_info();
@@ -173,10 +175,13 @@ void webServ::cleave_info()
 		it->close_fd();
 	}
 	fclose(req->getBrutBody());
-	std::cout << "\nBye bye" << std::endl;
+	if (quit == STOP)
+		exit(0);
+	return 0;
 }
 
 char ** webServ::getEnv()
 {
 	return env;
 }
+

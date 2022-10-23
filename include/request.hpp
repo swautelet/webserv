@@ -25,7 +25,7 @@ class Request
 		Request& operator=(const Request& other);
         void _search_info(std::vector<std::string> req, std::string buff);
 
-        int getInfo(int connection, std::string string);
+        int getInfo(std::string string);
         std::string getUrl() const;
         std::string getContentType() const;
         std::string getBody() const;
@@ -35,7 +35,7 @@ class Request
         std::string getContentLength() const;
         int    getWrote() const;
         void        add_Wrote(int read);
-        void        Write_Brutbody(char* buff, int size);
+        int     Write_Brutbody(char* buff, int size);
 		const std::vector<std::string>& getDataType() const;
         std::string getQuery_string();
         int getBrutbody_fileno();
