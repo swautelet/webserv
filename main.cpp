@@ -26,8 +26,6 @@ int setup(webServ & web, int backlog)
             return 0;
         FD_SET(web.getSock()[i].getFd(), &sstock);
         FD_SET(web.getSock()[i].getFd(), &rstock);
-        // if (web.getSock()[i].getFd() > *max_fd)
-        //     *max_fd = web.getSock()[i].getFd();
     }
     return 1;
 }
@@ -98,9 +96,7 @@ int sending(webServ &web, std::string str, int i)
     if (!str.empty())
     {
         web.getRes().find_method(web, i);
-        //std::cout << "before : " << web.getRes().getBody() << std::endl;
         web.getRes().concat_response(web);
-        //std::cout << "after : " << web.getRes().getBody() << std::endl;
         long count = 0;
         for (unsigned long i = 0; i < web.getRes().getResponse().size(); i += count)
         {
@@ -110,8 +106,6 @@ int sending(webServ &web, std::string str, int i)
                 break;
         }
         web.getCgi().setCGIBool(0);
-        // if (web.getReq().getBrutbody_fileno() != -1)
-        //     fclose(web.getReq().getBrutBody());
         web.getRes().clear_info();
     }
     return 1;
@@ -150,7 +144,15 @@ int engine(webServ & web, int *step)
             memset(buffer, 0, BUFFER_SIZE);
             struct sockaddr client_address;
 	        int addrlen = sizeof(sizeof(struct sockaddr_in));
-            //std::cout << "Accept ... " << std::endl;
+            std::cout << "Accept ... " << std::endl;
+            std::cout << "port: " << it->getPort() << std::endl;
+            for(std::vector<Socket>::iterator ita = web.getSock().begin(); ita != web.getSock().end();ita++)
+            {
+                if (FD_ISSET(ita->getFd(), &sready))
+                    std::cout << "fd end is :" << ita->getPort() << std::endl;
+            }
+            // if (!it->getPort().compare("8081"))
+            //     exit(0);
             if (web.getConnection() == -1)
             {
                 if ((ret = accept(it->getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
@@ -180,25 +182,23 @@ int selecting(webServ & web, int *step)
     tv.tv_usec = 0;
     while(!g_ctrl_called && status == 0)
     {
+        FD_ZERO(&sready);
+        FD_ZERO(&rready);
+        std::cout << "*step == :" << *step <<std::endl;
         if (*step == 0)
-        {
-            FD_ZERO(&sready);
-            FD_ZERO(&rready);
             sready = sstock;
-        }
         if (*step == 1)
         {
-            FD_ZERO(&sready);
-            FD_ZERO(&rready);
             sready = sstock;
             if (web.getConnection() != -1)
                 FD_SET(web.getConnection(), &sready);
         }
         if (*step == 2)
-        {
-            FD_ZERO(&sready);
-            FD_ZERO(&rready);
             FD_SET(web.getConnection(), &rready);
+        for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
+        {
+            if (FD_ISSET(it->getFd(), &sready))
+                std::cout << "fd before is :" << it->getPort() << std::endl;
         }
         usleep(2000);
         std::cout << "Loop Select ..." << std::endl;
@@ -207,6 +207,12 @@ int selecting(webServ & web, int *step)
             if (!g_ctrl_called)
                 return printerr("Error with select ...");
             return (0);
+        }
+        std::cout << "Status == " << status <<  std::endl;
+        for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
+        {
+            if (FD_ISSET(it->getFd(), &sready))
+                std::cout << "fd after is :" << it->getPort() << std::endl;
         }
         if (status == 0)
             std::cout << "Timeout ... Select Retry ..." << std::endl;
@@ -238,9 +244,9 @@ int main(int argc, char **argv, char **envp)
         if (!selecting(web, &step) || (!engine(web, &step)))
             break;
         //std::cout << "MH\n";
-        if (step == 3 && web.getConnection() > 0)
+        if (step == 3 && web.getConnection() > -1)
         {
-            //std::cout << "Close" << std::endl;
+            std::cout << "Close" << std::endl;
             close(web.getConnection());
             web.setConnection(-1);
             step = 0;

@@ -91,9 +91,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
     std::string loc;
 	std::string index_path;
     
-    //std::cout << "!\n";
 	loc = location_exe(conf, req_file);
-    //std::cout << loc << std::endl;
 	if (!loc.empty() && conf.LocationExist(loc))
 	{
         if (!conf.getGoodLocation(loc).getRedir().empty())
@@ -102,11 +100,9 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             return "";
         }  
 		//std::cout << "Final location is " << loc <<std::endl;
-        // std::cout << conf.getGoodLocation(loc).getLocation_name() << std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
         {
             req_file = req_file.substr(conf.getGoodLocation(loc).getLocation_name().size(), req_file.size());
-            // std::cout << "Found it = " << req_file << std::endl;
             if (!conf.getGoodLocation(loc).getPath().compare("./"))
                 url = "." + conf.getGoodLocation(loc).getLocation_name() + req_file;
             else
@@ -132,13 +128,11 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
         if (!url.empty() && url.rfind("/") == url.size() - 1)
             url.resize(url.size() - 1);
 	}
-    //std::cout << "!url = " << url << std::endl;
 	index_path = index_exe(conf, loc);
     if (file_exist(url) == 0)
     {
         if (conf.LocationExist(loc))
         {
-            //std::cout << "wtf-2 "<< conf.getGoodLocation(loc).getBodySize() << std::endl;
             if (!conf.getGoodLocation(loc).getErrorPage().empty())
                 fullpath = conf.getGoodLocation(loc).getErrorPage();
             else
@@ -192,7 +186,6 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
     }
     else
     {
-        // std::cout << "Not dir" << std::endl;
 		if (fullpath.empty())
 			fullpath = url;
     }
@@ -231,9 +224,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             }
         }
         else
-        {
-            printerr("Error with open ...");
-        }
+            web.cleave_info("Error with open ...", STOP);
     }
     return "";
 }
