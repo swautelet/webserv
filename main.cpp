@@ -107,6 +107,7 @@ int sending(webServ &web, std::string str, int i)
         }
         web.getCgi().setCGIBool(0);
         web.getRes().clear_info();
+        web.getReq().clear_info();
     }
     return 1;
 }
@@ -144,15 +145,6 @@ int engine(webServ & web, int *step)
             memset(buffer, 0, BUFFER_SIZE);
             struct sockaddr client_address;
 	        int addrlen = sizeof(sizeof(struct sockaddr_in));
-            std::cout << "Accept ... " << std::endl;
-            std::cout << "port: " << it->getPort() << std::endl;
-            for(std::vector<Socket>::iterator ita = web.getSock().begin(); ita != web.getSock().end();ita++)
-            {
-                if (FD_ISSET(ita->getFd(), &sready))
-                    std::cout << "fd end is :" << ita->getPort() << std::endl;
-            }
-            // if (!it->getPort().compare("8081"))
-            //     exit(0);
             if (web.getConnection() == -1)
             {
                 if ((ret = accept(it->getFd(), (struct sockaddr*)&client_address, (socklen_t*)&addrlen)) < 0)
@@ -184,7 +176,6 @@ int selecting(webServ & web, int *step)
     {
         FD_ZERO(&sready);
         FD_ZERO(&rready);
-        std::cout << "*step == :" << *step <<std::endl;
         if (*step == 0)
             sready = sstock;
         if (*step == 1)
@@ -195,24 +186,12 @@ int selecting(webServ & web, int *step)
         }
         if (*step == 2)
             FD_SET(web.getConnection(), &rready);
-        for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
-        {
-            if (FD_ISSET(it->getFd(), &sready))
-                std::cout << "fd before is :" << it->getPort() << std::endl;
-        }
-        usleep(2000);
         std::cout << "Loop Select ..." << std::endl;
         if ((status = select(FD_SETSIZE, &sready, &rready, NULL, &tv)) < 0)
         {
             if (!g_ctrl_called)
                 return printerr("Error with select ...");
             return (0);
-        }
-        std::cout << "Status == " << status <<  std::endl;
-        for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
-        {
-            if (FD_ISSET(it->getFd(), &sready))
-                std::cout << "fd after is :" << it->getPort() << std::endl;
         }
         if (status == 0)
             std::cout << "Timeout ... Select Retry ..." << std::endl;
@@ -243,10 +222,8 @@ int main(int argc, char **argv, char **envp)
     {
         if (!selecting(web, &step) || (!engine(web, &step)))
             break;
-        //std::cout << "MH\n";
         if (step == 3 && web.getConnection() > -1)
         {
-            std::cout << "Close" << std::endl;
             close(web.getConnection());
             web.setConnection(-1);
             step = 0;

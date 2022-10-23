@@ -44,6 +44,7 @@ Socket::Socket(const Socket & other)
 
 int Socket::setup(int backlog, confData & conf)
 {
+    std::cout << "Setup socket : " << conf.getServName() << " " << conf.getAdress() + conf.getPort() << std::endl;
     if (!create_socket(conf) || !create_bind() || !listen_socket(backlog))
         return 0;
     set_ip(conf.getAdress());
@@ -56,7 +57,7 @@ int Socket::create_socket(confData & conf)
     serv_address.sin_family = AF_INET;
     serv_address.sin_addr.s_addr = inet_addr(conf.getAdress().c_str());
     serv_address.sin_port = htons(atoi(conf.getPort().data()));
-    memset(serv_address.sin_zero, 0, sizeof(serv_address.sin_zero));
+    // memset(serv_address.sin_zero, 0, sizeof(serv_address.sin_zero));
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
         return printerr("Error with socket creation ...");
     return 1;

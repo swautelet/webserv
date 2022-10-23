@@ -77,7 +77,7 @@ std::string Autodex::html_creation(DIR *dir, std::string full_url, std::string l
 			if (url[url.size() - 1] != '/')
 				tmp += '/';
 			tmp += ent->d_name;
-            if (download == 1)
+            if (download == 1 && strcmp(ent->d_name, ".."))
                 tmp += "\"download";
             else
                 tmp += "\"";
