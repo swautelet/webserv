@@ -252,18 +252,14 @@ void location::print_info() const
     {
         std::cout << "Index->           ";
         for (unsigned long i = 0; i < index.size(); i++)
-		{
             std::cout << "[" << index[i] << "]";
-		}
         std::cout << std::endl;
     }
     if (!redir.empty())
     {
         std::cout << "redir->           ";
         for (unsigned long i = 0; i < redir.size(); i++)
-		{
             std::cout << "[" << redir[i] << "]";
-		}
         std::cout << std::endl;
     }
     if (!error_page.empty())
@@ -275,9 +271,8 @@ void location::print_info() const
 }
 
 
-int location::scrapData(std::string data, int i)
+int location::scrapData(std::string data)
 {
-    (void)i;
     std::string tmp;
     tmp = data.substr(0, data.find("\n"));
     setLocation_name(tmp);
@@ -288,9 +283,7 @@ int location::scrapData(std::string data, int i)
         data = data.substr(data.find("\n") + 1, data.size());
         if (tmp.find("server {") != std::string::npos)
             break;
-        if (str_isspace(tmp))
-            continue;
-        if (tmp.find("{") != std::string::npos || tmp.find("location")!= std::string::npos)
+        if (str_isspace(tmp) || tmp.find("{") != std::string::npos || tmp.find("location")!= std::string::npos)
             continue;
         if (tmp.find("}") != std::string::npos)
             break;

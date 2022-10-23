@@ -344,18 +344,12 @@ void Response::MethodGet(webServ & web, confData & conf)
 		if (loc.empty())
 		{
 			if (conf.getCGI() == 0)
-			{
-				web.getRes().setStatus(500);
-				return;
-			}
+				return web.getRes().setStatus(500);
 		}
 		else if (conf.getGoodLocation(loc).getCGI() == 0)
-		{
-			web.getRes().setStatus(500);
-			return;
-		}
-		std::cout << "AAAAAAAAAH" << std::endl;
+			return web.getRes().setStatus(500);
 		web.getCgi().run_api(web, conf);
+			
 	}
 
 }
@@ -369,16 +363,10 @@ void Response::MethodPost(webServ & web, confData & conf)
 		if (loc.empty())
 		{
 			if (conf.getCGI() == 0)
-			{
-				web.getRes().setStatus(500);
-				return;
-			}
+				return web.getRes().setStatus(500);
 		}
 		else if (conf.getGoodLocation(loc).getCGI() == 0)
-		{
-			web.getRes().setStatus(500);
-			return;
-		}
+			return web.getRes().setStatus(500);
 		web.getCgi().run_api(web, conf);
 	}
     else if (!nbr)
@@ -398,14 +386,11 @@ void Response::MethodPost(webServ & web, confData & conf)
 
 void Response::MethodDel(webServ&  web, confData& conf)
 {
-	std::cout << "YES" << std::endl;
 	std::string url(web.getReq().getUrl());
     std::string fullpath;
     std::string loc = location_exe(conf, url);
     if (conf.LocationExist(loc))
-    {
         fullpath = conf.getGoodLocation(loc).getPath() + url;
-    }
 	if (remove(fullpath.data()) == 0)
 	{
 		setStatus(200);
@@ -421,8 +406,6 @@ void Response::MethodDel(webServ&  web, confData& conf)
 
 void Response::concat_response(webServ & web)
 {
-	//std::cout <<"body == " << web.getMax_body_size() << std::endl;
-	// int x = 0;
     if (atoi(content_length.c_str()) > web.getMax_body_size() && web.getMax_body_size() > 0)
 	{
 		setStatus(413);
@@ -507,18 +490,8 @@ void	Response::seterrorpage()
 
 void  Response::setContentLength()
 {
-	// if (getContentType().find("image") != std::string::npos)
-	// {
-		body.shrink_to_fit();
-		content_length = itoa(body.size());
-	// }
-		
-	// else
-	// {
-	// 	content_length = itoa(how_many(body));
-	// 	std::cout << "second" << std::endl;
-	// }
-	
+	body.shrink_to_fit();
+	content_length = itoa(body.size());
 }
 
 void Response::setBody(std::string str)

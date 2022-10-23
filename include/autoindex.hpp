@@ -26,8 +26,8 @@ class Autodex
         std::string getIndexStr() const;
 		Autodex& operator=(const Autodex& other);
         Autodex(std::string path, confData & conf);
-        std::string create_dex(webServ & web, confData & conf, std::string url, const location & loc);
-        std::string html_creation(DIR *dir, std::string full_url, std::string loca, std::string url);
+        std::string create_dex(webServ & web, std::string url);
+        std::string html_creation(DIR *dir, std::string url);
     private:
         std::string index_str;
 };

@@ -14,12 +14,12 @@ std::string	Cgi::start_script(webServ& web)
 	int ret;
 	//std::cout << "This :" << web.getCgi().getPath() << " received this brutbody::::::::::::::::::::::::::::::::::::::::::::::::::"<< std::endl;
 	if (!ReadWriteProtection(web.getReq().getBrutbody_fileno(), 1))
-		printerr("Error with select on read Brutbody ...");
+		web.cleave_info("Error with select brutbody ...", STOP);
 	while ((ret = read(web.getReq().getBrutbody_fileno(), buffer, 10000)) > 0)
 		if ((write(1, buffer, ret)) < 0)
-			printerr("Error with write ...");
+			web.cleave_info("Error with write ...", STOP);
 	if (ret == -1)
-		printerr("Error with read ...");
+		web.cleave_info("Error with read ...", STOP);
 	//std::cout << "finish ---------------------------------------" << std::endl;
 	lseek(web.getReq().getBrutbody_fileno(), 0, SEEK_SET);
 	id = fork();
@@ -36,17 +36,13 @@ std::string	Cgi::start_script(webServ& web)
 		
 		if (execve(getPath().data(), argtmp, envtmp) < 0)
 		{
-			//std::cout << "Script couldn't be loaded with this->script : |" << argtmp[1] << "|" << std::endl;
-			//std::cout << "and this->exe :" << getPath() << std::endl;
 			perror("EXECVE ERROR :");
 			exit(10);
 		}
 	}
 	else
 	{
-		//std::cout << "waiting for script" << std::endl;
 		close(outpip[1]);
-		//  std::cout << "php script finished with :" << status << std::endl;
 		char buff[BUFF_SIZE + 1];
 		buff[BUFF_SIZE] = '\0';
 		int size;
@@ -60,16 +56,9 @@ std::string	Cgi::start_script(webServ& web)
 		}
 		if (size == -1)
 			printerr("Error with read ...");
-		//std::cout << "buff " << buff << std::endl;
-		// std::cout << "waiting for php " << std::endl;
-		// wait(&status);
 	}
 	// std::cout << "php script answered with ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::" << std::endl << rep << std::endl << "-------------------------------------------------------------------------------------------" << std::endl;
 	close(outpip[0]);
-//	fclose(infile);
-//	fclose(outfile);
-	// free_table(argtmp);
-	// free_table(envtmp);
 	delete[] argtmp;
 	delete[] envtmp;
 	return rep;
@@ -347,24 +336,14 @@ int 	Cgi::conf_php_ini(webServ& web, confData& conf)
 	php_ini.open(web.getServ_Root() + "/www/php/include/php.ini", std::fstream::out | std::fstream::trunc);
 	if (php_ini.is_open())
 	{
-		std::cout << "loc :" << loc <<std::endl;
 		std::string content = ("file_uploads = 1\nupload_max_filesize = 1000M\nupload_tmp_dir = ");
 		php_ini << content;
 		if (loc.empty())
-		{
 			php_ini << conf.getCGIPath();
-			std::cout << " i wrote with variable --------------------------------------------------------" << std::endl;
-		}
 		else if (!conf.getGoodLocation(loc).getCGIPath().empty())
-		{
 			php_ini << conf.getGoodLocation(loc).getCGIPath();
-			std::cout << " i wrote with loc variable --------------------------------------------------------" << std::endl;
-		}
 		else
-		{
 			php_ini << "../../uploads/";
-			std::cout << " i wrote with default --------------------------------------------------------" << std::endl;
-		}
 	}
 	else
 		return -1;

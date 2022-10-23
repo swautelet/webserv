@@ -39,7 +39,7 @@ Conf& Conf::operator=(const Conf& other)
 
 void Conf::print_info()
 {
-    for(unsigned long i = 0; i < nbr_serv; i++)
+    for(long i = 0; i < nbr_serv; i++)
     {
         //std::cout << std::endl <<"[SERVER " << i + 1 << "]" << std::endl << std::endl; 
         (confList)[i].print_info();
@@ -73,7 +73,7 @@ std::vector<std::string> Conf::getIndex(int index) const
     return (confList)[index].getIndex();
 }
 
-unsigned long Conf::getNbrServer() const
+long Conf::getNbrServer() const
 {
     return nbr_serv;
 }
@@ -85,10 +85,10 @@ confData & Conf::getConflist(int index)
 
 void Conf::parsing(std::string path)
 {
-    if (!(nbr_serv = (confList)[0].parsing(path)))
-        printerr("Error with parsing, 0 server found ...");
+    if (!(nbr_serv = (confList)[0].parsing(path)) || nbr_serv == -1)
+        return;
     confList.resize(nbr_serv);
-    for (unsigned long i = 0; i < nbr_serv; i++)
+    for (long i = 0; i < nbr_serv; i++)
         (confList)[i].scrapData();
     print_info();
 }

@@ -26,9 +26,9 @@ class Socket
         Socket(const Socket & other);
         Socket &operator=(const Socket & other);
         int create_bind();
-        int listen_socket(int max_queue);
+        int listen_socket();
         int create_socket(confData & conf);
-        int setup(int backlog, confData & conf);
+        int setup(confData & conf);
         void close_fd();
         
         void set_port(std::string port);

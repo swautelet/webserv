@@ -293,7 +293,7 @@ int confData::parsing(std::string path)
     std::stringstream buff;
     fd.open(path.data(), std::ifstream::in);
     if (!fd)
-        printerr("Error with file opening ...");
+        return -1;
     buff << fd.rdbuf();
     data = buff.str();
     check_quote(data);
@@ -423,7 +423,7 @@ void confData::scrapLocation()
         complete_loc(x);
     for (unsigned long x = 0; x < nbr_loc; x++)
     {
-        index = (loc)[x].scrapData(location_str(cpy_data), index);
+        index = (loc)[x].scrapData(location_str(cpy_data));
         cpy_data = cpy_data.substr(cpy_data.find("location") + 1, cpy_data.size());
     }
 }

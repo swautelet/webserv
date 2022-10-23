@@ -16,13 +16,13 @@ fd_set sstock, sready, rstock, rready;
 int g_ctrl_called = 0;
 std::string str = "";
 
-int setup(webServ & web, int backlog)
+int setup(webServ & web)
 {
     FD_ZERO(&sready);
     FD_ZERO(&rready);
-    for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
+    for (long i = 0; i < web.getConf().getNbrServer(); i++)
     {
-        if (!web.getSock()[i].setup(backlog, web.getConf().getConflist(i)))
+        if (!web.getSock()[i].setup(web.getConf().getConflist(i)))
             return 0;
         FD_SET(web.getSock()[i].getFd(), &sstock);
         FD_SET(web.getSock()[i].getFd(), &rstock);
@@ -34,8 +34,8 @@ int error_handling(webServ & web)
 {
     int j;
     if (!web.getConf().getNbrServer())
-        printerr("Error : No server configured ...");
-    for (unsigned long i = 0; i < web.getConf().getNbrServer(); i++)
+        return printerr("Error : No server configured ...");
+    for (long i = 0; i < web.getConf().getNbrServer(); i++)
     {
         j = -1;
         if (web.getConf().getAddress(i).empty() || web.getConf().getPort(i).empty())
@@ -186,6 +186,7 @@ int selecting(webServ & web, int *step)
         }
         if (*step == 2)
             FD_SET(web.getConnection(), &rready);
+        usleep(500);
         std::cout << "Loop Select ..." << std::endl;
         if ((status = select(FD_SETSIZE, &sready, &rready, NULL, &tv)) < 0)
         {
@@ -212,7 +213,7 @@ int main(int argc, char **argv, char **envp)
     webServ web(argv[1], envp);
 	web.setServ_Root(envp);
     web.getCgi().set_transla_path(envp);
-    if (!setup(web, 0))
+    if (!setup(web))
         return web.cleave_info("Error with setup ...", GO);
     if (!error_handling(web))
         web.cleave_info("Error with setup ...", STOP);

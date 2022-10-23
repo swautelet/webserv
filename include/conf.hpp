@@ -29,7 +29,7 @@ class Conf
         void parsing(std::string path);
         
         confData& getConflist(int index);
-        unsigned long getNbrServer() const;
+        long getNbrServer() const;
         std::string getPort(int index) const;
         std::string getPath(int index) const;
         std::string getMethod(int index) const;
@@ -39,7 +39,7 @@ class Conf
 		const std::vector <confData> getVectorConflist() const;
         
     private:
-        unsigned long nbr_serv;
+        long nbr_serv;
         std::vector<confData> confList;
 };
 

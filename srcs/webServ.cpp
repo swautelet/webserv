@@ -35,10 +35,12 @@ webServ::webServ(std::string argv, char **envp)
 	this->env = envp;
 
     conf->parsing(argv);
+	if (!conf->getNbrServer())
+		cleave_info("Error : 0 server found ...", STOP);
+	else if (conf->getNbrServer() == -1)
+		cleave_info("Error with the file ...", STOP);
     sock.reserve(conf->getNbrServer());
-	
-	std::cout << "Nombre de server = " << conf->getNbrServer() << std::endl;
-	for (unsigned long i = 0; i < conf->getNbrServer(); i++)
+	for (long i = 0; i < conf->getNbrServer(); i++)
 	{
 		Socket next;
 		sock.push_back(next);

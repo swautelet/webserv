@@ -23,7 +23,7 @@ class location
         ~location();
 		location& operator=(const location& other);
         void print_info() const;
-        int scrapData(std::string str, int i);
+        int scrapData(std::string str);
         void edit_info(std::string str, std::string info, std::vector<std::string> vec);
         int getAutoIndex() const;
         int getCGI() const;

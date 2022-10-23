@@ -33,30 +33,23 @@ Autodex& Autodex::operator=(const Autodex& other)
 	return *this;
 }
 
-std::string Autodex::create_dex(webServ & web, confData & conf, std::string url, const location & loc)
+std::string Autodex::create_dex(webServ & web, std::string url)
 {
     DIR *dir;
-    (void)web;
-    (void)conf;
-    (void)loc;
-    (void)dir;
-    
-    int i = -1;
-    (void)i;
     std::string full_url(url);
     std::string index_str;
-    std::string loca = location_exe(conf, url);;
 
     if ((dir = opendir(full_url.data())) != NULL)
-        index_str = html_creation(dir, full_url, loca, web.getReq().getUrl());
+    {
+        index_str = html_creation(dir, web.getReq().getUrl());
+        closedir(dir);
+    }
     web.getRes().setContentType(".html");
     return index_str;
 }
 
-std::string Autodex::html_creation(DIR *dir, std::string full_url, std::string loca, std::string url)
+std::string Autodex::html_creation(DIR *dir, std::string url)
 {
-    (void)loca;
-    (void)full_url;
     struct dirent *ent;
     int download = 0;
     std::string tmp;
@@ -88,7 +81,6 @@ std::string Autodex::html_creation(DIR *dir, std::string full_url, std::string l
 	}
 	tmp += "</pre><hr></body>";
 	tmp += "</html>";
-    closedir(dir);
     return tmp;
 }
 

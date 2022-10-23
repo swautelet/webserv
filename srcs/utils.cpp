@@ -99,7 +99,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             web.setbool_redir(conf.getGoodLocation(loc).getRedir());
             return "";
         }  
-		//std::cout << "Final location is " << loc <<std::endl;
+		std::cout << "Final location is " << loc <<std::endl;
         if (!conf.getGoodLocation(loc).getLocation_name().compare(req_file.substr(0, conf.getGoodLocation(loc).getLocation_name().size())) && loc.compare("/"))
         {
             req_file = req_file.substr(conf.getGoodLocation(loc).getLocation_name().size(), req_file.size());
@@ -129,23 +129,8 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             url.resize(url.size() - 1);
 	}
 	index_path = index_exe(conf, loc);
-    if (file_exist(url) == 0)
-    {
-        if (conf.LocationExist(loc))
-        {
-            if (!conf.getGoodLocation(loc).getErrorPage().empty())
-                fullpath = conf.getGoodLocation(loc).getErrorPage();
-            else
-                fullpath = ERROR_404;
-        }
-        else
-        {
-            if (!conf.getErrorPage().empty())
-                fullpath = conf.getErrorPage();
-            else
-                fullpath = ERROR_404;
-        }
-    }
+    // std::cout << "url :" << url << std::endl;
+    // std::cout << "fullpath is : " << fullpath << std::endl;
     dir = opendir(url.data());
     if (dir != NULL)
     {
@@ -160,7 +145,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
             if (conf.getGoodLocation(loc).getAutoIndex())
 			{
 				closedir(dir);
-                return web.getAutodex().create_dex(web, conf, url, conf.getGoodLocation(loc));  
+                return web.getAutodex().create_dex(web, url);  
 			}          
             if (!conf.getGoodLocation(loc).getIndex().empty())
                 fullpath = index_path;
@@ -176,7 +161,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
 				{
 					web.getRes().setStatus(200);
 					closedir(dir);
-                    return web.getAutodex().create_dex(web, conf, url, conf.getGoodLocation(loc));
+                    return web.getAutodex().create_dex(web, url);
 				}
                 else if (!conf.getIndex().empty())
                     fullpath = index_path;
@@ -203,7 +188,7 @@ std::string readfile(webServ & web, confData & conf, std::string req_file)
         web.getRes().setStatMsg();
         fullpath = ERROR_403;
     }
-    //std::cout << "Final fullpath = " << fullpath << std::endl;
+    // std::cout << "Final fullpath = " << fullpath << std::endl;
     if (!fullpath.compare(ERROR_403) || !fullpath.compare(ERROR_404))
     {
         if (!fullpath.compare(ERROR_404))
@@ -325,11 +310,9 @@ void	splitstring(std::string str, std::vector<std::string>& vect, char c)
 		{
 			vect.push_back(temp);
 			temp = "";
-		}
+        }
 		else
-		{
 			temp.push_back(str[i]);
-		}
 	}
 	vect.push_back(temp);
 }
@@ -380,7 +363,6 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
     std::string fullpath(url);
     std::string loc = location_exe(conf, url);
     std::string str = "";
-    //std::cout << "loc == "<< loc << std::endl; 
     if (loc.empty())
         url = conf.getPath() + "/" + url.substr(1, url.size());
     else
@@ -394,7 +376,10 @@ void post_exe(webServ & web, std::vector<std::pair<std::string, std::string> > p
             fullpath.erase(0, 2);
         std::ofstream out(fullpath.data());
         if (!out.is_open())
-            printerr("Error with open ...");
+        {
+            closedir(dir);
+            web.cleave_info("Error with open", STOP);
+        }
         else
         {
 
@@ -520,9 +505,7 @@ char*   to_char(const std::string& str)
 {
     char* ret = new char[str.size() + 1];
     for (unsigned long i = 0; i < str.size(); i++)
-    {
         ret[i] = str[i];
-    }
     ret[str.size()] = '\0';
     return ret;
 }
@@ -615,7 +598,9 @@ int ReadWriteProtection(int fd, int what)
         else
             write_set = write_dump;
         if ((status = select(fd + 1, &read_set, &write_set, NULL, &tv)) < 0)
-            printerr("Error with ReadWrite protection ...");
+            return printerr("Error with ReadWrite protection ...");
+        if (status == 0)
+            std::cout << "Timeout ... Select Retry ..." << std::endl;
     }
     return 1;
 }
