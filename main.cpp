@@ -116,15 +116,49 @@ int engine(webServ & web, int *step)
 {
     char buffer[BUFFER_SIZE];
     int ret = 0, i = 0;
-    for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
+    // int nbsock = 0;
+    // for (std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
+    // {
+    //     if (FD_ISSET(it->getFd(), &sready))
+    //         nbsock++;
+    // }
+    std::vector<Socket>::iterator it = web.getSock().begin();
+    while(it != web.getSock().end() && it->read == true)
     {
+        it++;
+    }
+    // if (it->read == 0 && !FD_ISSET(it->getFd(), &sready) && !FD_ISSET(web.getConnection(), &rready))
+    //     it->read = true;
+    std::cout << "i buccle in pos : " << it - web.getSock().begin() << " and step = " << *step << std::endl;
+    if (it == web.getSock().end())
+    {
+        // exit(0);
+        for(std::vector<Socket>::iterator its = web.getSock().begin(); its != web.getSock().end();its++)
+            its->read = false;
+        return 1;
+    }
+    // for(std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
+    // {
+        // std::cout << "test" << std::endl;
+        // while((it != web.getSock().end() && it->read == 1 )|| (it != web.getSock().end() && !FD_ISSET(it->getFd(), &sready)))
+        //     it++;
+        // std::cout << "i buccle in pos : " << it - web.getSock().begin() << " and step = " << *step << std::endl;
+        // if (it == web.getSock().end())
+        // {
+        //     for(std::vector<Socket>::iterator its = web.getSock().begin(); its != web.getSock().end();its++)
+        //         its->read = 0;
+        //     return 1;
+        // }
         if (FD_ISSET(web.getConnection(), &rready) && *step == 2)
         {
             if (!sending(web, str, i))
                 return 0;
             *step = 3;
+            it->read = true;
+            // exit (0);
+            return 1;
         }
-        if (FD_ISSET(web.getConnection(), &sready) && *step == 1)
+        else if (FD_ISSET(web.getConnection(), &sready) && *step == 1)
         {
             if ((ret = recv(web.getConnection(), buffer, sizeof(buffer) - 1, 0)) > 0)
             {
@@ -138,9 +172,9 @@ int engine(webServ & web, int *step)
                 return web.cleave_info("Recv : 0", GO);
             else
                 return web.cleave_info("Error with recv : -1", GO);
-            break;
+            return 1;
         }
-        if (FD_ISSET(it->getFd(), &sready) && *step == 0)
+        else if (it != web.getSock().end() && FD_ISSET(it->getFd(), &sready) && *step == 0)
         {
             memset(buffer, 0, BUFFER_SIZE);
             struct sockaddr client_address;
@@ -156,7 +190,9 @@ int engine(webServ & web, int *step)
                 return 1;
             }
         }
-    }
+        else
+            it->read = true;
+    // }
     return 1;
 }
 
@@ -186,7 +222,7 @@ int selecting(webServ & web, int *step)
         }
         if (*step == 2)
             FD_SET(web.getConnection(), &rready);
-        usleep(500);
+        usleep(200);
         std::cout << "Loop Select ..." << std::endl;
         if ((status = select(FD_SETSIZE, &sready, &rready, NULL, &tv)) < 0)
         {

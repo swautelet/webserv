@@ -17,6 +17,7 @@ Socket::Socket()
 {
     fd = -1;
     std::cout << "Socket constructor" << std::endl;
+    read = 0;
 }
 
 Socket::~Socket()
@@ -31,6 +32,7 @@ Socket::Socket(std::string ip, std::string port)
 	std::cout << "socket second constructor called " << std::endl;
     this->ip = ip;
     this->port = port;
+    read = 0;
 }
 
 Socket::Socket(const Socket & other)
@@ -39,6 +41,7 @@ Socket::Socket(const Socket & other)
     this->fd = other.fd;
     this->ip = other.ip;
     this->port = other.port;
+    read = 0;
     //fd = -1;
 }
 
@@ -49,6 +52,7 @@ int Socket::setup(confData & conf)
         return 0;
     set_ip(conf.getAdress());
     set_port(conf.getPort());
+    read = 0;
     return 1;
 }
 

@@ -39,6 +39,7 @@ class Socket
         std::string getIp() const;
         std::string getPort() const;
         sockaddr_in getServ_address() const;
+        bool read;
     private:
         sockaddr_in serv_address;
         int fd;
