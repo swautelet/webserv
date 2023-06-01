@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 02:20:16 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/21 23:46:48 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/24 16:27:48 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int sending(webServ &web, std::string str, int i)
 int engine(webServ & web, int *step)
 {
     char buffer[BUFFER_SIZE];
-    int ret = 0, i = 0;
+    int ret = 0;
     // int nbsock = 0;
     // for (std::vector<Socket>::iterator it = web.getSock().begin(); it != web.getSock().end();it++)
     // {
@@ -129,7 +129,7 @@ int engine(webServ & web, int *step)
     }
     // if (it->read == 0 && !FD_ISSET(it->getFd(), &sready) && !FD_ISSET(web.getConnection(), &rready))
     //     it->read = true;
-    std::cout << "i buccle in pos : " << it - web.getSock().begin() << " and step = " << *step << std::endl;
+    // std::cout << "i buccle in pos : " << it - web.getSock().begin() << " and step = " << *step << std::endl;
     if (it == web.getSock().end())
     {
         // exit(0);
@@ -151,7 +151,8 @@ int engine(webServ & web, int *step)
         // }
         if (FD_ISSET(web.getConnection(), &rready) && *step == 2)
         {
-            if (!sending(web, str, i))
+            
+            if (!sending(web, str, it - web.getSock().begin()))
                 return 0;
             *step = 3;
             it->read = true;
@@ -222,7 +223,7 @@ int selecting(webServ & web, int *step)
         }
         if (*step == 2)
             FD_SET(web.getConnection(), &rready);
-        usleep(200);
+        usleep(2000);
         std::cout << "Loop Select ..." << std::endl;
         if ((status = select(FD_SETSIZE, &sready, &rready, NULL, &tv)) < 0)
         {

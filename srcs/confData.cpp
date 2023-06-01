@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   confData.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shyrno <shyrno@student.42.fr>              +#+  +:+       +#+        */
+/*   By: simonwautelet <simonwautelet@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 05:46:00 by shyrno            #+#    #+#             */
-/*   Updated: 2022/10/21 23:13:17 by shyrno           ###   ########.fr       */
+/*   Updated: 2022/10/24 16:12:26 by simonwautel      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,7 +407,7 @@ void confData::scrapData()
 
 void confData::scrapLocation()
 {
-    int index = -1;
+    // int index = -1;
     std::string cpy_data(data);
     
     std::cout << "data is == " << data << std::endl;
@@ -423,7 +423,7 @@ void confData::scrapLocation()
         complete_loc(x);
     for (unsigned long x = 0; x < nbr_loc; x++)
     {
-        index = (loc)[x].scrapData(location_str(cpy_data));
+        (loc)[x].scrapData(location_str(cpy_data));
         cpy_data = cpy_data.substr(cpy_data.find("location") + 1, cpy_data.size());
     }
 }
