@@ -24,7 +24,7 @@ test: $(NAME)
 re:			fclean all
 
 save:
-	git commit -am "$(MAKECMDGOALS)";
-	git push https://github.com/4b93f/webserv.git;
+	git commit -am "$(MAKECMDGOALS)"
+	git push https://github.com/swautelet/webserv.git
 
 .PHONY:		all clean fclean re test save
